@@ -22,6 +22,35 @@
 
 namespace Telegram {
 
+class DhSession
+{
+public:
+    enum State {
+        Initial,
+        PqReplied,
+    };
+
+    TLNumber128 clientNonce;
+    TLNumber128 serverNonce;
+    TLNumber256 newNonce;
+    quint64 pq = 0;
+    quint32 p = 0;
+    quint32 q = 0;
+
+    quint32 expiresIn = 0;
+    quint32 g = 0;
+    QByteArray dhPrime;
+    QByteArray gA;
+    QByteArray a;
+
+    void generateKey();
+    bool isTemporary() const { return expiresIn; }
+
+    Crypto::AesKey tmpAesKey;
+
+    State state = Initial;
+};
+
 namespace Server {
 
 class DhLayer : public Telegram::BaseDhLayer
@@ -32,9 +61,10 @@ public:
     void init() override;
 
     bool processRequestPQ(const QByteArray &data);
-    bool sendResultPQ();
+    void sendResultPQ(const DhSession *session);
     bool processRequestDHParams(const QByteArray &data);
-    bool acceptDhParams();
+    void initiateDhParams(DhSession *session);
+    bool acceptDhParams(const DhSession *session);
     bool declineDhParams();
     bool processSetClientDHParams(const QByteArray &data);
 
@@ -42,6 +72,8 @@ public:
 
 protected:
     void processReceivedPacket(const QByteArray &payload) override;
+
+    DhSession *ensureSession(const TLNumber128 &clientNonce);
 
     QByteArray m_a;
 };

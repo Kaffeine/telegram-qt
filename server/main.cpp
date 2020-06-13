@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(key);
     cluster.setServerConfiguration(config.serverConfiguration());
-    cluster.setListenAddress(QHostAddress::Any);
+    //cluster.setListenAddress(QHostAddress::Any);
 
 #ifdef USE_DBUS_NOTIFIER
     DBusCodeAuthProvider authProvider;

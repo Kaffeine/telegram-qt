@@ -28,7 +28,7 @@
 #include <QLoggingCategory>
 #include <QtEndian>
 
-Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtInfoMsg)
+Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtDebugMsg)
 
 static const QByteArray c_hardcodedDhPrime =
         QByteArray::fromHex(QByteArrayLiteral(
@@ -43,14 +43,36 @@ static const QByteArray c_hardcodedDhPrime =
 
 namespace Telegram {
 
+void DhSession::generateKey()
+{
+    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << serverNonce << newNonce;
+    QByteArray newNonceAndServerNonce;
+    newNonceAndServerNonce.append(newNonce.data, newNonce.size());
+    newNonceAndServerNonce.append(serverNonce.data, serverNonce.size());
+    QByteArray serverNonceAndNewNonce;
+    serverNonceAndNewNonce.append(serverNonce.data, serverNonce.size());
+    serverNonceAndNewNonce.append(newNonce.data, newNonce.size());
+    QByteArray newNonceAndNewNonce;
+    newNonceAndNewNonce.append(newNonce.data, newNonce.size());
+    newNonceAndNewNonce.append(newNonce.data, newNonce.size());
+
+    const QByteArray key = Utils::sha1(newNonceAndServerNonce)
+            + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
+    const QByteArray iv  = Utils::sha1(serverNonceAndNewNonce).mid(12, 8)
+            + Utils::sha1(newNonceAndNewNonce)
+            + QByteArray(newNonce.data, 4);
+
+    qCDebug(c_serverDhLayerCategory) << CALL_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
+
+    tmpAesKey.key = key;
+    tmpAesKey.iv = iv;
+}
+
 namespace Server {
 
 DhLayer::DhLayer(QObject *parent) :
     BaseDhLayer(parent)
 {
-    m_p = 1244159563ul;
-    m_q = 1558201013ul;
-    m_pq = static_cast<quint64>(m_p) * static_cast<quint64>(m_q);
 }
 
 void DhLayer::init()
@@ -63,42 +85,65 @@ bool DhLayer::processRequestPQ(const QByteArray &data)
     MTProto::Stream inputStream(data);
     TLValue value;
     inputStream >> value;
-    inputStream >> m_clientNonce;
-    if (value != TLValue::ReqPq) {
+
+    switch (value) {
+    case TLValue::ReqPq:
+    case TLValue::ReqPqMulti:
+        break;
+    default:
+        setState(State::Failed);
         return false;
     }
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Client nonce:" << m_clientNonce;
+    TLNumber128 clientNonce;
+    inputStream >> clientNonce;
+    qCDebug(c_serverDhLayerCategory) << CALL_INFO << value.toString() << "Client nonce:" << clientNonce;
+
+    DhSession *session = ensureSession(clientNonce);
+    session->state = DhSession::Initial;
+    session->p = 1244159563ul;
+    session->q = 1558201013ul;
+    session->pq = static_cast<quint64>(session->p) * static_cast<quint64>(session->q);
+
+    RandomGenerator::instance()->generate(&session->serverNonce);
+    sendResultPQ(session);
+    session->state = DhSession::PqReplied;
+
     return true;
 }
 
-bool DhLayer::sendResultPQ()
+void DhLayer::sendResultPQ(const DhSession *session)
 {
-    RandomGenerator::instance()->generate(m_serverNonce.data, m_serverNonce.size());
     const QVector<quint64> fingerprints = { m_rsaKey.fingerprint };
-    QByteArray output;
-    MTProto::Stream outputStream(&output, /* write */ true);
-//    qCDebug(c_serverDhLayerCategory) << "Write data:" << m_clientNonce << m_serverNonce << pqAsByteArray.toHex() << "fp:" << fingerprints << "(pq:" << m_pq << ")";
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    QByteArray pqAsByteArray = intToBytes(session->pq);
+    qCDebug(c_serverDhLayerCategory) << "Write data:"
+                                     << session->clientNonce
+                                     << session->serverNonce
+                                     << pqAsByteArray.toHex() << "fp:"
+                                     << fingerprints << "(pq:" << session->pq << ")";
     outputStream << TLValue::ResPQ;
-    outputStream << m_clientNonce;
-    outputStream << m_serverNonce;
-    outputStream << intToBytes(m_pq);
+    outputStream << session->clientNonce;
+    outputStream << session->serverNonce;
+    outputStream << pqAsByteArray;
     outputStream << fingerprints;
-//    qCDebug(c_serverDhLayerCategory) << "Wrote data:" << output.toHex();
-    return sendReplyPackage(output);
+
+    sendReplyPackage(outputStream.getData());
 }
 
 bool DhLayer::processRequestDHParams(const QByteArray &data)
 {
     QByteArray encryptedPackage;
+    DhSession *session = nullptr;
     {
         MTProto::Stream inputStream(data);
         TLValue value;
         inputStream >> value;
         if (value != TLValue::ReqDHParams) {
-            qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid request data" << value.toString();
+            qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid request data" << value.toString();
             return false;
         }
-        if (!checkClientServerNonse(inputStream)) {
+        session = getClientServerSession(inputStream);
+        if (!session) {
             return false;
         }
         QByteArray bigEndianNumber1;
@@ -110,22 +155,21 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
         quint32 readP = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber1.constData()));
         quint32 readQ = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber2.constData()));
 
-        if (m_p != readP) {
-            qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid P";
+        if (session->p != readP) {
+            qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid P";
             return false;
         }
-        if (m_q != readQ) {
-            qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid Q";
+        if (session->q != readQ) {
+            qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid Q";
             return false;
         }
         if (fingerprint != m_rsaKey.fingerprint) {
-            qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid server fingerprint" << fingerprint << "vs" << m_rsaKey.fingerprint;
+            qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid server fingerprint" << fingerprint << "vs" << m_rsaKey.fingerprint;
             return false;
         }
         inputStream >> encryptedPackage;
+        qCDebug(c_serverDhLayerCategory) << CALL_INFO << "encrypted:" << encryptedPackage.toHex();
     }
-
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "encrypted:" << encryptedPackage.toHex();
 
     QByteArray decryptedPackage = Utils::binaryNumberModExp(encryptedPackage, m_rsaKey.modulus, m_rsaKey.secretExponent);
     constexpr int c_innerPackageSize = 255;
@@ -136,7 +180,7 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
         decryptedPackage.prepend(c_innerPackageSize - decryptedPackage.size(), char(0));
 #endif
     }
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Decrypted:" << decryptedPackage.toHex();
+    qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Decrypted:" << decryptedPackage.toHex();
 
     const QByteArray sha = decryptedPackage.left(20);
     const QByteArray innerData = decryptedPackage.mid(20);
@@ -144,61 +188,103 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
 
     {
         QByteArray bigEndianNumber;
-//        QByteArray innerData;
+        //        QByteArray innerData;
         MTProto::Stream encryptedStream(innerData);
         TLValue v;
         encryptedStream >> v;
-        if (v != TLValue::PQInnerData) {
-            qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Inner data does not start with PQInnerData value:" << v;
+        bool methodWithExpiresIn = false;
+        bool methodWithDc = false;
+        switch (v) {
+        case TLValue::PQInnerData:
+            break;
+        case TLValue::PQInnerDataDc:
+            methodWithDc = true;
+            break;
+        case TLValue::PQInnerDataTemp:
+            methodWithExpiresIn = true;
+            break;
+        case TLValue::PQInnerDataTempDc:
+            methodWithExpiresIn = true;
+            methodWithDc = true;
+            break;
+        default:
+            qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Inner data does not start with PQInnerData value:" << v;
             return false;
         }
-        qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Read inner data";
+        qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Read inner data";
 
-        encryptedStream >> bigEndianNumber;
-        if (bigEndianNumber.size() != sizeof(m_pq)) {
-            return false;
-        }
-        m_pq = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
+        {
+            // Extra verification
+            QByteArray bigEndianNumber1;
+            QByteArray bigEndianNumber2;
+            QByteArray bigEndianNumber3;
+            encryptedStream >> bigEndianNumber1;
+            encryptedStream >> bigEndianNumber2;
+            encryptedStream >> bigEndianNumber3;
+            quint32 readPQ = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(bigEndianNumber1.constData()));
+            quint32 readP = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber2.constData()));
+            quint32 readQ = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber3.constData()));
 
-        encryptedStream >> bigEndianNumber;
-        if (bigEndianNumber.size() != sizeof(m_p)) {
-            return false;
+            if (session->pq != readPQ) {
+                qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid PQ";
+                return false;
+            }
+            if (session->p != readP) {
+                qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid P";
+                return false;
+            }
+            if (session->q != readQ) {
+                qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid Q";
+                return false;
+            }
         }
-        m_p = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
-
-        encryptedStream >> bigEndianNumber;
-        if (bigEndianNumber.size() != sizeof(m_q)) {
-            return false;
-        }
-        m_q = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
 
         TLNumber128 clientNonce;
         TLNumber128 serverNonce;
         TLNumber256 newNonce;
+        quint32 expiresIn = 0;
 
         encryptedStream >> clientNonce;
-        if (clientNonce != m_clientNonce) {
-            qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        if (clientNonce != session->clientNonce) {
+            qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Error: Client nonce in incoming package is different from our own.";
             return false;
         }
         encryptedStream >> serverNonce;
-        if (serverNonce != m_serverNonce) {
-            qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        if (serverNonce != session->serverNonce) {
+            qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Error: Server nonce in incoming package is different from our own.";
             return false;
         }
         encryptedStream >> newNonce;
-        m_newNonce = newNonce;
+        session->newNonce = newNonce;
+
+        if (methodWithDc) {
+            quint32 dcId = 0;
+            encryptedStream >> dcId;
+            qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Requested DC:" << dcId;
+        }
+
+        if (methodWithExpiresIn) {
+            encryptedStream >> expiresIn;
+            qCDebug(c_serverDhLayerCategory) << CALL_INFO << "Requested expiresIn:" << expiresIn;
+        }
+        
+        session->expiresIn = expiresIn;
     }
+
+    initiateDhParams(session);
+    session->generateKey();
+    acceptDhParams(session);
+    setState(State::DhRepliedOK);
+
     return true;
 }
 
-bool DhLayer::acceptDhParams()
+void DhLayer::initiateDhParams(DhSession *session)
 {
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO;
-    m_g = 7;
-    m_dhPrime.resize(256);
-    RandomGenerator::instance()->generate(&m_dhPrime);
-    m_dhPrime = c_hardcodedDhPrime;
+    session->g = 7;
+    session->dhPrime.resize(256);
+    RandomGenerator::instance()->generate(&session->dhPrime);
+    session->dhPrime = c_hardcodedDhPrime;
 
     //    if ((m_g < 2) || (m_g > 7)) {
     //        qCDebug(c_serverDhLayerCategory) << "Error: 'g' number is out of acceptable range [2-7].";
@@ -216,33 +302,35 @@ bool DhLayer::acceptDhParams()
     //    }
 
     // #5 Server computes random 2048-bit number a (using a sufficient amount of entropy)
-    m_a.resize(256);
-    RandomGenerator::instance()->generate(&m_a);
+    session->a.resize(256);
+    RandomGenerator::instance()->generate(&session->a);
 
     // IMPORTANT: Apart from the conditions on the Diffie-Hellman prime dh_prime and generator g,
     // both sides are to check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
     // We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
 
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-    qCDebug(c_serverDhLayerCategory) << "m_b" << m_a;
+    qCDebug(c_serverDhLayerCategory) << "session->a" << session->a;
 #endif
 
-    m_gA = Utils::binaryNumberModExp(intToBytes(m_g), m_dhPrime, m_a);
+    session->gA = Utils::binaryNumberModExp(intToBytes(session->g), session->dhPrime, session->a);
+}
 
-    const QByteArray innerData = [this](){
-        QByteArray data;
-        MTProto::Stream stream(&data, /* write */ true);
+bool DhLayer::acceptDhParams(const DhSession *session)
+{
+    qCDebug(c_serverDhLayerCategory) << CALL_INFO;
+    MTProto::Stream stream(MTProto::Stream::WriteOnly);
+    {
         stream << TLValue::ServerDHInnerData;
-        stream << m_clientNonce;
-        stream << m_serverNonce;
-        stream << m_g;
-        stream << m_dhPrime;
-        stream << m_gA;
+        stream << session->clientNonce;
+        stream << session->serverNonce;
+        stream << session->g;
+        stream << session->dhPrime;
+        stream << session->gA;
         const quint32 serverTime = QDateTime::currentMSecsSinceEpoch() / 1000;
         stream << serverTime;
-        return data;
-    }();
-    m_tmpAesKey = generateTmpAesKey();
+    }
+    const QByteArray innerData = stream.getData();
     const QByteArray sha = Utils::sha1(innerData);
     QByteArray randomPadding;
     int packageLength = sha.length() + innerData.length();
@@ -253,13 +341,13 @@ bool DhLayer::acceptDhParams()
         packageLength += randomPadding.size();
     }
 
-    const QByteArray encryptedAnswer = Crypto::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
+    const QByteArray encryptedAnswer = Crypto::aesEncrypt(sha + innerData + randomPadding, session->tmpAesKey);
 
     QByteArray output;
     MTProto::Stream outputStream(&output, /* write */ true);
     outputStream << TLValue::ServerDHParamsOk;
-    outputStream << m_clientNonce;
-    outputStream << m_serverNonce;
+    outputStream << session->clientNonce;
+    outputStream << session->serverNonce;
     outputStream << encryptedAnswer;
     return sendReplyPackage(output);
 }
@@ -277,18 +365,16 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
     stream >> value;
 
     if (value != TLValue::SetClientDHParams) {
-        qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid request data" << value.toString();
+        qCWarning(c_serverDhLayerCategory) << CALL_INFO << "Invalid request data" << value.toString();
         return false;
     }
 
-    if (!checkClientServerNonse(stream)) {
-        return false;
-    }
+    const DhSession *session = getClientServerSession(stream);
 
     QByteArray encryptedPackage;
     stream >> encryptedPackage;
 
-    const QByteArray answerWithHash = Crypto::aesDecrypt(encryptedPackage, m_tmpAesKey);
+    const QByteArray answerWithHash = Crypto::aesDecrypt(encryptedPackage, session->tmpAesKey);
     const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
     const QByteArray answer = answerWithHash.mid(20, 304);
 
@@ -302,7 +388,9 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         return false;
     }
 
-    if (!checkClientServerNonse(encryptedInputStream)) {
+    const DhSession *encryptedSession = getClientServerSession(encryptedInputStream);
+    if (session != encryptedSession) {
+        qCDebug(c_serverDhLayerCategory) << "Error: Unexpected TL Value in encrypted answer.";
         return false;
     }
 
@@ -324,10 +412,10 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         MTProto::Stream outputStream(&output, /* write */ true);
 
         outputStream << TLValue::DhGenOk;
-        outputStream << m_clientNonce;
-        outputStream << m_serverNonce;
+        outputStream << session->clientNonce;
+        outputStream << session->serverNonce;
 
-        QByteArray expectedHashData(m_newNonce.data, m_newNonce.size());
+        QByteArray expectedHashData(session->newNonce.data, session->newNonce.size());
         expectedHashData.append(newAuthKeySha.left(8));
         expectedHashData.insert(32, char(1));
 
@@ -339,7 +427,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         qCDebug(c_serverDhLayerCategory) << "NewNonce hash lower..." << newNonceHashLower128Array.toHex();
     }
     m_sendHelper->setAuthKey(newAuthKey);
-    setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
+    setServerSalt(session->serverNonce.parts[0] ^ session->newNonce.parts[0]);
     return true;
 }
 
@@ -354,31 +442,29 @@ void DhLayer::processReceivedPacket(const QByteArray &payload)
     qCDebug(c_serverDhLayerCategory) << THIS_FUNC_INFO << v.toString();
     switch (v) {
     case TLValue::ReqPq:
+    case TLValue::ReqPqMulti:
         if (!processRequestPQ(payload)) {
             setState(State::Failed);
-            return;
         }
-        sendResultPQ();
-        setState(State::PqReplied);
         break;
     case TLValue::ReqDHParams:
         if (!processRequestDHParams(payload)) {
             setState(State::Failed);
-            return;
         }
-        acceptDhParams();
-        setState(State::DhRepliedOK);
         break;
     case TLValue::SetClientDHParams:
         if (!processSetClientDHParams(payload)) {
             setState(State::Failed);
-            return;
         }
-        setState(State::HasKey);
         break;
     default:
         break;
     }
+}
+
+DhSession *DhLayer::ensureSession(const TLNumber128 &clientNonce)
+{
+    return nullptr;
 }
 
 } // Server namespace

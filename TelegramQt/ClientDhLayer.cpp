@@ -262,7 +262,7 @@ bool DhLayer::acceptDhAnswer(const QByteArray &payload)
     TLValue responseTLValue;
     inputStream >> responseTLValue;
 
-    if (!checkClientServerNonse(inputStream)) {
+    if (!getClientServerSession(inputStream)) {
         return false;
     }
 
@@ -301,7 +301,7 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
         return false;
     }
 
-    if (!checkClientServerNonse(encryptedInputStream)) {
+    if (!getClientServerSession(encryptedInputStream)) {
         return false;
     }
 
@@ -417,7 +417,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
     inputStream >> responseTLValue;
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << responseTLValue;
 
-    if (!checkClientServerNonse(inputStream)) {
+    if (!getClientServerSession(inputStream)) {
         return false;
     }
 

@@ -25,6 +25,8 @@
 #include "MTProto/TLNumbers.hpp"
 #include "RsaKey.hpp"
 
+#define NETWORK_LOGGING
+
 #ifdef NETWORK_LOGGING
 QT_FORWARD_DECLARE_CLASS(QFile)
 #endif
@@ -40,6 +42,8 @@ class Stream;
 class BaseMTProtoSendHelper;
 enum class SendMode : quint8;
 
+class DhSession;
+
 class TELEGRAMQT_INTERNAL_EXPORT BaseDhLayer : public QObject
 {
     Q_OBJECT
@@ -48,14 +52,14 @@ public:
     enum class State {
         // Both, Client, Server
         Idle,
-                 PqRequested,                 // #1 Client sends ReqPq
+                 PqRequested,                 // #1 Client sends ReqPq (or ReqPqMulti)
                          PqReplied,           // #2 Server sends ResPq
                  PqAccepted,                  // #3 Client processes ResPQ
-                 DhRequested,                 // #4 Client sends ReqDHParams with PQInnerData
+                 DhRequested,                 // #4 Client sends ReqDHParams with PQInnerData (or PQInnerDataDc)
                          DhRepliedOK,         // #5a Server sends ServerDHParamsOk with ServerDHInnerData
                          DhRepliedFail,       // #5b Server sends ServerDHParamsFail
                  DhGenerationResultRequested, // #6 Client sends SetClientDHParams with ClientDHInnerData)
-                                              // #7, #8 Possible auth key and the key id is known to server and client
+                                              // #7, #8 The possible auth key and the key id is known to server and client
                          DhGenOk,             // #9a Server sends DhGenOk
                          DhGenRetry,          // #9b Server sends DhGenRetry
                          DhGenFail,           // #9c Server sends DhGenFail
@@ -74,13 +78,9 @@ public:
     Crypto::AesKey generateTmpAesKey() const;
 
     // Helpers
-    bool checkClientServerNonse(MTProto::Stream &stream) const;
+    DhSession *getClientServerSession(MTProto::Stream &stream) const;
     quint64 sendPlainPackage(const QByteArray &payload, SendMode mode);
     bool processPlainPackage(const QByteArray &buffer);
-
-    // Extra
-    TLNumber128 clientNonce() const { return m_clientNonce; }
-    TLNumber128 serverNonce() const { return m_serverNonce; }
 
     quint64 serverSalt() const { return m_serverSalt; }
     void setServerSalt(const quint64 salt) { m_serverSalt = salt; }

@@ -26,6 +26,8 @@
 #include <QLoggingCategory>
 
 #ifdef NETWORK_LOGGING
+#include "telegramqt_macros.h"
+
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
@@ -84,7 +86,7 @@ Crypto::AesKey BaseDhLayer::generateTmpAesKey() const
     return Crypto::AesKey(key, iv);
 }
 
-bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
+DhSession *BaseDhLayer::getClientServerSession(MTProto::Stream &stream) const
 {
     TLNumber128 nonce;
     stream >> nonce;
@@ -92,7 +94,7 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
         qCDebug(c_baseDhLayerCategory) << CALL_INFO
                                        << "Error: Client nonce in the incoming package"
                                           " is different from the local one.";
-        return false;
+        return nullptr;
     }
 
     stream >> nonce;
@@ -100,9 +102,9 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
         qCDebug(c_baseDhLayerCategory) << CALL_INFO
                                        << "Error: Server nonce in the incoming package"
                                           " is different from the local one.";
-        return false;
+        return nullptr;
     }
-    return true;
+    return nullptr;
 }
 
 quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
@@ -139,7 +141,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
         str << QString(QLatin1String("size: %1|")).arg(payload.length(), 4, 10, QLatin1Char('0'));
         str << formatTLValue(val1) << QLatin1Char('|');
         str << payload.toHex();
-        str << endl;
+        str << TELEGRAMQT_ENDL;
     }
 #endif
 
@@ -160,7 +162,7 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
         str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
         str << QLatin1Char('|');
         str << buffer.toHex();
-        str << endl;
+        str << TELEGRAMQT_ENDL;
     }
 #endif
 
@@ -219,7 +221,7 @@ QFile *BaseDhLayer::getLogFile()
         QDir dir;
         dir.mkdir(QLatin1String("network"));
 
-        m_logFile = new QFile(QLatin1String("network/%1.log").arg(ulong(this), 0, 0x10));
+        m_logFile = new QFile(QStringLiteral("network/%1.log").arg(ulong(this), 0, 0x10));
         m_logFile->open(QIODevice::WriteOnly);
     }
     //qDebug() << CALL_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
