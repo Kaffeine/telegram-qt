@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     QCommandLineOption configFileOption(QStringList{ QStringLiteral("c"), QStringLiteral("config") });
     configFileOption.setDescription(QStringLiteral("Path to config file"));
     configFileOption.setValueName(QStringLiteral("configFilePath"));
+    configFileOption.setDefaultValue(Config::defaultFileName());
     parser.addOption(configFileOption);
 
     parser.process(a);
