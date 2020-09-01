@@ -132,7 +132,8 @@ if(TELEGRAMQT_DEVELOPER_BUILD)
         COMMAND sed -i "s/\\[\"QtQuick 2.*\"\\]/\\[\"QtQuick 2.6\"\\]/" ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes
         COMMAND sed -i "s/TelegramQt 0.2.*\'/TelegramQt 0.2\'/" ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes
         SOURCES qmldir
-        BYPRODUCTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes"
+        # Omit BYPRODUCTS to prevent the file from being deleted on 'make clean'
+        # BYPRODUCTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes"
         VERBATIM
     )
 endif()
