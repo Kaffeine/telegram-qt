@@ -82,19 +82,21 @@ int main(int argc, char *argv[])
     configFileOption.setDefaultValue(Config::defaultFileName());
     parser.addOption(configFileOption);
 
+    QCommandLineOption generateConfigOption(QStringList{ QStringLiteral("g"), QStringLiteral("generate") });
+    generateConfigOption.setDescription(QStringLiteral("Generate a config file"));
+    parser.addOption(generateConfigOption);
+
     parser.process(a);
 
-    // where to load config file from?
-    QString configFilePath;
-    if (parser.isSet(configFileOption)) {
-        configFilePath = parser.value(configFileOption);
-    }
-
     // Load config
-    Config config(configFilePath);
+    Config config(parser.value(configFileOption));
     if (!config.load()) {
         // create "default" config file to ease editing
         config.save();
+    }
+
+    if (parser.isSet(generateConfigOption)) {
+        return 0;
     }
 
     const Telegram::RsaKey key = Telegram::RsaKey::fromFile(config.privateKeyFile());
