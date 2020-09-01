@@ -54,12 +54,17 @@ static const QLatin1String c_meUrlPrefix = QLatin1String("meUrlPrefix");
 Config::Config(const QString &fileName)
 {
     if (fileName.isEmpty()) {
-        m_fileName = QStringLiteral("config.json");
+        m_fileName = defaultFileName();
     } else {
         m_fileName = fileName;
     }
     m_serverConfiguration = getDefaultDcConfiguration();
     m_privateKeyFile = QStringLiteral("private_key.pem");
+}
+
+QString Config::defaultFileName()
+{
+    return QStringLiteral("config.json");
 }
 
 void Config::setFileName(const QString &fileName)

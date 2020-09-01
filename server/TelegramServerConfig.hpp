@@ -29,6 +29,7 @@ class Config
 public:
     explicit Config(const QString &fileName = QString());
 
+    static QString defaultFileName();
     QString fileName() const { return m_fileName; }
     void setFileName(const QString &fileName);
 
