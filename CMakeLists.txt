@@ -56,9 +56,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     endif()
 endif()
 
-set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
-    CACHE PATH "Custom QML import installation directory")
-
 set(CMAKE_AUTOMOC TRUE)
 
 if(TELEGRAMQT_DEVELOPER_BUILD)
@@ -67,6 +64,9 @@ endif()
 
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
+
+set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
+    CACHE PATH "Custom QML import installation directory")
 
 if(TELEGRAMQT_BUILD_TESTS)
     list(APPEND QT_COMPONENTS Test)
