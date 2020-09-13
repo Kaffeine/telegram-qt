@@ -18,7 +18,7 @@
 // Client
 #include "AccountStorage.hpp"
 #include "CAppInformation.hpp"
-#include "CTelegramTransport.hpp"
+#include "BaseTransport.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"

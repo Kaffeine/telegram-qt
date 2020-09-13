@@ -1,12 +1,12 @@
 #include "Connection.hpp"
 
+#include "BaseTransport.hpp"
 #include "ConnectionError.hpp"
 #include "Debug_p.hpp"
 #include "DhLayer.hpp"
 #include "PendingOperation.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
-#include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 
 #include <QLoggingCategory>

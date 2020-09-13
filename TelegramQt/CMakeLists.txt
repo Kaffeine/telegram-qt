@@ -40,16 +40,16 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     AccountStorage.hpp
     ApiUtils.cpp
     ApiUtils.hpp
+    BaseTcpTransport.cpp
+    BaseTcpTransport.hpp
+    BaseTransport.cpp
+    BaseTransport.hpp
     BigNumber.cpp
     BigNumber.hpp
     CAppInformation.cpp
     CAppInformation.hpp
-    CClientTcpTransport.cpp
-    CClientTcpTransport.hpp
-    CTcpTransport.cpp
-    CTcpTransport.hpp
-    CTelegramTransport.cpp
-    CTelegramTransport.hpp
+    ClientTcpTransport.cpp
+    ClientTcpTransport.hpp
     Client.cpp
     Client.hpp
     ClientApi.cpp

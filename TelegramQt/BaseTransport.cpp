@@ -14,7 +14,7 @@
    Lesser General Public License for more details.
  */
 
-#include "CTelegramTransport.hpp"
+#include "BaseTransport.hpp"
 
 namespace Telegram {
 

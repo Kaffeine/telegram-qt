@@ -22,6 +22,7 @@
 #endif
 
 #include "AccountStorage.hpp"
+#include "BaseTcpTransport.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"
@@ -33,8 +34,6 @@
 #include "Operations/ClientAuthOperation.hpp"
 
 #include "ContactsApi.hpp"
-#include "CTcpTransport.hpp"
-#include "CTelegramTransport.hpp"
 #include "DcConfiguration.hpp"
 
 #ifdef TEST_PRIVATE_API

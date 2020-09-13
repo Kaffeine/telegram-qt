@@ -5,7 +5,7 @@
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
-#include "CClientTcpTransport.hpp"
+#include "ClientTcpTransport.hpp"
 #include "ConnectionError.hpp"
 #include "DataStorage.hpp"
 #include "Debug_p.hpp"

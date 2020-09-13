@@ -1,7 +1,7 @@
 #include "ConnectionOperation.hpp"
 
+#include "BaseTransport.hpp"
 #include "ClientConnection.hpp"
-#include "CTelegramTransport.hpp"
 
 #include <QLoggingCategory>
 

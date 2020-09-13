@@ -17,7 +17,7 @@
 #ifndef TELEGRAMQT_TEST_TRANSPORT_HPP
 #define TELEGRAMQT_TEST_TRANSPORT_HPP
 
-#include "CTelegramTransport.hpp"
+#include "BaseTransport.hpp"
 
 namespace Telegram {
 

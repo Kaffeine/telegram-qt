@@ -3,8 +3,6 @@ set(server_lib_SOURCES
     AuthService.cpp
     AuthService.hpp
     AuthorizationProvider.hpp
-    CServerTcpTransport.cpp
-    CServerTcpTransport.hpp
     DefaultAuthorizationProvider.cpp
     DefaultAuthorizationProvider.hpp
     FunctionStreamOperators.cpp
@@ -42,6 +40,8 @@ set(server_lib_SOURCES
     ServerRpcOperation.cpp
     ServerRpcOperation.hpp
     ServerRpcOperation_p.hpp
+    ServerTcpTransport.cpp
+    ServerTcpTransport.hpp
     ServerUtils.cpp
     ServerUtils.hpp
     Session.cpp

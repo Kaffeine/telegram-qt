@@ -15,10 +15,10 @@
 
  */
 
-#ifndef CCLIENTTCPTRANSPORT_HPP
-#define CCLIENTTCPTRANSPORT_HPP
+#ifndef CLIENT_TCP_TRANSPORT_HPP
+#define CLIENT_TCP_TRANSPORT_HPP
 
-#include "CTcpTransport.hpp"
+#include "BaseTcpTransport.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
@@ -56,4 +56,4 @@ protected:
 
 } // Telegram namespace
 
-#endif // CCLIENTTCPTRANSPORT_HPP
+#endif // CLIENT_TCP_TRANSPORT_HPP

@@ -1,7 +1,7 @@
-#ifndef CSERVERTCPTRANSPORT_HPP
-#define CSERVERTCPTRANSPORT_HPP
+#ifndef TELEGRAM_SERVER_TCP_TRANSPORT_HPP
+#define TELEGRAM_SERVER_TCP_TRANSPORT_HPP
 
-#include "CTcpTransport.hpp"
+#include "BaseTcpTransport.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTcpSocket)
 
@@ -30,4 +30,4 @@ protected:
 
 } // Telegram namespace
 
-#endif // CSERVERTCPTRANSPORT_HPP
+#endif // TELEGRAM_SERVER_TCP_TRANSPORT_HPP

@@ -45,6 +45,8 @@ SOURCES += \
     AccountApi.cpp \
     AccountStorage.cpp \
     ApiUtils.cpp \
+    BaseTcpTransport.cpp \
+    BaseTransport.cpp \
     BigNumber.cpp \
     DcConfiguration.cpp \
     DialogList.cpp \
@@ -55,6 +57,7 @@ SOURCES += \
     ClientConnection.cpp \
     ClientDhLayer.cpp \
     ClientSettings.cpp \
+    ClientTcpTransport.cpp \
     ClientRpcLayer.cpp \
     ClientRpcLayerExtension.cpp \
     ConnectionApi.cpp \
@@ -72,9 +75,6 @@ SOURCES += \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
-    CTelegramTransport.cpp \
-    CTcpTransport.cpp \
-    CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
     LegacySecretReader.cpp \
     MessagingApi.cpp \
@@ -115,6 +115,8 @@ HEADERS += \
     AccountApi.hpp \
     AccountApi_p.hpp \
     ApiUtils.hpp \
+    BaseTcpTransport.hpp \
+    BaseTransport.hpp \
     BigNumber.hpp \
     BigNumber_p.hpp \
     DcConfiguration.hpp \
@@ -129,8 +131,9 @@ HEADERS += \
     ClientBackend.hpp \
     ClientConnection.hpp \
     ClientDhLayer.hpp \
-    ClientSettings.hpp \
     ClientRpcLayer.hpp \
+    ClientSettings.hpp \
+    ClientTcpTransport.hpp \
     ClientRpcLayerExtension.hpp \
     ClientRpcLayerExtension_p.hpp \
     ConnectionApi.hpp \
@@ -154,9 +157,6 @@ HEADERS += \
     UniqueLazyPointer.hpp \
     Utils.hpp \
     FileRequestDescriptor.hpp \
-    CTelegramTransport.hpp \
-    CTcpTransport.hpp \
-    CClientTcpTransport.hpp \
     TLFunctions.hpp \
     TLTypes.hpp \
     TLNumbers.hpp \

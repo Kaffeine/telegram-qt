@@ -18,8 +18,8 @@
 #include "RemoteClientConnectionHelper.hpp"
 
 #include "ApiUtils.hpp"
+#include "BaseTransport.hpp"
 #include "Connection.hpp"
-#include "CTelegramTransport.hpp"
 
 #include <QLoggingCategory>
 

@@ -17,8 +17,8 @@
 
 #include "ClientDhLayer.hpp"
 
+#include "BaseTransport.hpp"
 #include "MTProto/Stream.hpp"
-#include "CTelegramTransport.hpp"
 #include "PendingRpcOperation.hpp"
 #include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"

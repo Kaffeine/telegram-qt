@@ -2,7 +2,6 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
-#include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
 #include "MessageService.hpp"
@@ -12,6 +11,7 @@
 #include "ServerDhLayer.hpp"
 #include "ServerMessageData.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerTcpTransport.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"

@@ -1,9 +1,9 @@
 #include "ClientConnection.hpp"
 
 #include "ApiUtils.hpp"
+#include "BaseTransport.hpp"
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
-#include "CTelegramTransport.hpp"
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
 #include "Debug_p.hpp"

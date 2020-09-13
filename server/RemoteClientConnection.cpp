@@ -3,8 +3,8 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
+#include "BaseTransport.hpp"
 #include "ConnectionError.hpp"
-#include "CTelegramTransport.hpp"
 #include "LocalServerApi.hpp"
 #include "ServerDhLayer.hpp"
 #include "ServerRpcLayer.hpp"

@@ -16,7 +16,7 @@
  */
 
 #include "Crypto/AesCtr.hpp"
-#include "CClientTcpTransport.hpp"
+#include "ClientTcpTransport.hpp"
 #include "Debug_p.hpp"
 #include "RandomGenerator.hpp"
 #include "RawStream.hpp"

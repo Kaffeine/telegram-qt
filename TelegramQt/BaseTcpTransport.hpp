@@ -15,10 +15,10 @@
 
  */
 
-#ifndef CTCPTRANSPORT_HPP
-#define CTCPTRANSPORT_HPP
+#ifndef BASE_TCP_TRANSPORT_HPP
+#define BASE_TCP_TRANSPORT_HPP
 
-#include "CTelegramTransport.hpp"
+#include "BaseTransport.hpp"
 
 namespace Telegram {
 
@@ -85,4 +85,4 @@ public:
 
 } // Telegram namespace
 
-#endif // CTCPTRANSPORT_HPP
+#endif // BASE_TCP_TRANSPORT_HPP

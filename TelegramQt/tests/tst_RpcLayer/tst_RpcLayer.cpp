@@ -17,11 +17,11 @@
 
 #include <QObject>
 
+#include "BaseTransport.hpp"
 #include "RandomGenerator.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramNamespace.hpp"
-#include "CTelegramTransport.hpp"
 #include "../utils/TestTransport.hpp"
 
 #include "MTProto/MessageHeader.hpp"
