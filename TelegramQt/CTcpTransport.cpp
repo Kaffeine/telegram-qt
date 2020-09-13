@@ -24,10 +24,6 @@
 
 #include <QLoggingCategory>
 
-#ifndef Q_FALLTHROUGH
-#define Q_FALLTHROUGH() (void)0
-#endif
-
 Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtWarningMsg)
 
 static const quint32 c_defaultConnectionTimeout = 15 * 1000;
