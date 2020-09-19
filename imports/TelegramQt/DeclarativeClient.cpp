@@ -1,6 +1,6 @@
 #include "DeclarativeClient.hpp"
 
-#include "../../TelegramQt/Client.hpp"
+#include "Client.hpp"
 #include "DeclarativeSettings.hpp"
 
 #include <QLoggingCategory>

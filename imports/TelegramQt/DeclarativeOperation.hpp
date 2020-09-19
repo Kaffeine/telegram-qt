@@ -3,8 +3,8 @@
 
 #include "DeclarativeClientOperator.hpp"
 
-#include "../../TelegramQt/TelegramNamespace.hpp"
-#include "../../TelegramQt/PendingOperation.hpp"
+#include "TelegramNamespace.hpp"
+#include "PendingOperation.hpp"
 
 namespace Telegram {
 
