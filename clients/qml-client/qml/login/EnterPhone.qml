@@ -17,7 +17,9 @@ AuthScreen {
 
     ComboBox {
         id: countryBox
-        model: phoneCodeModel
+        model: PhoneCodeModel {
+            id: phoneCodeModel
+        }
         textRole: "country"
         Layout.preferredWidth: countryBox.implicitWidth * 2
 

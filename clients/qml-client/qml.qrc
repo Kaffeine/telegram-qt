@@ -18,6 +18,7 @@
         <file>qml/login/EnterName.qml</file>
         <file>qml/login/EnterPassword.qml</file>
         <file>qml/login/EnterPhone.qml</file>
+        <file>qml/login/PhoneCodeModel.qml</file>
         <file>qml/main.qml</file>
     </qresource>
 </RCC>
