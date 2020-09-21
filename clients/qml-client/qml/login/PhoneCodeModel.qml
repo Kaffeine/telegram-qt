@@ -17,8 +17,13 @@ ListModel {
         length: 9 // 6 or 7, followed by 8 digits
     }
     ListElement {
+        code: "49"
+        country: qsTr("Germany")
+        length: 11
+    }
+    ListElement {
         code: ""
         country: "Custom"
-        length: 12
+        length: 15
     }
 }
