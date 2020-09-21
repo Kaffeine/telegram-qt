@@ -90,6 +90,7 @@ Q_SIGNALS:
     void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QString &errorMessage);
 
 protected:
+    bool hasOperation(const char *caller);
     void setStatus(const DeclarativeAuthOperation::AuthStatus status);
     void setBusy(bool busy);
 

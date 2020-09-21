@@ -7,6 +7,10 @@
 #include "ConnectionApi.hpp"
 #include "Operations/ClientAuthOperation.hpp"
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(lcClientDeclarativeAuth, "telegram.client.qml.auth", QtWarningMsg)
+
 namespace Telegram {
 
 using namespace Client;
@@ -53,7 +57,8 @@ void DeclarativeAuthOperation::startAuthentication()
             m_authOperation->deleteLater();
             m_authOperation = nullptr;
         } else {
-            qWarning() << Q_FUNC_INFO << "Another operation is in progress";
+            qCWarning(lcClientDeclarativeAuth) << Q_FUNC_INFO
+                                               << "Another operation is in progress";
             return;
         }
     }
@@ -107,7 +112,8 @@ void DeclarativeAuthOperation::checkIn()
             m_authOperation->deleteLater();
             m_authOperation = nullptr;
         } else {
-            qWarning() << Q_FUNC_INFO << "Another operation is in progress";
+            qCWarning(lcClientDeclarativeAuth) << Q_FUNC_INFO
+                                               << "Another operation is in progress";
             return;
         }
     }
@@ -127,18 +133,24 @@ void DeclarativeAuthOperation::checkIn()
 
 void DeclarativeAuthOperation::abort()
 {
+    if (!hasOperation(Q_FUNC_INFO)) {
+        return;
+    }
     m_authOperation->abort();
 }
 
 void DeclarativeAuthOperation::submitPhoneNumber(const QString &phoneNumber)
 {
+    if (!hasOperation(Q_FUNC_INFO)) {
+        return;
+    }
     m_authOperation->submitPhoneNumber(phoneNumber);
     setPhoneNumber(phoneNumber);
 }
 
 bool DeclarativeAuthOperation::submitAuthCode(const QString &code)
 {
-    if (!m_authOperation) {
+    if (!hasOperation(Q_FUNC_INFO)) {
         return false;
     }
     m_authOperation->submitAuthCode(code);
@@ -149,7 +161,7 @@ bool DeclarativeAuthOperation::submitAuthCode(const QString &code)
 
 bool DeclarativeAuthOperation::submitPassword(const QString &password)
 {
-    if (!m_authOperation) {
+    if (!hasOperation(Q_FUNC_INFO)) {
         return false;
     }
     m_authOperation->submitPassword(password);
@@ -160,7 +172,7 @@ bool DeclarativeAuthOperation::submitPassword(const QString &password)
 
 bool DeclarativeAuthOperation::submitName(const QString &firstName, const QString &lastName)
 {
-    if (!m_authOperation) {
+    if (!hasOperation(Q_FUNC_INFO)) {
         return false;
     }
     return m_authOperation->submitName(firstName, lastName);
@@ -177,7 +189,11 @@ void DeclarativeAuthOperation::setPhoneNumber(const QString &phoneNumber)
 
 bool DeclarativeAuthOperation::recovery()
 {
-    if (!m_authOperation || !m_authOperation->hasRecovery()) {
+    if (!hasOperation(Q_FUNC_INFO)) {
+        return false;
+    }
+    if (!m_authOperation->hasRecovery()) {
+        qCDebug(lcClientDeclarativeAuth) << Q_FUNC_INFO << "Recovery is not available";
         return false;
     }
     m_authOperation->recovery();
@@ -185,9 +201,21 @@ bool DeclarativeAuthOperation::recovery()
     return true;
 }
 
+bool DeclarativeAuthOperation::hasOperation(const char *caller)
+{
+    if (!m_authOperation) {
+        qCWarning(lcClientDeclarativeAuth) << caller
+                                           << "Unable to proceed without an operation."
+                                           << "Call checkIn() or startAuthentication()";
+        return false;
+    }
+
+    return true;
+}
+
 void DeclarativeAuthOperation::setStatus(const AuthStatus status)
 {
-    qWarning() << Q_FUNC_INFO << status;
+    qCDebug(lcClientDeclarativeAuth) << Q_FUNC_INFO << status;
     if (m_status == status) {
         return;
     }
@@ -228,7 +256,7 @@ void DeclarativeAuthOperation::startEvent()
 
 bool DeclarativeAuthOperation::requestCall()
 {
-    if (!m_authOperation) {
+    if (!hasOperation(Q_FUNC_INFO)) {
         return false;
     }
     m_authOperation->requestCall();
@@ -237,7 +265,7 @@ bool DeclarativeAuthOperation::requestCall()
 
 bool DeclarativeAuthOperation::requestSms()
 {
-    if (!m_authOperation) {
+    if (!hasOperation(Q_FUNC_INFO)) {
         return false;
     }
     m_authOperation->requestSms();
