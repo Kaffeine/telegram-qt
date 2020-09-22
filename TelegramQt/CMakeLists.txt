@@ -139,6 +139,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Utils.cpp
     Utils.hpp
     telegramqt_global.h
+    telegramqt_macros.h
 )
 
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
