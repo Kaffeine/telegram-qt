@@ -30,6 +30,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(lcClientDataStorage, "telegram.client.storage", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Client {
@@ -111,7 +113,7 @@ bool DataStorage::getDialogInfo(DialogInfo *info, const Peer &peer) const
             return true;
         }
     }
-    qDebug() << Q_FUNC_INFO << "Unknown dialog" << peer.toString();
+    qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown dialog" << peer.toString();
     return false;
 }
 
@@ -120,7 +122,7 @@ bool DataStorage::getUserInfo(UserInfo *info, quint32 userId) const
     Q_D(const DataStorage);
     const QHash<quint32, TLUser *> &users = d->m_api->users();
     if (!users.contains(userId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown user" << userId;
         return false;
     }
 
@@ -136,7 +138,7 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
     const quint32 chatId = peer.id();
     const QHash<quint32, TLChat *> &chats = d->m_api->chats();
     if (!chats.contains(chatId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown chat" << chatId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown chat" << chatId;
         return false;
     }
 
@@ -174,7 +176,7 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     Q_D(const DataStorage);
     const TLMessage *m = d->m_api->getMessage(peer, messageId);
     if (!m) {
-        qDebug() << Q_FUNC_INFO << "Unknown message" << peer << messageId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown message" << peer << messageId;
         return false;
     }
     const TLMessageMedia &media = m->media;
@@ -218,7 +220,7 @@ bool DataStorage::getMessageMediaInfo(MessageMediaInfo *info, const Peer &peer, 
     Q_D(const DataStorage);
     const TLMessage *m = d->m_api->getMessage(peer, messageId);
     if (!m) {
-        qDebug() << Q_FUNC_INFO << "Unknown message" << peer << messageId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown message" << peer << messageId;
         return false;
     }
     const TLMessageMedia &media = m->media;
@@ -245,12 +247,13 @@ QByteArray InMemoryDataStorage::saveState() const
     Q_D(const DataStorage);
 
     QJsonArray dialogArray;
-    qDebug() << "Dialogs to save:";
+    qCDebug(lcClientDataStorage) << "Dialogs to save:";
     const QHash<Peer, DialogState> *dialogState = d->internalApi()->dialogStates();
 
     for (const Peer &dialog : dialogState->keys()) {
         DialogState state = dialogState->value(dialog);
-        qWarning() << "dialog:" << dialog.toString() << "last message id:" << state.syncedMessageId;
+        qCDebug(lcClientDataStorage) << "dialog:" << dialog.toString()
+                                     << "last message id:" << state.syncedMessageId;
         QJsonObject dialogObject;
         dialogObject[QLatin1String("peer")] = dialog.toString();
         dialogObject[QLatin1String("lastMessageId")] = static_cast<int>(state.syncedMessageId);
@@ -274,9 +277,10 @@ void InMemoryDataStorage::loadState(const QByteArray &data)
     const QJsonArray dialogArray = root.value(QLatin1String("dialogs")).toArray();
     for (const QJsonValue &dialogValue : dialogArray) {
         const QJsonObject dialogObject = dialogValue.toObject();
-        const Telegram::Peer peer = Telegram::Peer::fromString(dialogObject.value(QLatin1String("peer")).toString());
+        const Peer peer = Peer::fromString(dialogObject.value(QLatin1String("peer")).toString());
         if (!peer.isValid()) {
-            qWarning() << Q_FUNC_INFO << "Invalid dialog peer:" << dialogObject.value(QLatin1String("peer"));
+            qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Invalid dialog peer:"
+                                           << dialogObject.value(QLatin1String("peer"));
             continue;
         }
         DialogState state;
@@ -284,10 +288,10 @@ void InMemoryDataStorage::loadState(const QByteArray &data)
         dialogState->insert(peer, state);
     }
 
-    qDebug() << "Loaded dialogs:";
+    qCDebug(lcClientDataStorage) << "Loaded dialogs:";
     for (const Telegram::Peer &dialog : dialogState->keys()) {
         DialogState state = dialogState->value(dialog);
-        qDebug() << "dialog:" << dialog.toString() << "last message id:" << state.syncedMessageId;
+        qCDebug(lcClientDataStorage) << "dialog:" << dialog.toString() << "last message id:" << state.syncedMessageId;
     }
 }
 
@@ -499,7 +503,9 @@ DataInternalApi::SentMessage DataInternalApi::getQueuedMessage(quint64 randomMes
 DataInternalApi::SentMessage DataInternalApi::dequeueMessage(quint64 messageRandomId, quint32 messageId)
 {
     if (m_queuedMessages.isEmpty()) {
-        qWarning() << Q_FUNC_INFO << "Invalid dequeue request (message queue is empty):" << messageRandomId << messageId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                       << "Invalid dequeue request (message queue is empty):"
+                                       << messageRandomId << messageId;
         return SentMessage();
     }
     if (m_queuedMessages.head().randomId == messageRandomId) {
@@ -510,7 +516,9 @@ DataInternalApi::SentMessage DataInternalApi::dequeueMessage(quint64 messageRand
             return m_queuedMessages.takeAt(i);
         }
     }
-    qWarning() << Q_FUNC_INFO << "Invalid dequeue request (message not found):" << messageRandomId << messageId;
+    qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                   << "Invalid dequeue request (message not found):"
+                                   << messageRandomId << messageId;
     return SentMessage();
 }
 
@@ -626,7 +634,8 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
             inputPeer.channelId = peer.id();
             inputPeer.accessHash = m_chats.value(peer.id())->accessHash;
         } else {
-            qWarning() << Q_FUNC_INFO << "Unknown public channel id" << peer.id();
+            qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                           << "Unknown public channel id" << peer.id();
         }
         break;
     case Telegram::Peer::User:
@@ -638,7 +647,8 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
                 inputPeer.userId = peer.id();
                 inputPeer.accessHash = m_users.value(peer.id())->accessHash;
             } else {
-                qWarning() << Q_FUNC_INFO << "Unknown user" << peer.id();
+                qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                               << "Unknown user" << peer.id();
             }
         }
         break;
@@ -660,10 +670,13 @@ TLInputUser DataInternalApi::toInputUser(quint32 userId) const
             inputUser.userId = user->id;
             inputUser.accessHash = user->accessHash;
         } else {
-            qWarning() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
+            qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                           << "Unknown user type: "
+                                           << TLValue(user->tlType).toString();
         }
     } else {
-        qWarning() << Q_FUNC_INFO << "Unknown user" << userId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                       << "Unknown user" << userId;
     }
     return inputUser;
 }
@@ -677,7 +690,8 @@ TLInputChannel DataInternalApi::toInputChannel(quint32 channelId) const
         inputChannel.channelId = channelId;
         inputChannel.accessHash = channel->accessHash;
     } else {
-        qWarning() << Q_FUNC_INFO << "Unknown channel" << channelId;
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO
+                                       << "Unknown channel" << channelId;
         inputChannel.tlType = TLValue::InputChannelEmpty;
     }
     return inputChannel;
