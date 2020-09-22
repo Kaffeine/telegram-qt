@@ -576,20 +576,20 @@ QString Generator::generateTLTypeMethods(const TLType &type)
     //     };
     // }
 
-    stream << "bool " << type.getName() << "::hasType(const quint32 value)" << endl;
-    stream << "{" << endl;
-    stream << "    switch (value) {" << endl;
+    stream << "bool " << type.getName() << "::hasType(const quint32 value)" << GENERATOR_ENDL;
+    stream << "{" << GENERATOR_ENDL;
+    stream << "    switch (value) {" << GENERATOR_ENDL;
 
     for (const TLSubType &subType : type.subTypes) {
-        stream << "    case " << tlValueName << "::" << subType.getName() << ":" << endl;
+        stream << "    case " << tlValueName << "::" << subType.getName() << ":" << GENERATOR_ENDL;
     }
 
-    stream << "        return true;" <<endl;
-    stream << "    default:" << endl;
-    stream << "        return false;" <<endl;
-    stream << "    }" << endl;
-    stream << "}" << endl;
-    stream << endl;
+    stream << "        return true;" << GENERATOR_ENDL;
+    stream << "    default:" << GENERATOR_ENDL;
+    stream << "        return false;" << GENERATOR_ENDL;
+    stream << "    }" << GENERATOR_ENDL;
+    stream << "}" << GENERATOR_ENDL;
+    stream << GENERATOR_ENDL;
 
     // bool TLAccountPassword::operator==(const TLAccountPassword &v) const
     // {
@@ -627,14 +627,14 @@ QString Generator::generateTLTypeMethods(const TLType &type)
     //     }
     // }
 
-    stream << "bool " << type.getName() << "::operator==(const " << type.getName() << " &v) const" << endl;
-    stream << "{" << endl;
-    stream << "    if (tlType != v.tlType) {" << endl;
-    stream << "        return false;" << endl;
-    stream << "    }" << endl;
-    stream << endl;
+    stream << "bool " << type.getName() << "::operator==(const " << type.getName() << " &v) const" << GENERATOR_ENDL;
+    stream << "{" << GENERATOR_ENDL;
+    stream << "    if (tlType != v.tlType) {" << GENERATOR_ENDL;
+    stream << "        return false;" << GENERATOR_ENDL;
+    stream << "    }" << GENERATOR_ENDL;
+    stream << GENERATOR_ENDL;
 
-    stream << "    switch (tlType) {" <<endl;
+    stream << "    switch (tlType) {" << GENERATOR_ENDL;
 
     QHash<QString,int> implementationHash; // type name to implementation index map
     QStringList implementations;
@@ -653,17 +653,17 @@ QString Generator::generateTLTypeMethods(const TLType &type)
     for (int i = 0; i < implementations.count(); ++i) {
         foreach (const TLSubType &subType, type.subTypes) {
             if (implementationHash.value(subType.getName()) == i) {
-                stream << "    case " << tlValueName << "::" << subType.getName() << ":" << endl;
+                stream << "    case " << tlValueName << "::" << subType.getName() << ":" << GENERATOR_ENDL;
             }
         }
         stream << implementations.at(i);
     }
 
-    stream << "    default:" <<endl;
-    stream << "        return false;" <<endl;
-    stream << "    }" <<endl;
-    stream << "}" << endl;
-    stream << endl;
+    stream << "    default:" << GENERATOR_ENDL;
+    stream << "        return false;" << GENERATOR_ENDL;
+    stream << "    }" << GENERATOR_ENDL;
+    stream << "}" << GENERATOR_ENDL;
+    stream << GENERATOR_ENDL;
 
     return result;
 }
@@ -981,7 +981,7 @@ QString Generator::streamReadOperatorDeclaration(const TypedEntity *type)
     QString result;
     QTextStream stream(&result);
     stream << spacing << streamClassName << " &operator>>("
-           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << GENERATOR_ENDL;
     return result;
 }
 
@@ -991,7 +991,7 @@ QString Generator::streamReadFreeOperatorDeclaration(const TypedEntity *type)
     QString result;
     QTextStream stream(&result);
     stream << tlNamespacePrefix + streamClassName << " &operator>>(" << tlNamespacePrefix + streamClassName << " &stream, "
-           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << GENERATOR_ENDL;
     return result;
 }
 
@@ -1020,7 +1020,7 @@ QString Generator::streamWriteOperatorDeclaration(const TLType *type)
 {
     QString result;
     QTextStream stream(&result);
-    stream << spacing << streamClassName << " &operator<<(const " << type->getName() << " &" << type->variableName() << ");" << endl;
+    stream << spacing << streamClassName << " &operator<<(const " << type->getName() << " &" << type->variableName() << ");" << GENERATOR_ENDL;
     return result;
 }
 
@@ -1031,7 +1031,7 @@ QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
     QTextStream stream(&result);
     stream << c_internalExportMacro << " "
            << streamClassName << " &operator<<(" << streamClassName << " &stream, const "
-           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << GENERATOR_ENDL;
     return result;
 }
 
@@ -1245,22 +1245,22 @@ QString Generator::generateFunctionStruct(const TLMethod &method)
 
     QString code;
     QTextStream stream(&code, QIODevice::WriteOnly);
-    stream << "struct " << method.functionTypeName() << endl;
-    stream << "{" << endl;
+    stream << "struct " << method.functionTypeName() << GENERATOR_ENDL;
+    stream << "{" << GENERATOR_ENDL;
     stream << "    static constexpr " << tlValueName << " predicate = "
-           << tlValueName << "::" << method.nameFirstCapital() << ";" << endl;
+           << tlValueName << "::" << method.nameFirstCapital() << ";" << GENERATOR_ENDL;
 
     QMap<quint8,QString> memberFlags = method.getFlags();
     if (!memberFlags.isEmpty()) {
-        stream << "    enum Flag {" << endl;
+        stream << "    enum Flag {" << GENERATOR_ENDL;
 
         for (quint8 key : memberFlags.uniqueKeys()) {
             for (const QString &value : memberFlags.values(key)) {
-                stream << "        " << value << " = 1 << " << key << ',' << endl;
+                stream << "        " << value << " = 1 << " << key << ',' << GENERATOR_ENDL;
             }
         }
 
-        stream << "    };" << endl;
+        stream << "    };" << GENERATOR_ENDL;
     }
 
     for (const TLParam &param : method.params) {
@@ -1270,13 +1270,13 @@ QString Generator::generateFunctionStruct(const TLMethod &method)
 
         if (podTypes.contains(param.type())) {
             const QString initialValue = initTypesValues.at(podTypes.indexOf(param.type()));
-            stream << "    " << param.type() << ' ' << param.getAlias() << " = " << initialValue << ';' << endl;
+            stream << "    " << param.type() << ' ' << param.getAlias() << " = " << initialValue << ';' << GENERATOR_ENDL;
         } else {
-            stream << "    " << param.type() << ' ' << param.getAlias() << ';' << endl;
+            stream << "    " << param.type() << ' ' << param.getAlias() << ';' << GENERATOR_ENDL;
         }
     }
 
-    stream << "};" << endl;
+    stream << "};" << GENERATOR_ENDL;
     return code;
 }
 
@@ -1336,26 +1336,26 @@ QStringList Generator::generateTypeFlagsToString() const
 
         QString code;
         QTextStream stream(&code, QIODevice::WriteOnly);
-        stream << "template<>" << endl;
-        stream << "QString flagsToString(const " << type.getName() << " &instance)" << endl;
-        stream << "{" << endl;
-        stream << "    const quint32 flags = instance.flags;" << endl;
-        stream << "    QStringList result;" << endl;
+        stream << "template<>" << GENERATOR_ENDL;
+        stream << "QString flagsToString(const " << type.getName() << " &instance)" << GENERATOR_ENDL;
+        stream << "{" << GENERATOR_ENDL;
+        stream << "    const quint32 flags = instance.flags;" << GENERATOR_ENDL;
+        stream << "    QStringList result;" << GENERATOR_ENDL;
 
         for (quint8 flag : memberFlags.uniqueKeys()) {
             // if (flags & TLConfig::TmpSessions) {
             //     result << QLatin1String("TmpSessions");
             // }
-            stream << "    if (flags & " << type.getName() << "::" << memberFlags.value(flag) << ") {" << endl;
-            stream << "        result << QLatin1String(\"" << memberFlags.value(flag) << "\");" << endl;
-            stream << "    }" << endl;
+            stream << "    if (flags & " << type.getName() << "::" << memberFlags.value(flag) << ") {" << GENERATOR_ENDL;
+            stream << "        result << QLatin1String(\"" << memberFlags.value(flag) << "\");" << GENERATOR_ENDL;
+            stream << "    }" << GENERATOR_ENDL;
         }
 
-        stream << "    if (result.isEmpty()) {" << endl;
-        stream << "        return QLatin1String(\"<no bool flags>\");" << endl;
-        stream << "    }" << endl;
-        stream << "    return result.join(QLatin1Char('|'));" << endl;
-        stream << "}" << endl;
+        stream << "    if (result.isEmpty()) {" << GENERATOR_ENDL;
+        stream << "        return QLatin1String(\"<no bool flags>\");" << GENERATOR_ENDL;
+        stream << "    }" << GENERATOR_ENDL;
+        stream << "    return result.join(QLatin1Char('|'));" << GENERATOR_ENDL;
+        stream << "}" << GENERATOR_ENDL;
         result.append(code);
     }
     return result;
@@ -1509,18 +1509,18 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             // }
             QString definition;
             QTextStream stream(&definition);
-            stream << "void " << className << "::run" << method.nameFromSecondWord() << "()" << endl;
-            stream << "{" << endl;
+            stream << "void " << className << "::run" << method.nameFromSecondWord() << "()" << GENERATOR_ENDL;
+            stream << "{" << GENERATOR_ENDL;
             if (!method.params.isEmpty()) {
-                stream << "    // " << argumentsLine << endl;
+                stream << "    // " << argumentsLine << GENERATOR_ENDL;
             }
-            stream << "    if (processNotImplementedMethod(TLValue::" << method.nameFirstCapital() << ")) {" << endl;
-            stream << "        return;" << endl;
-            stream << "    }" << endl;
-            stream << "    " << method.type << " result;" << endl;
-            stream << "    sendRpcReply(result);" << endl;
-            stream << "}" << endl;
-            stream << endl;
+            stream << "    if (processNotImplementedMethod(TLValue::" << method.nameFirstCapital() << ")) {" << GENERATOR_ENDL;
+            stream << "        return;" << GENERATOR_ENDL;
+            stream << "    }" << GENERATOR_ENDL;
+            stream << "    " << method.type << " result;" << GENERATOR_ENDL;
+            stream << "    sendRpcReply(result);" << GENERATOR_ENDL;
+            stream << "}" << GENERATOR_ENDL;
+            stream << GENERATOR_ENDL;
 
             return definition;
         };
@@ -1565,30 +1565,30 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
     //     QString phoneCode;
     //     stream >> phoneCode;
     //     d << TELEGRAMQT_ENDL;
-    //     d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
-    //     d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
-    //     d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
+    //     d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << GENERATOR_ENDL;
+    //     d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << GENERATOR_ENDL;
+    //     d << spacer.innerSpaces() << "phoneCode: " << phoneCode << GENERATOR_ENDL;
     // }
     //     d << ")";
     //     break;
 
     QString result;
     QTextStream stream(&result, QIODevice::WriteOnly);
-    stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, method.nameFirstCapital()) << endl;
-    // stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter)) << endl;
-    stream << spacing << "    d << \"" << method.nameFirstCapital() << "(\";" << endl;
+    stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, method.nameFirstCapital()) << GENERATOR_ENDL;
+    // stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter)) << GENERATOR_ENDL;
+    stream << spacing << "    d << \"" << method.nameFirstCapital() << "(\";" << GENERATOR_ENDL;
 
     if (!method.params.isEmpty()) {
-        stream << spacing << "{" << endl;
-        stream << spacing << "    d << TELEGRAMQT_ENDL;" << endl;
-        stream << spacing << QStringLiteral("    Spacer spacer;") << endl;
+        stream << spacing << "{" << GENERATOR_ENDL;
+        stream << spacing << "    d << TELEGRAMQT_ENDL;" << GENERATOR_ENDL;
+        stream << spacing << QStringLiteral("    Spacer spacer;") << GENERATOR_ENDL;
 
         for (const TLParam &param : method.params) {
             if (param.dependOnFlag()) {
                 continue;
             }
-            stream << spacing << QStringLiteral("    %1 %2;").arg(param.type(), param.getAlias()) << endl;
-            stream << spacing << QStringLiteral("    stream >> %1;").arg(param.getAlias()) << endl;
+            stream << spacing << QStringLiteral("    %1 %2;").arg(param.type(), param.getAlias()) << GENERATOR_ENDL;
+            stream << spacing << QStringLiteral("    stream >> %1;").arg(param.getAlias()) << GENERATOR_ENDL;
 
             QString typeDebugStatement;
             if (param.type().contains(QLatin1String("QByteArray"))) {
@@ -1603,13 +1603,13 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
 
             stream << spacing << "    d << spacer.innerSpaces()"
                    << " << \"" << param.getAlias() << ": \" << " << typeDebugStatement
-                   << " << TELEGRAMQT_ENDL;" << endl;
+                   << " << TELEGRAMQT_ENDL;" << GENERATOR_ENDL;
         }
-        stream << spacing << "}" << endl;
+        stream << spacing << "}" << GENERATOR_ENDL;
     }
 
-    stream << spacing << QStringLiteral("    d << \")\";") << endl;
-    stream << spacing << QStringLiteral("    break;") << endl;
+    stream << spacing << QStringLiteral("    d << \")\";") << GENERATOR_ENDL;
+    stream << spacing << QStringLiteral("    break;") << GENERATOR_ENDL;
 
     return result;
 }

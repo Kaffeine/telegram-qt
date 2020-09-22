@@ -29,6 +29,12 @@
 
 QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#define GENERATOR_ENDL endl
+#else
+#define GENERATOR_ENDL Qt::endl
+#endif
+
 struct Name {
     Name() = default;
     Name(const QString &n)
