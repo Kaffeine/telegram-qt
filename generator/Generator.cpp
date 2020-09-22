@@ -21,6 +21,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLoggingCategory>
+#include <QMultiHash>
 #include <QRegularExpression>
 #include <QTextStream>
 
@@ -692,7 +693,7 @@ QStringList Generator::generateTLTypeComparisonCaseMethod(const TLSubType &subTy
 QStringList Generator::generateTLTypeMemberFlags(const TLType &type)
 {
     QStringList addedFlags;
-    QMap<quint8,QString> memberFlags;
+    QMultiMap<quint8,QString> memberFlags;
 
     foreach (const TLSubType &subType, type.subTypes) {
         foreach (const TLParam &member, subType.members) {
@@ -710,7 +711,7 @@ QStringList Generator::generateTLTypeMemberFlags(const TLType &type)
                 continue;
             }
             addedFlags.append(flagName);
-            memberFlags.insertMulti(member.flagBit, flagName);
+            memberFlags.insert(member.flagBit, flagName);
         }
     }
     QStringList result;
@@ -1250,7 +1251,7 @@ QString Generator::generateFunctionStruct(const TLMethod &method)
     stream << "    static constexpr " << tlValueName << " predicate = "
            << tlValueName << "::" << method.nameFirstCapital() << ";" << GENERATOR_ENDL;
 
-    QMap<quint8,QString> memberFlags = method.getFlags();
+    QMultiMap<quint8,QString> memberFlags = method.getFlags();
     if (!memberFlags.isEmpty()) {
         stream << "    enum Flag {" << GENERATOR_ENDL;
 
@@ -1329,7 +1330,7 @@ QStringList Generator::generateTypeFlagsToString() const
             continue;
         }
 
-        const QMap<quint8,QString> memberFlags = type.getBoolFlags();
+        const QMultiMap<quint8,QString> memberFlags = type.getBoolFlags();
         if (memberFlags.isEmpty()) {
             continue;
         }
@@ -1657,7 +1658,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
         qCDebug(c_loggingTypes) << "Bake types...";
         for (const QString &typeName : types.keys()) {
             TLType &type = types[typeName];
-            QHash<QString,QString> members;
+            QMultiHash<QString,QString> members;
             qCDebug(c_loggingTypes) << "Bake member types...";
             for (const TLSubType &subType : type.subTypes) {
                 for (const TLParam &member : subType.members) {
@@ -1666,7 +1667,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                             continue;
                         }
                     }
-                    members.insertMulti(member.getName(), member.type());
+                    members.insert(member.getName(), member.type());
                     if (member.bareType() == type.getName()) {
                         type.setSelfReferenced(true);
                     }
@@ -2544,16 +2545,16 @@ QString TLMethod::nameFromSecondWord() const
     return words.join(QString());
 }
 
-QMap<quint8, QString> TLMethod::getFlags() const
+QMultiMap<quint8, QString> TLMethod::getFlags() const
 {
-    QMap<quint8,QString> memberFlags;
+    QMultiMap<quint8,QString> memberFlags;
 
     for (const TLParam &param : params) {
         if (!param.dependOnFlag()) {
             continue;
         }
 
-        memberFlags.insertMulti(param.flagBit, param.flagName());
+        memberFlags.insert(param.flagBit, param.flagName());
     }
 
     return memberFlags;
@@ -2567,11 +2568,11 @@ QString TypedEntity::variableName() const
     return varName;
 }
 
-QMap<quint8, QString> TLType::getBoolFlags() const
+QMultiMap<quint8, QString> TLType::getBoolFlags() const
 {
-    QMap<quint8, QString> result;
+    QMultiMap<quint8, QString> result;
     for (const TLSubType &subType : subTypes) {
-        QMap<quint8, QString> subTypeFlags = subType.getBoolFlags();
+        QMultiMap<quint8, QString> subTypeFlags = subType.getBoolFlags();
         for (quint8 flagBit : subTypeFlags.keys()) {
             if (result.contains(flagBit) && (result.value(flagBit) != subTypeFlags.value(flagBit))) {
                 qCWarning(c_loggingTlValues).noquote()
@@ -2586,9 +2587,9 @@ QMap<quint8, QString> TLType::getBoolFlags() const
     return result;
 }
 
-QMap<quint8, QString> TLSubType::getBoolFlags() const
+QMultiMap<quint8, QString> TLSubType::getBoolFlags() const
 {
-    QMap<quint8, QString> flags;
+    QMultiMap<quint8, QString> flags;
     for (const TLParam &member : members) {
         if (member.type() != tlTrueType) {
             continue;
@@ -2596,7 +2597,7 @@ QMap<quint8, QString> TLSubType::getBoolFlags() const
         if (!member.dependOnFlag()) {
             continue;
         }
-        flags.insertMulti(member.flagBit, member.flagName());
+        flags.insert(member.flagBit, member.flagName());
     }
     return flags;
 }

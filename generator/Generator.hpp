@@ -23,6 +23,7 @@
 #include <QList>
 #include <QStringList>
 #include <QMap>
+#include <QMultiMap>
 #include <QVariantHash>
 #include <QVector>
 #include <functional>
@@ -122,7 +123,7 @@ protected:
 struct TLSubType : public Predicate {
     QString entityType() const override { return QStringLiteral("Value"); }
     QString getEntityTLType() const override { return m_name; }
-    QMap<quint8, QString> getBoolFlags() const;
+    QMultiMap<quint8, QString> getBoolFlags() const;
     QList<TLParam> members;
 };
 
@@ -130,7 +131,7 @@ struct TLType : public TypedEntity {
     QString entityType() const override { return QStringLiteral("Value"); }
     QString getEntityTLType() const override { return m_name; }
 
-    QMap<quint8, QString> getBoolFlags() const;
+    QMultiMap<quint8, QString> getBoolFlags() const;
 
     QList<TLSubType> subTypes;
 
@@ -146,7 +147,7 @@ struct TLMethod : public Predicate {
     QString getEntityTLType() const override { return functionTypeName(); }
     QString functionTypeName() const;
     QString nameFromSecondWord() const;
-    QMap<quint8, QString> getFlags() const;
+    QMultiMap<quint8, QString> getFlags() const;
     QString type;
     QList< TLParam > params;
 };
