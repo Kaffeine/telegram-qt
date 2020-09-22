@@ -10,6 +10,8 @@
 #include "ServerRpcLayer.hpp"
 #include "TelegramServerUser.hpp"
 
+#include "telegramqt_macros.h"
+
 #include <QDateTime>
 #include <QLoggingCategory>
 
@@ -79,7 +81,7 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
     if (m_sendHelper->authId()) {
         qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
                                                       << "new session authKeyId"
-                                                      << showbase << hex << authKeyId
+                                                      << TELEGRAMQT_HEX_SHOWBASE << authKeyId
                                                       << "is different from the expected"
                                                       << m_sendHelper->authId();
     } else {
@@ -87,11 +89,11 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
         if (authKey.isEmpty()) {
             qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
                                                           << "Unable to find an authorization with id"
-                                                          << showbase << hex << authKeyId;
+                                                          << TELEGRAMQT_HEX_SHOWBASE << authKeyId;
         } else {
             qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
                                                           << "assign exists session (by auth key id)"
-                                                          << showbase << hex << authKeyId;
+                                                          << TELEGRAMQT_HEX_SHOWBASE << authKeyId;
             m_sendHelper->setAuthKey(authKey);
             return true;
         }

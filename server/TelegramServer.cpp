@@ -35,6 +35,8 @@
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
 
+#include "telegramqt_macros.h"
+
 #include <QLoggingCategory>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -127,7 +129,8 @@ bool Server::start()
                                                       << m_dcOption.address << ":" << m_dcOption.port
                                                       << " (listening " << m_serverSocket->serverAddress().toString()
                                                       << ":" << m_serverSocket->serverPort() << ")"
-                                                      << "; Key:" << hex << showbase << m_key.fingerprint;
+                                                      << TELEGRAMQT_HEX_SHOWBASE
+                                                      << "; Key:" << m_key.fingerprint;
     return true;
 }
 
@@ -227,7 +230,7 @@ void Server::onClientConnectionStatusChanged()
     } else if (client->status() == RemoteClientConnection::Status::Disconnected) {
         if (client->session()) {
             qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client with session id"
-                                          << hex << showbase << client->session()->id()
+                                          << TELEGRAMQT_HEX_SHOWBASE << client->session()->id()
                                           << "from" << client->transport()->remoteAddress();
             setSessionConnection(client->session(), nullptr);
             // Update session 'last seen' timestamp on disconnect

@@ -16,6 +16,7 @@
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
 #include "Utils.hpp"
+#include "telegramqt_macros.h"
 
 #ifdef DEVELOPER_BUILD
 #include "MTProto/TLTypesDebug.hpp"
@@ -378,7 +379,7 @@ bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)
 
     if (m_session->id() != header.sessionId) {
         qCWarning(c_serverRpcLayerCategory) << this << __func__ << "Unexpected Session Id"
-                                            << showbase << hex
+                                            << TELEGRAMQT_HEX_SHOWBASE
                                             << m_session->id() << "(in session),"
                                             << header.sessionId << "(in package header)";
         return false;

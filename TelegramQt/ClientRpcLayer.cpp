@@ -28,6 +28,8 @@
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"
 
+#include "telegramqt_macros.h"
+
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtWarningMsg)
@@ -144,7 +146,7 @@ bool RpcLayer::processRpcResult(const MTProto::Message &message)
     if (!op) {
         qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
                                             << "Unhandled RPC result for messageId"
-                                            << hex << showbase << messageId;
+                                            << TELEGRAMQT_HEX_SHOWBASE << messageId;
         return false;
     }
     op->setFinishedWithReplyData(stream.readAll());
@@ -156,7 +158,7 @@ bool RpcLayer::processRpcResult(const MTProto::Message &message)
                                                 << op->replyData().size() << op->replyData().toHex();
 #endif
     qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op
-                                      << "messageId:" << hex << showbase << messageId
+                                      << "messageId:" << TELEGRAMQT_HEX_SHOWBASE << messageId
                                       << "error:" << op->errorDetails();
     return true;
 }
@@ -193,7 +195,7 @@ bool RpcLayer::processSessionCreated(const MTProto::Message &message)
     stream >> uniqueId;
     stream >> serverSalt;
     qCDebug(c_clientRpcLayerCategory) << "processSessionCreated(stream) {"
-                                      << hex << showbase
+                                      << TELEGRAMQT_HEX_SHOWBASE
                                       << "    firstMsgId:" << firstMsgId
                                       << "    uniqueId:" << uniqueId
                                       << "    serverSalt:" << serverSalt;
@@ -214,7 +216,7 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     if (!m) {
         qCWarning(c_clientRpcLayerCategory) << CALL_INFO
                                             << notification.toString() << "for unknown message id"
-                                            << hex << showbase << notification.messageId;
+                                            << TELEGRAMQT_HEX_SHOWBASE << notification.messageId;
         return false;
     }
 
@@ -228,7 +230,7 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     case MTProto::IgnoredMessageNotification::SequenceNumberTooHigh:
         qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh):"
                                              " reduce seq num"
-                                          << hex << showbase
+                                          << TELEGRAMQT_HEX_SHOWBASE
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber - 2);
         m->sequenceNumber -= 2;
@@ -236,7 +238,7 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
         qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooLow):"
                                              " increase seq num"
-                                          << hex << showbase
+                                          << TELEGRAMQT_HEX_SHOWBASE
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber + 2);
         m->sequenceNumber += 2;
@@ -325,12 +327,12 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     if (!operation) {
         qCCritical(c_clientRpcLayerCategory) << CALL_INFO
                                              << "Unable to find the message to resend"
-                                             << hex << messageId;
+                                             << TELEGRAMQT_HEX_SHOWBASE << messageId;
         delete message;
         return false;
     }
     qCDebug(c_clientRpcLayerCategory) << "Resend message"
-                                      << hex << messageId
+                                      << TELEGRAMQT_HEX_SHOWBASE << messageId
                                       << message->firstValue();
     message->messageId = m_sendHelper->newMessageId(SendMode::Client);
     m_operations.insert(message->messageId, operation);

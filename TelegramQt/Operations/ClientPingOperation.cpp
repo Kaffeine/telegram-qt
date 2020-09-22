@@ -5,6 +5,7 @@
 #include "ClientSettings.hpp"
 #include "MTProto/Stream.hpp"
 #include "MTProto/TLTypes.hpp"
+#include "telegramqt_macros.h"
 
 #include <QDateTime>
 #include <QLoggingCategory>
@@ -90,7 +91,9 @@ void PingOperation::onTimeToKeepAlive()
         m_pingRpcOperation->setContentRelated(false);
     }
     m_pingMessageId = m_rpcLayer->sendRpc(m_pingRpcOperation);
-    qCDebug(c_clientPingCategory) << "onTimeToKeepAlive(): send ping with id" << hex << m_pingId << ", messageId: " << m_pingMessageId;
+    qCDebug(c_clientPingCategory) << "onTimeToKeepAlive(): send ping id:"
+                                  << TELEGRAMQT_HEX_SHOWBASE
+                                  << m_pingId << ", messageId: " << m_pingMessageId;
     m_pingTimer->start(m_settings->pingInterval());
 }
 
@@ -107,7 +110,9 @@ void PingOperation::onPingRpcFinished()
     MTProto::Stream stream(m_pingRpcOperation->replyData());
     TLPong pong;
     stream >> pong;
-    qCDebug(c_clientPingCategory) << "onPingRpcFinished() ping id:" << pong.pingId << "messageId:" << hex << pong.msgId << m_pingMessageId;
+    qCDebug(c_clientPingCategory) << "onPingRpcFinished() ping id:"
+                                  << TELEGRAMQT_HEX_SHOWBASE
+                                  << pong.pingId << "messageId:" << pong.msgId << m_pingMessageId;
     if (!pong.isValid()) {
         emit pingFailed({{PendingOperation::c_text(), QLatin1String("Invalid ping reply")}});
         return;

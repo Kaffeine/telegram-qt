@@ -20,6 +20,7 @@
 #include "Crypto/AesCtr.hpp"
 #include "Debug_p.hpp"
 #include "RawStream.hpp"
+#include "telegramqt_macros.h"
 
 #include <QHostAddress>
 #include <QLoggingCategory>
@@ -212,7 +213,7 @@ void BaseTcpTransport::onReadyRead()
                 m_readBuffer = m_readBuffer.mid(4);
             } else {
                 qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid packet size byte"
-                                                 << hex << showbase << length_t1;
+                                                 << TELEGRAMQT_HEX_SHOWBASE << length_t1;
                 setError(QAbstractSocket::UnknownSocketError, QLatin1String("Invalid read operation"));
                 disconnectFromHost();
                 return;

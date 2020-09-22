@@ -20,6 +20,7 @@
 #include "IgnoredMessageNotification.hpp"
 #include "MTProto/MessageHeader.hpp"
 #include "TelegramNamespace.hpp"
+#include "telegramqt_macros.h"
 
 static const QByteArray c_spaces = QByteArray(40, ' ');
 static constexpr int c_maxBytesPrintedLength = 42;
@@ -123,13 +124,13 @@ QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &messageH
 {
     Telegram::Debug::Spacer spacer;
     d.noquote().nospace();
-    d << hex << showbase;
+    d << TELEGRAMQT_HEX_SHOWBASE;
     d << "MessageHeader {";
-    d << spacer.innerSpaces() << "salt: " << messageHeader.serverSalt << endl;
-    d << spacer.innerSpaces() << "sessionId: " << messageHeader.sessionId << endl;
-    d << spacer.innerSpaces() << "messageId: " << messageHeader.messageId << endl;
-    d << spacer.innerSpaces() << "sequenceNumber: " << messageHeader.sequenceNumber << endl;
-    d << spacer.innerSpaces() << "contentLength: " << messageHeader.contentLength << endl;
+    d << spacer.innerSpaces() << "salt: " << messageHeader.serverSalt << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "sessionId: " << messageHeader.sessionId << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "messageId: " << messageHeader.messageId << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "sequenceNumber: " << messageHeader.sequenceNumber << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "contentLength: " << messageHeader.contentLength << TELEGRAMQT_ENDL;
     d << "}";
     return d;
 }
@@ -138,11 +139,11 @@ QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification 
 {
     Telegram::Debug::Spacer spacer;
     d.noquote().nospace();
-    d << hex << showbase;
+    d << TELEGRAMQT_HEX_SHOWBASE;
     d << "IgnoredMessageNotification {";
-    d << spacer.innerSpaces() << "messageId: " << notification.messageId << endl;
-    d << spacer.innerSpaces() << "seqNo:" << notification.seqNo << endl;
-    d << spacer.innerSpaces() << "errorCode: " << notification.errorCode << endl;
+    d << spacer.innerSpaces() << "messageId: " << notification.messageId << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "seqNo:" << notification.seqNo << TELEGRAMQT_ENDL;
+    d << spacer.innerSpaces() << "errorCode: " << notification.errorCode << TELEGRAMQT_ENDL;
     d << "}";
     return d;
 }

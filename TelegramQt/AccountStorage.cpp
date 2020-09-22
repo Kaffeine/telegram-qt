@@ -3,6 +3,7 @@
 #include "Debug_p.hpp"
 #include "LegacySecretReader.hpp"
 #include "RawStream.hpp"
+#include "telegramqt_macros.h"
 
 #include <QDir>
 #include <QFile>
@@ -99,7 +100,7 @@ bool AccountStorage::invalidateAuthKey(quint64 authId)
 {
     const bool hasKey = d->m_authId == authId;
     qCWarning(c_clientAccountStorage) << CALL_INFO << "Invalidate auth key"
-                                      << hex << showbase << authId
+                                      << TELEGRAMQT_HEX_SHOWBASE << authId
                                       << "(" << hasKey << ")";
     if (!hasKey) {
         return false;

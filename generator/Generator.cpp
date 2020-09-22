@@ -1564,7 +1564,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
     //     stream >> phoneCodeHash;
     //     QString phoneCode;
     //     stream >> phoneCode;
-    //     d << endl;
+    //     d << TELEGRAMQT_ENDL;
     //     d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
     //     d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
     //     d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
@@ -1580,7 +1580,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
 
     if (!method.params.isEmpty()) {
         stream << spacing << "{" << endl;
-        stream << spacing << "    d << endl;" << endl;
+        stream << spacing << "    d << TELEGRAMQT_ENDL;" << endl;
         stream << spacing << QStringLiteral("    Spacer spacer;") << endl;
 
         for (const TLParam &param : method.params) {
@@ -1603,7 +1603,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
 
             stream << spacing << "    d << spacer.innerSpaces()"
                    << " << \"" << param.getAlias() << ": \" << " << typeDebugStatement
-                   << " << endl;" << endl;
+                   << " << TELEGRAMQT_ENDL;" << endl;
         }
         stream << spacing << "}" << endl;
     }
