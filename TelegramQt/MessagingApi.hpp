@@ -51,6 +51,10 @@ struct TELEGRAMQT_EXPORT MessageFetchOptions
     }
 };
 
+class NewChatRequest
+{
+};
+
 class TELEGRAMQT_EXPORT MessagingApi : public ClientApi
 {
     Q_OBJECT

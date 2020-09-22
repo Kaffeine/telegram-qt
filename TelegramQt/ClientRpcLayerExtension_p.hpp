@@ -49,8 +49,9 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLType 
     stream >> *output;
 #ifdef DEVELOPER_BUILD
     qCDebug(c_clientRpcDumpPackageCategory) << *output;
+#else
+    qCDebug(c_clientRpcDumpPackageCategory) << Q_FUNC_INFO << output->tlType;
 #endif
-    qDebug() << Q_FUNC_INFO << output->tlType;
     return output->isValid() && !stream.error();
 }
 

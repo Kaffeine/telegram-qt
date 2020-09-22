@@ -771,7 +771,7 @@ DialogState *MessagingApiPrivate::ensureDialogSyncState(const Peer &peer)
     QHash<Peer, DialogState> &statesRef = *dialogStates;
 
     if (!statesRef.contains(peer)) {
-        qDebug() << CALL_INFO << "New dialog" << peer;
+        qCDebug(lcMessagingApi) << CALL_INFO << "New dialog" << peer;
         statesRef.insert(peer, DialogState());
     }
     return &statesRef[peer];

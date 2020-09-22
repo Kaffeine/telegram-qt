@@ -11,7 +11,7 @@
 #include <QLoggingCategory>
 #include <QTimer>
 
-Q_LOGGING_CATEGORY(c_clientPingCategory, "telegram.client.ping", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_clientPingCategory, "telegram.client.ping", QtWarningMsg)
 
 namespace Telegram {
 

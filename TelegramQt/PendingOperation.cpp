@@ -3,7 +3,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_pendingOperations, "telegram.operations", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_pendingOperations, "telegram.operations", QtWarningMsg)
 
 namespace Telegram {
 
