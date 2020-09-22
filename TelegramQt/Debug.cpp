@@ -16,10 +16,10 @@
  */
 
 #include "Debug_p.hpp"
-#include "TelegramNamespace.hpp"
 
-#include "MTProto/MessageHeader.hpp"
 #include "IgnoredMessageNotification.hpp"
+#include "MTProto/MessageHeader.hpp"
+#include "TelegramNamespace.hpp"
 
 static const QByteArray c_spaces = QByteArray(40, ' ');
 static constexpr int c_maxBytesPrintedLength = 42;

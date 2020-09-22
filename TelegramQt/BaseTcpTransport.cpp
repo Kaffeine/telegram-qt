@@ -16,12 +16,12 @@
  */
 
 #include "BaseTcpTransport.hpp"
+
 #include "Crypto/AesCtr.hpp"
 #include "Debug_p.hpp"
 #include "RawStream.hpp"
 
 #include <QHostAddress>
-
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtWarningMsg)

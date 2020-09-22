@@ -18,7 +18,7 @@
 #ifndef TELEGRAMQT_QML_GLOBAL_H
 #define TELEGRAMQT_QML_GLOBAL_H
 
-#include "telegramqt_global.h"
+#include <QtGlobal>
 
 // TELEGRAMQT_BUILD_QML defined during the QML library build
 // TELEGRAMQT_STATIC_QML defined if the QML library build type is static

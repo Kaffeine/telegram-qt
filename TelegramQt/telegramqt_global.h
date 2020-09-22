@@ -18,7 +18,7 @@
 #ifndef TELEGRAMQT_GLOBAL_H
 #define TELEGRAMQT_GLOBAL_H
 
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #define TELEGRAMQT_MAJOR_VERSION 0
 #define TELEGRAMQT_MINOR_VERSION 2

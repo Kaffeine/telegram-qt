@@ -17,13 +17,11 @@
 
 #include "Generator.hpp"
 
-#include <QLoggingCategory>
-
-#include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
+#include <QLoggingCategory>
 #include <QRegularExpression>
-
 #include <QTextStream>
 
 #include <zlib.h>
