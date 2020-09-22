@@ -8,6 +8,8 @@
 
 #include <QLoggingCategory>
 
+Q_DECLARE_LOGGING_CATEGORY(lcServerRpcDump)
+
 namespace Telegram {
 
 namespace Server {
@@ -19,7 +21,8 @@ RpcOperation *processRpcCallImpl(RpcLayer *layer, RpcProcessingContext &context)
     if (!method) {
         return nullptr;
     }
-    qDebug() << "processRpcCallImpl:" << context.readCode().toString() << "with messageId" << context.messageId();
+    qCDebug(lcServerRpcDump) << "processRpcCallImpl:" << context.readCode().toString()
+                             << "with messageId" << context.messageId();
     T *operation = new T(layer);
     bool fetchResult = (operation->*method)(context);
     RpcOperation *result = operation;

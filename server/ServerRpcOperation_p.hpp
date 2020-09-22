@@ -7,6 +7,10 @@
 #include "MTProto/TLTypesDebug.hpp"
 #endif
 
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(lcServerRpcDump)
+
 namespace Telegram {
 
 namespace Server {
@@ -17,7 +21,7 @@ bool RpcOperation::sendRpcReply(const TLType &reply)
     MTProto::Stream output(MTProto::Stream::WriteOnly);
     output << reply;
 #ifdef DEVELOPER_BUILD
-    qDebug() << this << reply;
+    qCDebug(lcServerRpcDump) << this << reply;
 #endif
     return layer()->sendRpcReply(this, output.getData());
 }

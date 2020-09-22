@@ -6,6 +6,10 @@
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(lcServerRpcDump, "telegram.server.rpclayer.dump", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Server {
@@ -25,7 +29,10 @@ void RpcOperation::setMessageId(quint64 messageId)
 
 bool RpcOperation::sendRpcError(const RpcError &error)
 {
-    qDebug() << Q_FUNC_INFO << error.type() << error.reason() << error.argument() << error.message() << m_messageId;
+    qCDebug(lcServerRpcDump) << "RpcOperation::sendRpcError"
+                            << error.type() << error.reason()
+                            << error.argument() << error.message()
+                            << m_messageId;
 
     RawStreamEx output(RawStreamEx::WriteOnly);
     output << error;

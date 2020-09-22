@@ -23,6 +23,10 @@
 #include "MTProto/TLRpcDebug.hpp"
 #endif
 
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(lcServerRpcDump)
+
 namespace Telegram {
 
 namespace Server {
@@ -32,8 +36,10 @@ RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 mess
     m_messageId(messageId)
 {
 #ifdef DEVELOPER_BUILD
-    MTProto::Stream debugStream(stream.getData());
-    MTProto::dumpRpc(debugStream);
+    if (lcServerRpcDump().isDebugEnabled()) {
+        MTProto::Stream debugStream(stream.getData());
+        MTProto::dumpRpc(debugStream);
+    }
 #endif
 }
 

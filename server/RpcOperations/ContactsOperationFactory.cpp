@@ -255,7 +255,6 @@ void ContactsRpcOperation::runImportCard()
 
 void ContactsRpcOperation::runImportContacts()
 {
-    qDebug() << Q_FUNC_INFO;
     TLContactsImportedContacts result;
 
     LocalUser *selfUser = layer()->getUser();
