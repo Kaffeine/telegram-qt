@@ -136,6 +136,7 @@ public slots:
             auto r = qrand();
             file.write(reinterpret_cast<const char *>(&r), sizeof(r));
         }
+        file.flush();
         QTimer::singleShot(0, this, &AccountSecretHelper::updateCredentialDataExist);
         return file.remove();
     }
