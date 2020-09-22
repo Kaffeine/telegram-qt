@@ -55,10 +55,10 @@ TELEGRAMQT_EXPORT quint32 getCurrentTime();
 
 inline quint32 Telegram::Utils::getCurrentTime()
 {
-#if QT_VERSION > QT_VERSION_CHECK(5, 8, 0)
-    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
-#else
+#if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
     qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
+#else
+    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
 #endif
     return static_cast<quint32>(timestamp);
 }

@@ -130,10 +130,10 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
     QByteArray decryptedPackage = Utils::binaryNumberModExp(encryptedPackage, m_rsaKey.modulus, m_rsaKey.secretExponent);
     constexpr int c_innerPackageSize = 255;
     if (decryptedPackage.size() < c_innerPackageSize) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
-        decryptedPackage.prepend(c_innerPackageSize - decryptedPackage.size(), char(0));
-#else
+#if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         decryptedPackage = QByteArray(c_innerPackageSize - decryptedPackage.size(), char(0)) + decryptedPackage;
+#else
+        decryptedPackage.prepend(c_innerPackageSize - decryptedPackage.size(), char(0));
 #endif
     }
     qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Decrypted:" << decryptedPackage.toHex();

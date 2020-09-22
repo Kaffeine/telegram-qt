@@ -393,10 +393,10 @@ QByteArray RpcLayer::getInitConnection() const
 void RpcLayer::addMessageToAck(quint64 messageId)
 {
     if (m_messagesToAck.isEmpty()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-        QMetaObject::invokeMethod(this, &RpcLayer::acknowledgeMessages, Qt::QueuedConnection);
-#else
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
         QMetaObject::invokeMethod(this, "acknowledgeMessages", Qt::QueuedConnection);
+#else
+        QMetaObject::invokeMethod(this, &RpcLayer::acknowledgeMessages, Qt::QueuedConnection);
 #endif
     }
     m_messagesToAck.append(messageId);

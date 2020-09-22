@@ -253,10 +253,10 @@ void ConnectionApiPrivate::queueConnectToNextServer()
 
     if (interval == 0) {
         setStatus(ConnectionApi::StatusWaitForConnection, ConnectionApi::StatusReasonLocal);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-        QMetaObject::invokeMethod(this, [this]() { this->connectToNextServer(); }, Qt::QueuedConnection);
-#else
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
         QMetaObject::invokeMethod(this, "connectToNextServer", Qt::QueuedConnection);
+#else
+        QMetaObject::invokeMethod(this, [this]() { this->connectToNextServer(); }, Qt::QueuedConnection);
 #endif
         return;
     }

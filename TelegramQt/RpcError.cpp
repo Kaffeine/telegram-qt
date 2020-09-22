@@ -69,10 +69,10 @@ QString RpcError::reasonToString(RpcError::Reason reason, quint32 argument)
     reasonWords.removeFirst(); // The first element is always empty for this regexp.
     bool hasArg = false;
     for (QString &word : reasonWords) {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
-        if (word == QLatin1Char('X')) {
-#else
+#if (QT_VERSION < QT_VERSION_CHECK(5, 8, 0))
         if ((word.length() == 1) && (word.at(0) == QLatin1Char('X'))) {
+#else
+        if (word == QLatin1Char('X')) {
 #endif
             hasArg = true;
             word = QString::number(argument);
