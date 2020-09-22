@@ -1209,7 +1209,6 @@ void tst_MessagesApi::getHistory()
     COMPARE_PEERS(op->peer(), dialogPeer);
     QVector<quint32> ids = op->messages();
 
-    qDebug() << ids;
     QCOMPARE(ids.count(), messageIds.count());
 
     for (int i = 0; i < ids.count(); ++i) {
@@ -1287,7 +1286,6 @@ void tst_MessagesApi::syncPeerDialogs()
         Peer p = firstSignal.constFirst().value<Peer>();
         MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
         COMPARE_PEERS(p, user2->toPeer());
-        qDebug() << messageIds;
         QCOMPARE(messageIds, messagesVol1);
 
         state1 = dataStorage->saveState();
@@ -1344,7 +1342,6 @@ void tst_MessagesApi::syncPeerDialogs()
         Peer p = firstSignal.constFirst().value<Peer>();
         MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
         COMPARE_PEERS(p, user2->toPeer());
-        qDebug() << messageIds;
         QCOMPARE(messageIds, messagesVol2);
 
         state2 = dataStorage->saveState();
@@ -1387,8 +1384,6 @@ void tst_MessagesApi::syncPeerDialogs()
         Peer p = firstSignal.constFirst().value<Peer>();
         MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
         COMPARE_PEERS(p, user2->toPeer());
-        qDebug() << messageIds;
-        qDebug() << messagesVol2;
         QCOMPARE(static_cast<quint32>(messageIds.count()), client.messagingApi()->syncLimit());
 
         QByteArray limitedSyncData = dataStorage->saveState();
@@ -1432,7 +1427,6 @@ void tst_MessagesApi::syncPeerDialogs()
         Peer p = firstSignal.constFirst().value<Peer>();
         MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
         COMPARE_PEERS(p, user2->toPeer());
-        qDebug() << messageIds;
         QCOMPARE(messageIds, messagesVol2 + messagesVol1);
 
         QByteArray unlimitedSyncData = dataStorage->saveState();
@@ -1606,8 +1600,6 @@ void tst_MessagesApi::syncPeerDialogs()
 
             MessageIdList messageIds = syncSignal.constLast().value<MessageIdList>();
             MessageIdList expectedIds = expectedMessages4.take(p);
-            qDebug() << messageIds;
-            qDebug() << expectedIds;
             QCOMPARE(messageIds, expectedIds);
         }
 
