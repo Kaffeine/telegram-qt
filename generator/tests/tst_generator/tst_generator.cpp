@@ -96,6 +96,19 @@ const QStringList c_sourcesAccountPassword =
     QStringLiteral("account.password#7c18141c current_salt:bytes new_salt:bytes hint:string has_recovery:Bool email_unconfirmed_pattern:string = account.Password;"),
 };
 
+const QStringList c_sourcesAuthSentCode =
+{
+    QStringLiteral("auth.sentCodeTypeApp#3dbb5986 length:int = auth.SentCodeType;"),
+    QStringLiteral("auth.sentCodeTypeSms#c000bba2 length:int = auth.SentCodeType;"),
+    QStringLiteral("auth.sentCodeTypeCall#5353e5a7 length:int = auth.SentCodeType;"),
+    QStringLiteral("auth.sentCodeTypeFlashCall#ab03c6d9 pattern:string = auth.SentCodeType;"),
+};
+
+const QStringList c_sourcesAuthSendCode =
+{
+    QStringLiteral("auth.sendCode#86aef0ec flags:# allow_flashcall:flags.0?true phone_number:string current_number:flags.0?Bool api_id:int api_hash:string = auth.SentCode;"),
+};
+
 static const QString c_typeHeaderCodeAccountPassword =
         "struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword {\n"
         "    TLAccountPassword() = default;\n"
@@ -206,6 +219,23 @@ static const QString c_typeSourceCodePeer =
         "\n"
         ;
 
+
+static const QString c_functionAuthSendCode =
+        "struct TLAuthSendCode\n"
+        "{\n"
+        "    static constexpr TLValue predicate = TLValue::AuthSendCode;\n"
+        "    enum Flag {\n"
+        "        CurrentNumber = 1 << 0,\n"
+        "        AllowFlashcall = 1 << 0,\n"
+        "    };\n"
+        "    quint32 flags = 0;\n"
+        "    QString phoneNumber;\n"
+        "    bool currentNumber = false;\n"
+        "    quint32 apiId = 0;\n"
+        "    QString apiHash;\n"
+        "};\n"
+        ;
+
 class tst_Generator : public QObject
 {
     Q_OBJECT
@@ -220,6 +250,7 @@ private slots:
     void checkFormatName_data();
     void checkFormatName();
     void checkTypeWithMemberConflicts();
+    void checkFunctionWithTheSameBitFlags();
     void typeWithMemberFlagsConflict();
     void recursiveTypeMembers();
     void doubleRecursiveTypeMembers();
@@ -358,6 +389,23 @@ void tst_Generator::checkTypeWithMemberConflicts()
             QFAIL(message.toUtf8().constData());
         }
     }
+}
+
+void tst_Generator::checkFunctionWithTheSameBitFlags()
+{
+    const QByteArray textData = generateTextSpec(c_sourcesAuthSentCode, c_sourcesAuthSendCode);
+
+    Generator generator;
+    QVERIFY(generator.loadFromText(textData));
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+
+    QString functionsCode = generator.generateFunctionStructs();
+    QVERIFY(!functionsCode.isEmpty());
+
+    qWarning().noquote() << "code:" << functionsCode;
+
+    COMPARE_WITH_DUMP(functionsCode, c_functionAuthSendCode);
 }
 
 void tst_Generator::typeWithMemberFlagsConflict()
