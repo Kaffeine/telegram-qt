@@ -10,6 +10,7 @@
 
 #include <QHash>
 #include <QHostAddress>
+#include <QMultiHash>
 #include <QSet>
 #include <QVector>
 
@@ -174,7 +175,7 @@ private:
     quint32 m_localGroupId = 0;
 
     // Session data
-    QHash<quint32, QByteArray> m_exportedAuthorizations; // userId to auth bytes
+    QMultiHash<quint32, QByteArray> m_exportedAuthorizations; // userId to auth bytes
     QHash<quint32, AuthorizedUser *> m_authorizedUsers; // userId to AuthorizedUser
 
     // Data

@@ -587,7 +587,7 @@ PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByt
 QByteArray Server::generateExportedAuthorization(quint32 userId)
 {
     QByteArray bytes = RandomGenerator::instance()->generate(ExportedAuthorizationKeySize);
-    m_exportedAuthorizations.insertMulti(userId, bytes);
+    m_exportedAuthorizations.insert(userId, bytes);
     return bytes;
 }
 
