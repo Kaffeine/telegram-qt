@@ -97,6 +97,20 @@ const QStringList c_inputMediaFlags =
     QStringLiteral("TtlSeconds1 = 1 << 1,"),
 };
 
+const QStringList c_sourcesSecureValueType =
+{
+    QStringLiteral("secureValueTypePersonalDetails#9d2a81e3 = SecureValueType;"),
+    QStringLiteral("secureValueTypeAddress#cbe31e26 = SecureValueType;"),
+};
+
+const QStringList c_sourcesSecureValueError =
+{
+    QStringLiteral("secureValueErrorSelfie#e537ced6 type:SecureValueType file_hash:bytes text:string = SecureValueError;"),
+    QStringLiteral("secureValueErrorFile#7a700873 type:SecureValueType file_hash:bytes text:string = SecureValueError;"),
+    QStringLiteral("secureValueErrorFiles#666220e9 type:SecureValueType file_hash:Vector<bytes> text:string = SecureValueError;"),
+    QStringLiteral("secureValueError#869d758f type:SecureValueType hash:bytes text:string = SecureValueError;"),
+};
+
 const QStringList c_sourcesRichText =
 {
     QStringLiteral("textEmpty#dc3d824f = RichText;"),
@@ -251,6 +265,66 @@ static const QString c_typeSourceCodePeer =
         "\n"
         ;
 
+static const QString c_typeHeaderCodeSecureValueError =
+        "struct TELEGRAMQT_INTERNAL_EXPORT TLSecureValueError {\n"
+        "    TLSecureValueError() = default;\n"
+        "\n"
+        "    bool isValid() const { return hasType(tlType); }\n"
+        "    static bool hasType(const quint32 value);\n"
+        "    bool operator==(const TLSecureValueError &v) const;\n"
+        "\n"
+        "    TLSecureValueType type;\n"
+        "    QByteArray fileHash;\n"
+        "    QString text;\n"
+        "    TLVector<QByteArray> fileHashVector;\n"
+        "    QByteArray hash;\n"
+        "    TLValue tlType = TLValue::SecureValueErrorSelfie;\n"
+        "};\n\n";
+
+static const QString c_typeSourceCodeSecureValueError =
+        "bool TLSecureValueError::hasType(const quint32 value)\n"
+        "{\n"
+        "    switch (value) {\n"
+        "    case TLValue::SecureValueErrorSelfie:\n"
+        "    case TLValue::SecureValueErrorFile:\n"
+        "    case TLValue::SecureValueErrorFiles:\n"
+        "    case TLValue::SecureValueError:\n"
+        "        return true;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n"
+        "\n"
+        "bool TLSecureValueError::operator==(const TLSecureValueError &v) const\n"
+        "{\n"
+        "    if (tlType != v.tlType) {\n"
+        "        return false;\n"
+        "    }\n"
+        "\n"
+        "    switch (tlType) {\n"
+        "    case TLValue::SecureValueErrorSelfie:\n"
+        "    case TLValue::SecureValueErrorFile:\n"
+        "        return true\n"
+        "                && type == v.type\n"
+        "                && fileHash == v.fileHash\n"
+        "                && text == v.text\n"
+        "                ;\n"
+        "    case TLValue::SecureValueErrorFiles:\n"
+        "        return true\n"
+        "                && type == v.type\n"
+        "                && fileHashVector == v.fileHashVector\n"
+        "                && text == v.text\n"
+        "                ;\n"
+        "    case TLValue::SecureValueError:\n"
+        "        return true\n"
+        "                && type == v.type\n"
+        "                && hash == v.hash\n"
+        "                && text == v.text\n"
+        "                ;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n\n";
 
 static const QString c_functionAuthSendCode =
         "struct TLAuthSendCode\n"
@@ -673,6 +747,12 @@ void tst_Generator::generatedTlType_data()
             << c_typeHeaderCodePeer
             << c_typeSourceCodePeer
             << QStringLiteral("Peer");
+
+    QTest::newRow("SecureValueError")
+            << generateTextSpec(c_sourcesSecureValueType + c_sourcesSecureValueError)
+            << c_typeHeaderCodeSecureValueError
+            << c_typeSourceCodeSecureValueError
+            << QStringLiteral("SecureValueError");
 }
 
 void tst_Generator::generatedTlType()
