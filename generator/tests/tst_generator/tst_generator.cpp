@@ -211,6 +211,46 @@ static const QString c_typeSourceCodeAccountPassword =
         "\n"
         ;
 
+static const QString c_debugHeaderSecureValueError =
+        "TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLSecureValueError &secureValueErrorValue);\n"
+        ;
+
+static const QString c_debugSourceSecureValueError =
+        "QDebug operator<<(QDebug d, const TLSecureValueError &type)\n"
+        "{\n"
+        "    QDebugStateSaver saver(d);\n"
+        "    d.nospace();\n"
+        "    d << \"TLSecureValueError(\" << type.tlType << \") {\";\n"
+        "    Spacer spacer;\n"
+        "    switch (type.tlType) {\n"
+        "    case TLValue::SecureValueErrorSelfie:\n"
+        "    case TLValue::SecureValueErrorFile:\n"
+        "        d << \"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"type: \" << type.type <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"fileHash: \" << type.fileHash.toHex() <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"text: \" << type.text <<\"\\n\";\n"
+        "        break;\n"
+        "    case TLValue::SecureValueErrorFiles:\n"
+        "        d << \"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"type: \" << type.type <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"fileHashVector: \" << type.fileHashVector <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"text: \" << type.text <<\"\\n\";\n"
+        "        break;\n"
+        "    case TLValue::SecureValueError:\n"
+        "        d << \"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"type: \" << type.type <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"hash: \" << type.hash.toHex() <<\"\\n\";\n"
+        "        d << spacer.innerSpaces() << \"text: \" << type.text <<\"\\n\";\n"
+        "        break;\n"
+        "    default:\n"
+        "        break;\n"
+        "    }\n"
+        "    d << spacer.outerSpaces() << \"}\";\n"
+        "\n"
+        "    return d;\n"
+        "}\n\n"
+        ;
+
 const QStringList c_sourcesPeer =
 {
     QStringLiteral("peerUser#9db1bc6d user_id:int = Peer;"),
@@ -357,6 +397,8 @@ private slots:
     void checkFormatName();
     void checkTypeWithMemberConflicts();
     void checkFunctionWithTheSameBitFlags();
+    void checkTypesDebug_data();
+    void checkTypesDebug();
     void typeWithMemberFlagsConflict();
     void recursiveTypeMembers();
     void doubleRecursiveTypeMembers();
@@ -512,6 +554,41 @@ void tst_Generator::checkFunctionWithTheSameBitFlags()
     qWarning().noquote() << "code:" << functionsCode;
 
     COMPARE_WITH_DUMP(functionsCode, c_functionAuthSendCode);
+}
+
+void tst_Generator::checkTypesDebug_data()
+{
+    QTest::addColumn<QByteArray>("textSpec");
+    QTest::addColumn<QString>("debugHeaderCode");
+    QTest::addColumn<QString>("debugSourceCode");
+    QTest::addColumn<QString>("typeName");
+
+    QTest::newRow("SecureValueError")
+            << generateTextSpec(c_sourcesSecureValueType + c_sourcesSecureValueError)
+            << c_debugHeaderSecureValueError
+            << c_debugSourceSecureValueError
+            << QStringLiteral("SecureValueError");
+}
+
+void tst_Generator::checkTypesDebug()
+{
+    QFETCH(QByteArray, textSpec);
+    QFETCH(QString, debugHeaderCode);
+    QFETCH(QString, debugSourceCode);
+    QFETCH(QString, typeName);
+
+    Generator generator;
+    QVERIFY(generator.loadFromText(textSpec));
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+
+    const TLType type = getSolvedType(generator, typeName);
+    QVERIFY(!type.getName().isEmpty());
+    const QString headerCode = Generator::generateDebugWriteOperatorDeclaration(&type);
+    COMPARE_WITH_DUMP(headerCode, debugHeaderCode);
+
+    const QString sourceCode = Generator::generateDebugWriteOperatorDefinition(&type);
+    COMPARE_WITH_DUMP(sourceCode, debugSourceCode);
 }
 
 void tst_Generator::typeWithMemberFlagsConflict()
