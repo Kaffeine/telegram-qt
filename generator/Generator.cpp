@@ -1678,17 +1678,32 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
             qCDebug(c_loggingTypes) << "Bake conflicted member aliases...";
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
-                    if (members.values(member.getName()).count() > 1) {
+                    const int membersInConflict = members.values(member.getName()).count();
+                    if (membersInConflict > 1) {
                         if (c_preferredMemberTypes.value(member.getName()) == member.getType()) {
                             continue;
                         }
+
+                        bool addType = true;
+                        if (membersInConflict == 2) {
+                            const QStringList thePair = members.values(member.getName());
+                            bool firstVector = thePair.constFirst().startsWith(tlVectorType);
+                            bool lastVector = thePair.constLast().startsWith(tlVectorType);
+                            if (firstVector != lastVector) {
+                                // One of the conflicted members is a vector and the other one is
+                                // not. Rename the vector one to <name>Vector and we're done here.
+                                addType = false;
+                            }
+                        }
+
                         QString typeWithoutTL = removeTypePrefix(member.bareType());
                         typeWithoutTL = removeWord(typeWithoutTL, member.getName());
+                        const QString prependPart = addType ? typeWithoutTL : QString();
                         if (member.getName().compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
                             if (member.isVector()) {
-                                member.setAlias(formatName({typeWithoutTL, member.getName(), QStringLiteral("Vector")}, FormatOption::LowerCaseFirstLetter));
+                                member.setAlias(formatName({prependPart, member.getName(), QStringLiteral("Vector")}, FormatOption::LowerCaseFirstLetter));
                             } else {
-                                member.setAlias(formatName({typeWithoutTL, member.getName()}, FormatOption::LowerCaseFirstLetter));
+                                member.setAlias(formatName({prependPart, member.getName()}, FormatOption::LowerCaseFirstLetter));
                             }
                         }
                         qCDebug(c_loggingTypes) << "Member name conflict:" << type.getName()
