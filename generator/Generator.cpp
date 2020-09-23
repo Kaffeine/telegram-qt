@@ -1783,7 +1783,8 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                 foreach (const TLParam &member, subType.members) {
                     TypeTreeItem *dep = typeItemHash.value(member.bareType());
                     if (!dep) {
-                        qWarning() << "Type with name" << member.bareType() << "not found!";
+                        qCCritical(c_loggingTypes) << "Type with name" << member.bareType() << "not found!";
+                        return { };
                     }
                     typeItem->ensureDependence(dep);
                 }
