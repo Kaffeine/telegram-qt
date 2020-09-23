@@ -634,13 +634,13 @@ void tst_Generator::generatedTlType_data()
             << generateTextSpec(c_sourcesAccountPassword)
             << c_typeHeaderCodeAccountPassword
             << c_typeSourceCodeAccountPassword
-            << QStringLiteral("TLAccountPassword");
+            << QStringLiteral("AccountPassword");
 
     QTest::newRow("Peer")
             << generateTextSpec(c_sourcesPeer)
             << c_typeHeaderCodePeer
             << c_typeSourceCodePeer
-            << QStringLiteral("TLPeer");
+            << QStringLiteral("Peer");
 }
 
 void tst_Generator::generatedTlType()
@@ -652,9 +652,11 @@ void tst_Generator::generatedTlType()
 
     Generator generator;
     QVERIFY(generator.loadFromText(textSpec));
-    QMap<QString, TLType> types = generator.types();
-    QVERIFY(types.contains(typeName));
-    const TLType type = types.value(typeName);
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+
+    const TLType type = getSolvedType(generator, typeName);
+    QVERIFY(!type.getName().isEmpty());
     const QString headerCode = Generator::generateTLTypeDefinition(type);
     COMPARE_WITH_DUMP(headerCode, tlTypeHeaderCode);
 
