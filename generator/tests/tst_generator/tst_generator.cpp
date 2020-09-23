@@ -4,10 +4,42 @@
 
 #include "../Generator.hpp"
 
+template <typename T>
+void processFailedComparison(const T &actual, const T &expected)
+{
+    if (actual.size() != expected.size()) {
+        qWarning().noquote() << "Actual size:" << actual.size()
+                             << "expected size:" << expected.size();
+    }
+
+     qWarning() << "actual:";
+     qWarning().noquote().nospace() << actual;
+     qWarning() << "expected:";
+     qWarning().noquote().nospace() << expected;
+
+    const int chunkSize = 32;
+    int offset = 0;
+    while (true) {
+        auto a = actual.mid(offset, chunkSize);
+        auto b = expected.mid(offset, chunkSize);
+        if (a == b) {
+            offset += chunkSize;
+        } else {
+            break;
+        }
+    }
+    qWarning().noquote().nospace() << "Actual data"
+                                      " (since byte " << offset << "):\n"
+                                   << actual.mid(offset, chunkSize);
+    qWarning().noquote().nospace() << "Expected data"
+                                      " (since byte " << offset << "):\n"
+                                   << expected.mid(offset, chunkSize);
+}
+
 #define COMPARE_WITH_DUMP(actual, expected) \
 do {\
     if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__)) {\
-        qWarning().noquote() << "Actual dump:\n" << actual;\
+        processFailedComparison(actual, expected);\
         return;\
     }\
 } while (false)
