@@ -1118,7 +1118,7 @@ QString Generator::debugOperatorPerTypeImplementation(const TypedEntity *type, c
 
     for (const TLParam &member : subType.members) {
         QString typeDebugStatement = QStringLiteral("type.%1");
-        if (member.type().contains(QLatin1String("QByteArray"))) {
+        if (member.type() == QLatin1String("QByteArray")) {
             if (member.getAlias() == QLatin1String("bytes")) {
                 typeDebugStatement = QStringLiteral("printBytes(type.%1)");
             } else {
@@ -1593,7 +1593,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
             stream << spacing << QStringLiteral("    stream >> %1;").arg(param.getAlias()) << GENERATOR_ENDL;
 
             QString typeDebugStatement;
-            if (param.type().contains(QLatin1String("QByteArray"))) {
+            if (param.type() == QLatin1String("QByteArray")) {
                 if (param.getAlias() == QLatin1String("bytes")) {
                     typeDebugStatement = QStringLiteral("printBytes(bytes)");
                 } else {
