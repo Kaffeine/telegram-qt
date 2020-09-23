@@ -503,7 +503,8 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
             sourceLines.append(specCommentPrefix + predicate.toString());
             const int from = predicate.position() + predicate.size();
-            for (const QStringRef memberSource : source.midRef(from, typePart.position() - from).split(QLatin1Char(' '), QString::SkipEmptyParts)) {
+
+            for (const QStringRef memberSource : source.midRef(from, typePart.position() - from).split(QLatin1Char(' '), GENERATOR_SKIP_EMPTY_PARTS)) {
                 sourceLines.append(specCommentPrefix + spacing + memberSource.toString());
             }
             sourceLines.append(specCommentPrefix + doubleSpacing + typePart.toString());
@@ -2132,7 +2133,7 @@ void Generator::generate()
     foreach (const QString &str, vectorUsedForWrite) {
         newWriteInstances.append(streamWriteVectorTemplate(str));
     }
-    QStringList existWriteInstances = existsStreamWriteTemplateInstancing.split(QLatin1Char('\n'), QString::SkipEmptyParts);
+    QStringList existWriteInstances = existsStreamWriteTemplateInstancing.split(QLatin1Char('\n'), GENERATOR_SKIP_EMPTY_PARTS);
     codeStreamWriteTemplateInstancing = reorderLinesAsExist(newWriteInstances, existWriteInstances).join(QLatin1Char('\n'));
     if (!codeStreamWriteTemplateInstancing.isEmpty()) {
         codeStreamWriteTemplateInstancing.append(QLatin1Char('\n'));
@@ -2148,7 +2149,7 @@ void Generator::generate()
     foreach (const QString &str, vectorUsedForRead) {
         newReadInstances.append(streamReadVectorTemplate(str));
     }
-    QStringList existReadInstances = existsStreamReadTemplateInstancing.split(QLatin1Char('\n'), QString::SkipEmptyParts);
+    QStringList existReadInstances = existsStreamReadTemplateInstancing.split(QLatin1Char('\n'), GENERATOR_SKIP_EMPTY_PARTS);
     codeStreamReadTemplateInstancing = reorderLinesAsExist(newReadInstances, existReadInstances).join(QLatin1Char('\n'));
     if (!codeStreamReadTemplateInstancing.isEmpty()) {
         codeStreamReadTemplateInstancing.append(QLatin1Char('\n'));
@@ -2448,7 +2449,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
 
     QList<TLParam> tlParams;
     if (!skipParams) {
-        QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        QVector<QStringRef> params = basePart.split(QLatin1Char(' '), GENERATOR_SKIP_EMPTY_PARTS);
         params.removeFirst(); // The first part is predicate name + id.
 
         foreach (const QStringRef &paramValue, params) {
