@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Peer.hpp"
+
 namespace Telegram {
 
 namespace Server {
@@ -19,11 +21,11 @@ public:
 
     virtual quint32 dcId() const = 0;
 
-    virtual AbstractUser *getUser(const quint32 userId) const = 0;
+    virtual AbstractUser *getUser(const UserId userId) const = 0;
     virtual AbstractUser *getUser(const QString &identifier) const = 0;
     virtual AbstractServerApi *api() = 0;
 
-    virtual QByteArray getForeingUserAuthorization(quint32 userId) = 0;
+    virtual QByteArray getForeingUserAuthorization(UserId userId) = 0;
 };
 
 class RemoteServerConnection : public AbstractServerConnection
@@ -36,11 +38,11 @@ public:
 
     void setRemoteServer(LocalServerApi *remoteServer);
 
-    AbstractUser *getUser(const quint32 userId) const override;
+    AbstractUser *getUser(const UserId userId) const override;
     AbstractUser *getUser(const QString &identifier) const override;
     AbstractServerApi *api();
 
-    QByteArray getForeingUserAuthorization(quint32 userId);
+    QByteArray getForeingUserAuthorization(UserId userId);
 
 protected:
     LocalServerApi *m_server = nullptr;

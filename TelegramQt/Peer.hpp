@@ -50,6 +50,12 @@ public:
         return (p.m_id == m_id) && (p.m_type == m_type);
     }
 
+    template <typename T>
+    constexpr bool operator==(const T &identifier) const
+    {
+        return (identifier.id == m_id) && (identifier.type == m_type);
+    }
+
     constexpr bool operator!=(const Peer &p) const
     {
         return (p.m_id != m_id) || (p.m_type != m_type);
@@ -89,11 +95,74 @@ inline uint qHash(const Peer &key, uint seed)
     return ::qHash(k, seed);
 }
 
+template <Peer::Type peerType>
+class BareId
+{
+public:
+    constexpr BareId(quint32 bareId)
+        :id(bareId)
+    {
+    }
+    constexpr BareId() = default;
+    constexpr bool operator==(BareId bareId) const
+    {
+        return bareId.id == id;
+    }
+    constexpr bool operator==(quint32 bareId) const
+    {
+        return bareId == id;
+    }
+    constexpr bool operator!=(BareId bareId) const
+    {
+        return bareId.id != id;
+    }
+    constexpr bool operator!=(quint32 bareId) const
+    {
+        return bareId != id;
+    }
+    constexpr bool isValid() const
+    {
+        return id;
+    }
+    constexpr operator Peer() const
+    {
+        return Peer(id, type);
+    }
+
+    quint32 id = 0;
+    static const Peer::Type type = peerType;
+};
+
+using UserId = BareId<Peer::Type::User>;
+using ChatId = BareId<Peer::Type::Chat>;
+using ChannelId = BareId<Peer::Type::Channel>;
+
+inline uint qHash(const UserId &key, uint seed)
+{
+    return ::qHash(key.id, seed);
+}
+
+inline uint qHash(const ChatId &key, uint seed)
+{
+    return ::qHash(key.id, seed);
+}
+
+inline uint qHash(const ChannelId &key, uint seed)
+{
+    return ::qHash(key.id, seed);
+}
+
 } // Telegram namespace
 
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::Peer::Type)
+Q_DECLARE_METATYPE(Telegram::UserId)
+Q_DECLARE_METATYPE(Telegram::ChatId)
+Q_DECLARE_METATYPE(Telegram::ChannelId)
 
 Q_DECLARE_TYPEINFO(Telegram::Peer, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::UserId, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::ChatId, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::ChannelId, Q_PRIMITIVE_TYPE);
 
 #endif // TELEGRAM_PEER_HPP

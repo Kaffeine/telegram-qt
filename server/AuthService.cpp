@@ -69,7 +69,7 @@ QByteArray AuthService::getAuthKeyById(quint64 authId) const
     return m_authorizations.value(authId);
 }
 
-quint32 AuthService::getUserIdByAuthId(quint64 authId) const
+UserId AuthService::getUserIdByAuthId(quint64 authId) const
 {
     return m_authToUserId.value(authId);
 }

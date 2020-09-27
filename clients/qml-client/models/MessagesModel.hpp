@@ -80,7 +80,7 @@ struct MessageEvent : public Event
 {
     Q_GADGET
     Q_PROPERTY(QString text MEMBER text)
-    Q_PROPERTY(quint32 sender MEMBER fromId)
+    Q_PROPERTY(UserId sender MEMBER fromId)
 public:
     enum class Status {
         Unknown,
@@ -119,7 +119,7 @@ public:
 
     MessageEvent();
 
-    quint32 fromId = 0; // Sender handle
+    UserId fromId = 0; // Sender handle
 
     const Peer forwardFromPeer() const { return m_forwardPeer; }
     void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }

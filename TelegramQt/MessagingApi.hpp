@@ -101,13 +101,13 @@ public:
     quint32 syncLimit() const;
     void setSyncLimit(quint32 perDialogLimit); // 0 stands for 'unlimited'
 
-    quint32 selfUserId() const;
+    UserId selfUserId() const;
     DialogList *getDialogList();
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
     Namespace::ChatType getChatType(const Peer &peer) const;
 
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
-    PendingOperation *createChat(const QString &title, const QVector<quint32> &contacts);
+    PendingOperation *createChat(const QString &title, const QVector<UserId> &contacts);
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
     bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);
@@ -134,7 +134,7 @@ Q_SIGNALS:
     // Our outgoing message(s) was read
     void messageReadOutbox(const Telegram::Peer peer, quint32 messageId);
 
-    void messageActionChanged(const Telegram::Peer &peer, quint32 userId, const Telegram::MessageAction &action);
+    void messageActionChanged(const Telegram::Peer &peer, Telegram::UserId userId, const Telegram::MessageAction &action);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, MessagingApi)

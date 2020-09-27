@@ -109,6 +109,24 @@ QDebug operator<<(QDebug d, const Telegram::Peer &peer)
     return d;
 }
 
+QDebug operator<<(QDebug d, const Telegram::UserId &peer)
+{
+    d << "Telegram::UserId(" << peer.id << ")";
+    return d;
+}
+
+QDebug operator<<(QDebug d, const Telegram::ChatId &peer)
+{
+    d << "Telegram::ChatId(" << peer.id << ")";
+    return d;
+}
+
+QDebug operator<<(QDebug d, const Telegram::ChannelId &peer)
+{
+    d << "Telegram::ChannelId(" << peer.id << ")";
+    return d;
+}
+
 template <int Size>
 QDebug operator<<(QDebug d, const TLNumber<Size> &n)
 {

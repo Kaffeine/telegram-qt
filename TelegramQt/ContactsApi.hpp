@@ -48,13 +48,13 @@ public:
 
     ContactList *getContactList();
 
-    quint32 selfUserId() const;
+    UserId selfUserId() const;
 
     PendingContactsOperation *addContacts(const ContactInfoList &contacts);
 
-    PendingOperation *deleteContacts(const QVector<quint32> &ids);
-    PendingOperation *blockContact(quint32 contactId);
-    PendingOperation *unblockContact(quint32 contactId);
+    PendingOperation *deleteContacts(const QVector<UserId> &ids);
+    PendingOperation *blockContact(UserId contactId);
+    PendingOperation *unblockContact(UserId contactId);
     PendingContactsOperation *getBlockedContacts();
 
     PendingContactsOperation *search(const QString &query, int limit = 10);
@@ -63,8 +63,8 @@ public:
     PendingContactsOperation *importCard(const QByteArray &cardInfo);
 
 Q_SIGNALS:
-    void contactStatusChanged(quint32 userId, Telegram::Namespace::ContactStatus status);
-    void contactPhotoChanged(quint32 userId);
+    void contactStatusChanged(Telegram::UserId userId, Telegram::Namespace::ContactStatus status);
+    void contactPhotoChanged(Telegram::UserId userId);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ContactsApi)

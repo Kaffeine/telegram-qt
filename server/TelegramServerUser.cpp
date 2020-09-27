@@ -67,7 +67,7 @@ UserContact AbstractUser::toContact() const
     return contact;
 }
 
-LocalUser::LocalUser(quint32 userId, const QString &phoneNumber)
+LocalUser::LocalUser(UserId userId, const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
     setUserId(userId);
@@ -81,7 +81,7 @@ LocalUser::~LocalUser()
 void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
-    if (!m_id) {
+    if (!m_id.isValid()) {
         setUserId(qHash(m_phoneNumber));
     }
 }
@@ -263,7 +263,7 @@ void LocalUser::syncDialogsOrder()
     });
 }
 
-void LocalUser::setUserId(quint32 userId)
+void LocalUser::setUserId(UserId userId)
 {
     m_id = userId;
     m_box.setUserId(m_id);

@@ -151,19 +151,19 @@ bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input,
     for (const ChatMember &member : members) {
         output->participants.append(TLChatParticipant());
         TLChatParticipant &participant = output->participants.last();
-        participant.userId = member.userId;
+        participant.userId = member.userId.id;
         switch (member.role) {
         case ChatMember::Role::Creator:
             participant.tlType = TLValue::ChatParticipantCreator;
             break;
         case ChatMember::Role::Admin:
             participant.tlType = TLValue::ChatParticipantAdmin;
-            participant.inviterId = member.inviterId;
+            participant.inviterId = member.inviterId.id;
             participant.date = member.date;
             break;
         case ChatMember::Role::User:
             participant.tlType = TLValue::ChatParticipant;
-            participant.inviterId = member.inviterId;
+            participant.inviterId = member.inviterId.id;
             participant.date = member.date;
             break;
         case ChatMember::Role::Invalid:
@@ -248,7 +248,7 @@ static void setupUserMessage(TLMessage *output, const MessageData *messageData, 
 
     quint32 flags = 0;
     //if (!receiverInbox->isBroadcast()) {
-        output->fromId = messageData->fromId();
+        output->fromId = messageData->fromId().id;
         flags |= TLMessage::FromId;
     //}
     output->message = messageData->content().text();
@@ -277,7 +277,7 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
 
     quint32 flags = 0;
     //if (!receiverInbox->isBroadcast()) {
-        output->fromId = messageData->fromId();
+        output->fromId = messageData->fromId().id;
         flags |= TLMessage::FromId;
     //}
     switch (messageData->action().type) {
@@ -286,7 +286,7 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
     case ServiceMessageAction::Type::ChatCreate:
         output->action.tlType = TLValue::MessageActionChatCreate;
         output->action.title = messageData->action().title;
-        output->action.users = messageData->action().users;
+        // FIXME UserId output->action.users = messageData->action().users;
         break;
     }
 

@@ -61,7 +61,7 @@ public:
     bool checkPassword(const LocalUser *user, const QByteArray &hash);
 
     QByteArray getAuthKeyById(quint64 authId) const;
-    quint32 getUserIdByAuthId(quint64 authId) const;
+    UserId getUserIdByAuthId(quint64 authId) const;
 
     void registerAuthKey(quint64 authId, const QByteArray &authKey);
 
@@ -69,7 +69,7 @@ public:
 
 protected:
     QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key
-    QHash<quint64, quint32> m_authToUserId;
+    QHash<quint64, UserId> m_authToUserId;
     Authorization::Provider *m_authProvider = nullptr;
 
     friend class ServerImportApi;

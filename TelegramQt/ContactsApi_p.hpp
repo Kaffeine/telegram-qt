@@ -43,7 +43,7 @@ public:
 
     PendingOperation *sync();
 
-    quint32 selfUserId() const;
+    UserId selfUserId() const;
 
     PendingContactsOperation *importContacts(const ContactsApi::ContactInfoList &contacts);
     PendingContactsOperation *getContacts();
@@ -54,8 +54,8 @@ public:
     ContactsRpcLayer *contactsLayer();
 
 public slots:
-    void onUserStatusChanged(quint32 userId, const TLUserStatus &status);
-    void onUserPhotoChanged(quint32 userId, const TLUserProfilePhoto &photo);
+    void onUserStatusChanged(UserId userId, const TLUserStatus &status);
+    void onUserPhotoChanged(UserId userId, const TLUserProfilePhoto &photo);
 
 protected slots:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);

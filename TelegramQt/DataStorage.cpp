@@ -97,7 +97,7 @@ QVector<Peer> DataStorage::contactList() const
     return result;
 }
 
-quint32 DataStorage::selfUserId() const
+UserId DataStorage::selfUserId() const
 {
     Q_D(const DataStorage);
     return d->m_api->selfUserId();
@@ -117,10 +117,10 @@ bool DataStorage::getDialogInfo(DialogInfo *info, const Peer &peer) const
     return false;
 }
 
-bool DataStorage::getUserInfo(UserInfo *info, quint32 userId) const
+bool DataStorage::getUserInfo(UserInfo *info, UserId userId) const
 {
     Q_D(const DataStorage);
-    const QHash<quint32, TLUser *> &users = d->m_api->users();
+    const QHash<UserId, TLUser *> &users = d->m_api->users();
     if (!users.contains(userId)) {
         qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown user" << userId;
         return false;
@@ -135,8 +135,8 @@ bool DataStorage::getUserInfo(UserInfo *info, quint32 userId) const
 bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
 {
     Q_D(const DataStorage);
-    const quint32 chatId = peer.id();
-    const QHash<quint32, TLChat *> &chats = d->m_api->chats();
+    const ChatId chatId = peer.id();
+    const QHash<ChatId, TLChat *> &chats = d->m_api->chats();
     if (!chats.contains(chatId)) {
         qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown chat" << chatId;
         return false;
@@ -153,10 +153,10 @@ Namespace::ChatType DataStorage::getChatType(const Peer &peer) const
     if (!peer.isValid()) {
         return Namespace::ChatTypeInvalid;
     }
+    if (peer == selfUserId()) {
+        return Namespace::ChatTypeSelfChat;
+    }
     if (peer.type() == Peer::User) {
-        if (peer.id() == selfUserId()) {
-            return Namespace::ChatTypeSelfChat;
-        }
         return Namespace::ChatTypeDialog;
     }
     if (peer.type() == Telegram::Peer::Channel) {
@@ -311,7 +311,7 @@ DataInternalApi::~DataInternalApi()
 
 const TLUser *DataInternalApi::getSelfUser() const
 {
-    if (!m_selfUserId) {
+    if (!m_selfUserId.isValid()) {
         return nullptr;
     }
     return m_users.value(m_selfUserId);
@@ -408,7 +408,7 @@ void DataInternalApi::processData(const TLUser &user)
         m_users.insert(user.id, new TLUser(user));
     }
     if (user.self()) {
-        if (m_selfUserId && (m_selfUserId != user.id)) {
+        if (m_selfUserId.isValid() && (m_selfUserId.id != user.id)) {
             qWarning() << "Got self user with different id.";
         }
         m_selfUserId = user.id;
@@ -595,7 +595,7 @@ bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 maxId)
     return true;
 }
 
-bool DataInternalApi::updateUserPhoto(quint32 userId, const TLUserProfilePhoto &photo)
+bool DataInternalApi::updateUserPhoto(UserId userId, const TLUserProfilePhoto &photo)
 {
     TLUser *existsUser = m_users.value(userId);
     if (!existsUser) {
@@ -639,7 +639,7 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
         }
         break;
     case Telegram::Peer::User:
-        if (peer.id() == m_selfUserId) {
+        if (peer == m_selfUserId) {
             inputPeer.tlType = TLValue::InputPeerSelf;
         } else {
             if (m_users.contains(peer.id())) {
@@ -656,7 +656,7 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
     return inputPeer;
 }
 
-TLInputUser DataInternalApi::toInputUser(quint32 userId) const
+TLInputUser DataInternalApi::toInputUser(UserId userId) const
 {
     TLInputUser inputUser;
     if (userId == selfUserId()) {
@@ -681,13 +681,13 @@ TLInputUser DataInternalApi::toInputUser(quint32 userId) const
     return inputUser;
 }
 
-TLInputChannel DataInternalApi::toInputChannel(quint32 channelId) const
+TLInputChannel DataInternalApi::toInputChannel(ChannelId channelId) const
 {
     TLInputChannel inputChannel;
-    const TLChat *channel = m_chats.value(channelId);
+    const TLChat *channel = m_chats.value(channelId.id);
     if (channel) {
         inputChannel.tlType = TLValue::InputChannel;
-        inputChannel.channelId = channelId;
+        inputChannel.channelId = channelId.id;
         inputChannel.accessHash = channel->accessHash;
     } else {
         qCWarning(lcClientDataStorage) << Q_FUNC_INFO

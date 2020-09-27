@@ -220,7 +220,7 @@ Namespace::MessageFlags Message::flags() const
     return d->flags;
 }
 
-quint32 Message::fromUserId() const
+UserId Message::fromUserId() const
 {
     return d->fromId;
 }

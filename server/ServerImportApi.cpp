@@ -23,7 +23,7 @@ QList<Session *> ServerImportApi::getSessions() const
     return m_server->m_sessions.values();
 }
 
-QList<quint32> ServerImportApi::getLocalUsers() const
+QList<UserId> ServerImportApi::getLocalUsers() const
 {
     return m_server->m_users.keys();
 }

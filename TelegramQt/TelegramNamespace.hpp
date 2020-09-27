@@ -227,7 +227,7 @@ struct TELEGRAMQT_EXPORT Message
     Namespace::MessageType type() const;
     Namespace::MessageFlags flags() const;
 
-    quint32 fromUserId() const;
+    UserId fromUserId() const;
     QString text() const;
     quint32 timestamp() const;
 

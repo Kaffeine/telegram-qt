@@ -384,7 +384,7 @@ void tst_ConnectionApi::testClientConnection()
     QCOMPARE(client.accountStorage()->phoneNumber(), userData.phoneNumber);
     QCOMPARE(client.accountStorage()->dcInfo().id, server->dcId());
     QCOMPARE(client.accountStorage()->dcInfo().id, userData.dcId);
-    QVERIFY(client.contactsApi()->selfUserId());
+    QVERIFY(client.contactsApi()->selfUserId().isValid());
 }
 
 void tst_ConnectionApi::registrationAuthError()

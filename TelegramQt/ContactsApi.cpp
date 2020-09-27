@@ -42,7 +42,7 @@ PendingOperation *ContactsApiPrivate::sync()
     return operation;
 }
 
-quint32 ContactsApiPrivate::selfUserId() const
+UserId ContactsApiPrivate::selfUserId() const
 {
     return m_backend->dataStorage()->selfUserId();
 }
@@ -99,7 +99,7 @@ ContactsRpcLayer *ContactsApiPrivate::contactsLayer()
     return m_backend->contactsLayer();
 }
 
-void ContactsApiPrivate::onUserStatusChanged(quint32 userId, const TLUserStatus &status)
+void ContactsApiPrivate::onUserStatusChanged(UserId userId, const TLUserStatus &status)
 {
     Q_Q(ContactsApi);
     DataInternalApi *dataApi = dataInternalApi();
@@ -112,7 +112,7 @@ void ContactsApiPrivate::onUserStatusChanged(quint32 userId, const TLUserStatus 
     emit q->contactStatusChanged(userId, getApiContactStatus(status.tlType));
 }
 
-void ContactsApiPrivate::onUserPhotoChanged(quint32 userId, const TLUserProfilePhoto &photo)
+void ContactsApiPrivate::onUserPhotoChanged(UserId userId, const TLUserProfilePhoto &photo)
 {
     Q_Q(ContactsApi);
     if (!dataInternalApi()->updateUserPhoto(userId, photo)) {
@@ -191,7 +191,7 @@ ContactList *ContactsApi::getContactList()
     return d->getContactList();
 }
 
-quint32 ContactsApi::selfUserId() const
+UserId ContactsApi::selfUserId() const
 {
     Q_D(const ContactsApi);
     return d->selfUserId();
@@ -203,17 +203,17 @@ PendingContactsOperation *ContactsApi::addContacts(const ContactsApi::ContactInf
     return d->importContacts(contacts);
 }
 
-Telegram::PendingOperation *ContactsApi::deleteContacts(const QVector<quint32> &ids)
+Telegram::PendingOperation *ContactsApi::deleteContacts(const QVector<Telegram::UserId> &ids)
 {
     return nullptr;
 }
 
-Telegram::PendingOperation *ContactsApi::blockContact(quint32 contactId)
+Telegram::PendingOperation *ContactsApi::blockContact(Telegram::UserId contactId)
 {
     return nullptr;
 }
 
-Telegram::PendingOperation *ContactsApi::unblockContact(quint32 contactId)
+Telegram::PendingOperation *ContactsApi::unblockContact(Telegram::UserId contactId)
 {
     return nullptr;
 }

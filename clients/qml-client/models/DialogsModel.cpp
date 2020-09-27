@@ -127,7 +127,7 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     }
 
     QString senderName;
-    if (lastChatMessage.fromUserId()) {
+    if (lastChatMessage.fromUserId().isValid()) {
         Telegram::UserInfo userInfo;
         client()->dataStorage()->getUserInfo(&userInfo, lastChatMessage.fromUserId());
         senderName = userInfo.firstName();

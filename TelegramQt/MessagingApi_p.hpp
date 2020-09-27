@@ -106,7 +106,7 @@ public:
 
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
-    PendingOperation *createChat(const QString &title, const QVector<quint32> &contacts);
+    PendingOperation *createChat(const QString &title, const QVector<UserId> &contacts);
 
     MessagesRpcLayer *messagesLayer();
     ChannelsRpcLayer *channelsLayer();

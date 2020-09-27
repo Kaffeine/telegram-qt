@@ -3,6 +3,8 @@
 
 #include <QtGlobal>
 
+#include "Peer.hpp"
+
 class MessageData;
 
 namespace Telegram {
@@ -20,7 +22,7 @@ public:
 
     QList<QByteArray> getAuthorizations() const;
     QList<Session *> getSessions() const;
-    QList<quint32> getLocalUsers() const;
+    QList<Telegram::UserId> getLocalUsers() const;
 
     void addAuthKey(quint64 authId, const QByteArray &authKey);
     Session *addSession(quint64 sessionId);

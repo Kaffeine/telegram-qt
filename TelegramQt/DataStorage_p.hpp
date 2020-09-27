@@ -98,20 +98,20 @@ public:
     void dequeueMessageRead(const Peer peer, quint32 messageId);
     bool updateInboxRead(const Peer peer, quint32 maxId);
     bool updateOutboxRead(const Peer peer, quint32 maxId);
-    bool updateUserPhoto(quint32 userId, const TLUserProfilePhoto &photo);
+    bool updateUserPhoto(UserId userId, const TLUserProfilePhoto &photo);
 
-    quint32 selfUserId() const { return m_selfUserId; }
+    UserId selfUserId() const { return m_selfUserId; }
 
     TLInputPeer toInputPeer(const TLPeer &peer) const;
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
-    TLInputUser toInputUser(quint32 userId) const;
-    TLInputChannel toInputChannel(quint32 channelId) const;
+    TLInputUser toInputUser(UserId userId) const;
+    TLInputChannel toInputChannel(ChannelId channelId) const;
 
     static quint64 channelMessageToKey(quint32 channelId, quint32 messageId);
 
     TLVector<TLContact> contactList() const { return m_contactList; }
-    const QHash<quint32, TLUser *> &users() const { return m_users; }
-    const QHash<quint32, TLChat *> &chats() const { return m_chats; }
+    const QHash<UserId, TLUser *> &users() const { return m_users; }
+    const QHash<ChatId, TLChat *> &chats() const { return m_chats; }
     const TLVector<UserDialog *> &dialogs() const { return m_dialogs; }
     const QVector<Peer> &pinnedDialogs() const { return m_pinnedDialogs; }
     UserDialog *getDialog(const Peer &peer) const;
@@ -128,15 +128,15 @@ protected:
 
     QHash<Telegram::Peer, DialogState> m_dialogStates;
 
-    QHash<quint32, TLUser *> m_users;
-    QHash<quint32, TLChat *> m_chats;
+    QHash<UserId, TLUser *> m_users;
+    QHash<ChatId, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;
     QHash<quint64, TLMessage *> m_channelMessages;
     TLVector<UserDialog *> m_dialogs;
     QVector<Peer> m_pinnedDialogs;
     TLVector<TLContact> m_contactList;
     QQueue<SentMessage> m_queuedMessages;
-    quint32 m_selfUserId = 0;
+    UserId m_selfUserId = 0;
 };
 
 } // Client namespace

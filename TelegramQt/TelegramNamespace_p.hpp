@@ -52,7 +52,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT Message::Private
 
     QString text;
     quint32 id = 0;
-    quint32 fromId = 0; // Telegram user id
+    UserId fromId = 0; // Telegram user id
     quint32 timestamp = 0;
     quint32 forwardTimestamp = 0;
     quint32 replyToMessageId = 0;

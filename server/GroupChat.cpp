@@ -1,5 +1,7 @@
 #include "GroupChat.hpp"
 
+#include "Debug.hpp"
+
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(lcServerGroupChat, "telegram.server.groupchat", QtWarningMsg)
@@ -24,7 +26,7 @@ void LocalGroupChat::setTitle(const QString &title)
     m_title = title;
 }
 
-void LocalGroupChat::setCreator(quint32 creatorId)
+void LocalGroupChat::setCreator(UserId creatorId)
 {
     if (!m_members.isEmpty()) {
         qWarning(lcServerGroupChat) << "Invalid setCreator() call for group" << m_id;
@@ -36,10 +38,10 @@ void LocalGroupChat::setCreator(quint32 creatorId)
     m_members.append(creator);
 }
 
-void LocalGroupChat::inviteMembers(const QVector<quint32> &members, quint32 inviterId, quint32 date)
+void LocalGroupChat::inviteMembers(const QVector<UserId> &members, UserId inviterId, quint32 date)
 {
-    QVector<quint32> currentMembers = memberIds();
-    for (quint32 userId : members) {
+    QVector<UserId> currentMembers = memberIds();
+    for (UserId userId : members) {
         if (currentMembers.contains(userId)) {
             qWarning(lcServerGroupChat) << "Unable to invite an already active member"
                                         << userId << "of group" << m_id;
@@ -55,7 +57,7 @@ void LocalGroupChat::inviteMembers(const QVector<quint32> &members, quint32 invi
     }
 }
 
-quint32 GroupChat::creatorId() const
+UserId GroupChat::creatorId() const
 {
     if (m_members.isEmpty()) {
         qWarning(lcServerGroupChat) << "Invalid creatorId() call for group" << m_id;
@@ -64,9 +66,9 @@ quint32 GroupChat::creatorId() const
     return m_members.first().userId;
 }
 
-QVector<quint32> GroupChat::memberIds() const
+QVector<UserId> GroupChat::memberIds() const
 {
-    QVector<quint32> ids;
+    QVector<UserId> ids;
     ids.reserve(m_members.count());
     for (const ChatMember &member : m_members) {
         ids.append(member.userId);

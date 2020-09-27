@@ -86,7 +86,7 @@ void RpcLayer::setServerApi(LocalServerApi *api)
 
 bool RpcLayer::isAuthorized() const
 {
-    return m_session && m_session->userId();
+    return m_session && m_session->userId().isValid();
 }
 
 LocalUser *RpcLayer::getUser() const
@@ -94,7 +94,7 @@ LocalUser *RpcLayer::getUser() const
     if (!m_session) {
         return nullptr;
     }
-    if (!m_session->userOrWantedUserId()) {
+    if (!m_session->userOrWantedUserId().isValid()) {
         return nullptr;
     }
     return m_api->getUser(m_session->userOrWantedUserId());

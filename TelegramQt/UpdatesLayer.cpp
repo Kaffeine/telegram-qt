@@ -74,9 +74,9 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
 
             if (shortMessage.out()) {
                 shortMessage.toId.userId = updates.userId;
-                shortMessage.fromId = internal->selfUserId();
+                shortMessage.fromId = internal->selfUserId().id;
             } else {
-                shortMessage.toId.userId = internal->selfUserId();
+                shortMessage.toId.userId = internal->selfUserId().id;
                 shortMessage.fromId = updates.userId;
             }
         } else {

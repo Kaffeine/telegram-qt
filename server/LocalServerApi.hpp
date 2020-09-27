@@ -34,7 +34,7 @@ public:
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual LocalUser *addUser(const QString &identifier) = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
-    virtual LocalUser *getUser(quint32 userId) const = 0;
+    virtual LocalUser *getUser(UserId userId) const = 0;
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 
     virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
@@ -43,7 +43,7 @@ public:
     virtual QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const = 0;
 
     using AbstractServerApi::getAbstractUser;
-    virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;
+    virtual AbstractUser *getAbstractUser(UserId userId, quint64 accessHash, const LocalUser *applicant) const = 0;
     virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const = 0;
     virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
@@ -53,12 +53,12 @@ public:
     virtual bool usernameIsValid(const QString &username) const = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername, RpcError *error = nullptr) = 0;
     virtual bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) = 0;
-    virtual GroupChat *createChat(LocalUser *user, const QString &title, const QVector<quint32> &members) = 0;
+    virtual GroupChat *createChat(LocalUser *user, const QString &title, const QVector<UserId> &members) = 0;
 
     virtual PendingOperation *searchContacts(const QString &query, quint32 limit, QVector<Peer> *output) = 0;
-    virtual PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) = 0;
-    virtual QByteArray generateExportedAuthorization(quint32 userId) = 0;
-    virtual AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) = 0;
+    virtual PendingOperation *exportAuthorization(quint32 dcId, UserId userId, QByteArray *outputAuthBytes) = 0;
+    virtual QByteArray generateExportedAuthorization(UserId userId) = 0;
+    virtual AuthorizedUser *getAuthorizedUser(UserId userId, const QByteArray &authBytes) = 0;
 
     virtual void reportMessageRead(const MessageData *messageData) = 0;
 

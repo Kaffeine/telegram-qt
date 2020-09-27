@@ -22,7 +22,7 @@ void RemoteServerConnection::setRemoteServer(LocalServerApi *remoteServer)
     m_server = remoteServer;
 }
 
-AbstractUser *RemoteServerConnection::getUser(const quint32 userId) const
+AbstractUser *RemoteServerConnection::getUser(const UserId userId) const
 {
     return m_server->getUser(userId);
 }
@@ -37,7 +37,7 @@ AbstractServerApi *RemoteServerConnection::api()
     return m_server;
 }
 
-QByteArray RemoteServerConnection::getForeingUserAuthorization(quint32 userId)
+QByteArray RemoteServerConnection::getForeingUserAuthorization(UserId userId)
 {
     return m_server->generateExportedAuthorization(userId);
 }

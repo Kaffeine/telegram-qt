@@ -44,8 +44,8 @@ public:
 
     Peer dialogPeer;
     MessageAction messageAction;
-    quint32 userId = 0; // The Update recipient
-    quint32 fromId = 0;
+    UserId userId = 0; // The Update recipient
+    UserId fromId = 0;
     quint32 messageId = 0;
     quint64 messageDataId = 0;
     quint32 dcId = 0;
@@ -69,7 +69,7 @@ public:
     virtual IMediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
-    virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
+    virtual AbstractUser *getAbstractUser(UserId userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
     virtual GroupChat *getGroupChat(quint32 chatId) const = 0;
 

@@ -41,9 +41,9 @@ public:
     QVector<Telegram::Peer> pinnedDialogs() const;
     QVector<Telegram::Peer> contactList() const;
 
-    quint32 selfUserId() const;
+    UserId selfUserId() const;
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
-    bool getUserInfo(UserInfo *info, quint32 userId) const;
+    bool getUserInfo(UserInfo *info, UserId userId) const;
     bool getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const;
     Namespace::ChatType getChatType(const Peer &peer) const;
 

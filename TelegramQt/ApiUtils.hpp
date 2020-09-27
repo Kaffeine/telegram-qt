@@ -29,14 +29,14 @@ namespace Telegram {
 
 namespace Utils {
 
-TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, quint32 selfId);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, UserId selfId);
 TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLPeer &peer);
 TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLUser &user);
 TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLChat *chat);
 
 TELEGRAMQT_INTERNAL_EXPORT TLPeer toTLPeer(const Telegram::Peer &peer);
 
-TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer getMessageDialogPeer(const TLMessage &message, quint32 applicantUserId);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer getMessageDialogPeer(const TLMessage &message, UserId applicantUserId);
 
 TELEGRAMQT_INTERNAL_EXPORT QString mimeTypeByStorageFileType(TLValue type);
 TELEGRAMQT_INTERNAL_EXPORT Namespace::MessageType getPublicMessageType(const TLMessageMedia &media);

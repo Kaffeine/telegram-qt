@@ -6,11 +6,11 @@ namespace Telegram {
 
 namespace Utils {
 
-Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, quint32 selfId)
+Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, UserId selfId)
 {
     switch (inputPeer.tlType) {
     case TLValue::InputPeerSelf:
-        return Telegram::Peer::fromUserId(selfId);
+        return selfId;
     case TLValue::InputPeerUser:
         return Telegram::Peer::fromUserId(inputPeer.userId);
     case TLValue::InputPeerChat:
@@ -79,10 +79,10 @@ TLPeer toTLPeer(const Telegram::Peer &peer)
     return result;
 }
 
-Peer getMessageDialogPeer(const TLMessage &message, quint32 applicantUserId)
+Peer getMessageDialogPeer(const TLMessage &message, UserId applicantUserId)
 {
     if (message.toId.tlType == TLValue::PeerUser) {
-        if (message.toId.userId == applicantUserId) {
+        if (applicantUserId == message.toId.userId) {
             if (message.fromId) {
                 return Peer::fromUserId(message.fromId);
             }

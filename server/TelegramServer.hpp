@@ -75,11 +75,11 @@ public:
     IMediaService *mediaService() const override { return m_mediaServiceIface; }
     MessageService *messageService() const override { return m_messageService; }
 
-    AbstractUser *getAbstractUser(quint32 userId) const override;
+    AbstractUser *getAbstractUser(UserId userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;
     AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const override;
-    AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const override;
-    AbstractUser *getRemoteUser(quint32 userId) const;
+    AbstractUser *getAbstractUser(UserId userId, quint64 accessHash, const LocalUser *applicant) const override;
+    AbstractUser *getRemoteUser(UserId userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
     GroupChat *getGroupChat(quint32 chatId) const override;
 
@@ -94,7 +94,7 @@ public:
     QVector<quint32> getPeerWatchers(const Peer &peer) const override;
 
     LocalUser *getUser(const QString &identifier) const override;
-    LocalUser *getUser(quint32 userId) const override;
+    LocalUser *getUser(UserId userId) const override;
     Peer getPeerByUserName(const QString &userName) const override;
     LocalUser *addUser(const QString &identifier) override;
 
@@ -105,11 +105,11 @@ public:
     bool usernameIsValid(const QString &username) const override;
     bool setUserName(LocalUser *user, const QString &newUsername, RpcError *error = nullptr) override;
     bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) override;
-    GroupChat *createChat(LocalUser *user, const QString &title, const QVector<quint32> &members) override;
+    GroupChat *createChat(LocalUser *user, const QString &title, const QVector<UserId> &members) override;
 
-    PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) override;
-    QByteArray generateExportedAuthorization(quint32 userId) override;
-    AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) override;
+    PendingOperation *exportAuthorization(quint32 dcId, UserId userId, QByteArray *outputAuthBytes) override;
+    QByteArray generateExportedAuthorization(UserId userId) override;
+    AuthorizedUser *getAuthorizedUser(UserId userId, const QByteArray &authBytes) override;
 
     PendingOperation *searchContacts(const QString &query, quint32 limit, QVector<Peer> *output);
 
@@ -175,17 +175,17 @@ private:
     quint32 m_localGroupId = 0;
 
     // Session data
-    QMultiHash<quint32, QByteArray> m_exportedAuthorizations; // userId to auth bytes
-    QHash<quint32, AuthorizedUser *> m_authorizedUsers; // userId to AuthorizedUser
+    QMultiHash<UserId, QByteArray> m_exportedAuthorizations; // userId to auth bytes
+    QHash<UserId, AuthorizedUser *> m_authorizedUsers; // userId to AuthorizedUser
 
     // Data
-    QHash<quint32, LocalUser*> m_users; // userId to User
+    QHash<UserId, LocalUser*> m_users; // userId to User
     QHash<quint64, Session*> m_sessions; // Session id to Session
     QHash<quint32, LocalGroupChat*> m_groups; // groupId to GroupChat
 
     // Maps for faster lookup
-    QHash<QString, quint32> m_phoneToUserId;
-    QHash<QString, quint32> m_usernameToUserId;
+    QHash<QString, UserId> m_phoneToUserId;
+    QHash<QString, UserId> m_usernameToUserId;
 
     friend class ServerImportApi;
 };

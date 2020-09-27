@@ -175,7 +175,7 @@ void AuthRpcOperation::runCheckPassword()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     Session *session = layer()->session();
-    if (!session || !session->wantedUserId()) {
+    if (!session || !session->wantedUserId().isValid()) {
         sendRpcError(RpcError::AuthKeyUnregistered);
         return;
     }
@@ -246,7 +246,7 @@ void AuthRpcOperation::runImportAuthorization()
         return;
     }
 
-    if (layer()->session()->userOrWantedUserId()) {
+    if (layer()->session()->userOrWantedUserId().isValid()) {
         if (layer()->session()->userId() == arguments.id) {
             TLAuthAuthorization result;
             Utils::setupTLUser(&result.user, user, user);

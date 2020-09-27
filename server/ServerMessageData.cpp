@@ -22,14 +22,14 @@ bool DocumentAttribute::operator!=(const DocumentAttribute &another) const
     return !(*this == another);
 }
 
-MessageData::MessageData(quint32 from, Peer to, const MessageContent &content)
+MessageData::MessageData(UserId from, Peer to, const MessageContent &content)
     : m_content(content)
     , m_to(to)
     , m_fromId(from)
 {
 }
 
-MessageData::MessageData(quint32 from, Peer to, const ServiceMessageAction &action)
+MessageData::MessageData(UserId from, Peer to, const ServiceMessageAction &action)
     : m_action(action)
     , m_to(to)
     , m_fromId(from)
@@ -68,7 +68,7 @@ void MessageData::setEditDate(quint32 date)
 
 bool MessageData::isMessageToSelf() const
 {
-    return (m_to.type() == Peer::User) && (m_to.id() == m_fromId);
+    return m_to == m_fromId;
 }
 
 bool MessageData::isServiceMessage() const
@@ -81,12 +81,10 @@ void MessageData::addReference(const Peer &peer, quint32 messageId)
     m_references.insert(peer, messageId);
 }
 
-Peer MessageData::getDialogPeer(quint32 applicantUserId) const
+Peer MessageData::getDialogPeer(UserId applicantUserId) const
 {
-    if (m_to.type() == Peer::User) {
-        if (m_to.id() == applicantUserId) {
-            return Peer::fromUserId(m_fromId);
-        }
+    if (m_to == applicantUserId) {
+        return m_fromId;
     }
     return m_to;
 }
@@ -148,8 +146,8 @@ PeerList ServiceMessageAction::getPeers() const
 {
     PeerList peers;
     peers.reserve(users.count());
-    for (const quint32 userId : users) {
-        peers.append(Peer::fromUserId(userId));
+    for (const UserId userId : users) {
+        peers.append(userId);
     }
     return peers;
 }

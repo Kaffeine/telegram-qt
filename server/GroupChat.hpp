@@ -16,8 +16,8 @@ public:
         Admin,
         User,
     };
-    quint32 userId = 0;
-    quint32 inviterId = 0;
+    UserId userId = 0;
+    UserId inviterId = 0;
     quint32 date = 0;
     Role role = Role::Invalid;
 };
@@ -28,12 +28,12 @@ public:
     virtual quint32 id() const { return m_id; }
     virtual QString title() const { return m_title; }
 
-    virtual quint32 creatorId() const;
+    virtual UserId creatorId() const;
     virtual quint32 date() const { return m_date; }
 
     virtual quint32 dcId() const { return m_dcId; }
     virtual QVector<ChatMember> members() const { return m_members; }
-    QVector<quint32> memberIds() const;
+    QVector<UserId> memberIds() const;
 
     Peer toPeer() const override { return Peer::fromChatId(id()); }
 
@@ -52,8 +52,8 @@ public:
 
     void setDate(quint32 date);
     void setTitle(const QString &title);
-    void setCreator(quint32 creatorId);
-    void inviteMembers(const QVector<quint32> &members, quint32 inviterId, quint32 date);
+    void setCreator(UserId creatorId);
+    void inviteMembers(const QVector<UserId> &members, UserId inviterId, quint32 date);
 };
 
 } // Server namespace

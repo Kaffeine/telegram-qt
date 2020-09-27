@@ -282,7 +282,7 @@ void Server::setSessionConnection(Session *session, RemoteClientConnection *conn
 {
     session->setConnection(connection);
 
-    if (session->userId()) {
+    if (session->userId().isValid()) {
         LocalUser *localUser = getUser(session->userId());
         if (localUser) {
             // It is OK to have no local user
@@ -390,25 +390,21 @@ QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
 
 LocalUser *Server::getUser(const QString &identifier) const
 {
-    const quint32 id = m_phoneToUserId.value(identifier);
-    if (!id) {
+    const UserId id = m_phoneToUserId.value(identifier);
+    if (!id.isValid()) {
         return nullptr;
     }
     return m_users.value(id);
 }
 
-LocalUser *Server::getUser(quint32 userId) const
+LocalUser *Server::getUser(UserId userId) const
 {
     return m_users.value(userId);
 }
 
 Peer Server::getPeerByUserName(const QString &userName) const
 {
-    quint32 userId = m_usernameToUserId.value(userName);
-    if (userId) {
-        return Peer::fromUserId(userId);
-    }
-    return Peer();
+    return m_usernameToUserId.value(userName);
 }
 
 AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const
@@ -425,7 +421,7 @@ AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, const LocalU
     }
 }
 
-AbstractUser *Server::getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const
+AbstractUser *Server::getAbstractUser(UserId userId, quint64 accessHash, const LocalUser *applicant) const
 {
     AbstractUser *u = getAbstractUser(userId);
     // TODO: Check access hash
@@ -453,8 +449,8 @@ LocalUser *Server::addUser(const QString &identifier)
 bool Server::bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId)
 {
     Session *session = getSessionById(sessionId);
-    const quint32 userId = m_authService->getUserIdByAuthId(connection->authId());
-    LocalUser *localUser = userId ? getUser(userId) : nullptr;
+    const UserId userId = m_authService->getUserIdByAuthId(connection->authId());
+    LocalUser *localUser = userId.isValid() ? getUser(userId) : nullptr;
 
     if (!session) {
         session = addSession(sessionId);
@@ -549,7 +545,7 @@ bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
     return true;
 }
 
-GroupChat *Server::createChat(LocalUser *user, const QString &title, const QVector<quint32> &members)
+GroupChat *Server::createChat(LocalUser *user, const QString &title, const QVector<UserId> &members)
 {
     const quint32 date = Telegram::Utils::getCurrentTime();
     const quint32 chatId = generateChatId();
@@ -564,7 +560,7 @@ GroupChat *Server::createChat(LocalUser *user, const QString &title, const QVect
     return groupChat;
 }
 
-PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes)
+PendingOperation *Server::exportAuthorization(quint32 dcId, UserId userId, QByteArray *outputAuthBytes)
 {
     if (dcId == m_dcOption.id) {
         return PendingOperation::failOperation(QLatin1String("Invalid request: this DC is the target one"));
@@ -582,21 +578,21 @@ PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByt
 
     PendingOperation *operation = new PendingOperation(this);
     operation->setObjectName(QStringLiteral("ExportAuthOperation(user%1 from %2 to %3)")
-                             .arg(userId).arg(m_dcOption.id).arg(dcId));
+                             .arg(userId.id).arg(m_dcOption.id).arg(dcId));
     operation->finishLater();
     return operation;
 }
 
-QByteArray Server::generateExportedAuthorization(quint32 userId)
+QByteArray Server::generateExportedAuthorization(UserId userId)
 {
     QByteArray bytes = RandomGenerator::instance()->generate(ExportedAuthorizationKeySize);
     m_exportedAuthorizations.insert(userId, bytes);
     return bytes;
 }
 
-AuthorizedUser *Server::getAuthorizedUser(quint32 userId, const QByteArray &authBytes)
+AuthorizedUser *Server::getAuthorizedUser(UserId userId, const QByteArray &authBytes)
 {
-    if (!userId || authBytes.isEmpty()) {
+    if (!userId.isValid() || authBytes.isEmpty()) {
         return nullptr;
     }
     if (!m_exportedAuthorizations.values(userId).contains(authBytes)) {
@@ -631,8 +627,8 @@ PendingOperation *Server::searchContacts(const QString &query, quint32 limit, QV
 
 void Server::reportMessageRead(const MessageData *messageData)
 {
-    const Peer senderPostBoxPeer = messageData->fromId()
-            ? Peer::fromUserId(messageData->fromId())
+    const Peer senderPostBoxPeer = messageData->fromId().isValid()
+            ? messageData->fromId()
             : messageData->toPeer();
     const quint32 senderMessageId = messageData->getReference(senderPostBoxPeer);
 
@@ -1050,7 +1046,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
             // Invalid peer
             break;
         }
-        update->userId = notification.fromId;
+        update->userId = notification.fromId.id;
         // Note: action depends on Layer. Process this to support different layers.
         update->action = Telegram::Utils::toTL(notification.messageAction);
     }
@@ -1070,9 +1066,9 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     case UpdateNotification::Type::UpdateName:
     {
         update->tlType = TLValue::UpdateUserName;
-        update->userId = notification.fromId;
+        update->userId = notification.fromId.id;
 
-        if (!interestingUser || (interestingUser->id() != update->userId)) {
+        if (!interestingUser || (interestingUser->userId() != update->userId)) {
             interestingUser = getAbstractUser(update->userId);
             if (!interestingUser) {
                 qCWarning(lcServerUpdates) << CALL_INFO
@@ -1090,9 +1086,9 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     case UpdateNotification::Type::UpdateUserStatus:
     {
         update->tlType = TLValue::UpdateUserStatus;
-        update->userId = notification.fromId;
+        update->userId = notification.fromId.id;
 
-        if (!interestingUser || (interestingUser->id() != notification.userId)) {
+        if (!interestingUser || (interestingUser->userId() != notification.userId)) {
             interestingUser = getAbstractUser(update->userId);
             if (!interestingUser) {
                 qCWarning(lcServerUpdates) << CALL_INFO
@@ -1283,7 +1279,7 @@ void Server::processCreateChat(const UpdateNotification &notification)
     const MessageData *messageData = messageService()->getMessage(notification.messageDataId);
     chat->setTitle(messageData->action().title);
     chat->setCreator(messageData->fromId());
-    QVector<quint32> invitedMembers = messageData->action().users;
+    QVector<UserId> invitedMembers = messageData->action().users;
     invitedMembers.removeOne(chat->creatorId());
     chat->inviteMembers(invitedMembers, chat->creatorId(), chat->date());
     m_groups.insert(chatId, chat);
@@ -1348,7 +1344,7 @@ QString Server::normalizeIdentifier(const QString &identifier) const
     return identifier;
 }
 
-AbstractUser *Server::getAbstractUser(quint32 userId) const
+AbstractUser *Server::getAbstractUser(UserId userId) const
 {
     AbstractUser *user = getUser(userId);
     if (!user) {
@@ -1366,7 +1362,7 @@ AbstractUser *Server::getAbstractUser(const QString &identifier) const
     return user;
 }
 
-AbstractUser *Server::getRemoteUser(quint32 userId) const
+AbstractUser *Server::getRemoteUser(UserId userId) const
 {
     for (AbstractServerConnection *remoteServer : m_remoteServers) {
         AbstractUser *u = remoteServer->getUser(userId);
@@ -1411,7 +1407,7 @@ QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *ap
     }
     if (targetPeer.type() == Peer::Chat) {
         const GroupChat *groupChat = getGroupChat(targetPeer.id());
-        for (const quint32 userId : groupChat->memberIds()) {
+        for (const UserId userId : groupChat->memberIds()) {
             boxes.append(getAbstractUser(userId)->getPostBox());
         }
     }

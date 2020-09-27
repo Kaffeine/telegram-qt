@@ -136,6 +136,10 @@ void tst_MessagesApi::getSelfUserDialog()
     QVERIFY(cluster.start());
 
     Server::LocalUser *user = tryAddUser(&cluster, c_user1);
+    const UserId uId = user->userId();
+    QCOMPARE(uId.id, user->id());
+
+    QVERIFY(user);
     Server::AbstractServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
     QVERIFY(serverApi);
 
@@ -143,7 +147,7 @@ void tst_MessagesApi::getSelfUserDialog()
 
     {
         Server::MessageData *data = serverApi->messageService()
-                ->addMessage(user->userId(), user->toPeer(), c_messageText);
+                ->addMessage(uId, user->toPeer(), c_messageText);
         cluster.sendMessage(data);
     }
 
@@ -537,7 +541,7 @@ void tst_MessagesApi::groupChatMessaging()
     }
 
     const QString chatTitle = QLatin1String("new chat");
-    const QVector<quint32> invitedChatMembers = { user2->id(), user3->id() };
+    const QVector<UserId> invitedChatMembers = { user2->userId(), user3->userId() };
     PendingOperation *createChatOperation = client1.messagingApi()->createChat(chatTitle, invitedChatMembers);
     TRY_VERIFY(createChatOperation->isFinished());
     QVERIFY(createChatOperation->isSucceeded());
@@ -790,7 +794,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client2MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user1->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user1->userId());
     }
 
     TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
@@ -798,7 +802,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client3MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user1->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user1->userId());
     }
     QVERIFY(client1MessageActionsSpy.isEmpty());
     // onMessageActionTimeout
@@ -817,7 +821,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user2->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user2->userId());
     }
 
     TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
@@ -825,7 +829,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client3MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user2->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user2->userId());
     }
     QVERIFY(client2MessageActionsSpy.isEmpty());
     // onMessageActionTimeout
@@ -844,7 +848,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user3->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user3->userId());
     }
 
     TRY_VERIFY(!client2MessageActionsSpy.isEmpty());
@@ -852,7 +856,7 @@ void tst_MessagesApi::groupChatMessaging()
         const QList<QVariant> receivedArgs = client2MessageActionsSpy.takeFirst();
         const Peer peer = receivedArgs.first().value<Telegram::Peer>();
         COMPARE_PEERS(peer, groupChat1Peer);
-        QCOMPARE(receivedArgs.at(1).value<quint32>(), user3->userId());
+        QCOMPARE(receivedArgs.at(1).value<UserId>(), user3->userId());
     }
     QVERIFY(client3MessageActionsSpy.isEmpty());
     // onMessageActionTimeout

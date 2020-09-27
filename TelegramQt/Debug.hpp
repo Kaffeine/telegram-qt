@@ -19,15 +19,13 @@
 #define TELEGRAMDEBUG_HPP
 
 #include "telegramqt_global.h"
+#include "Peer.hpp"
 
 #include <QDebug>
 
-namespace Telegram {
-
-class Peer;
-
-} // Telegram namespace
-
+TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::UserId &peer);
+TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::ChatId &peer);
+TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::ChannelId &peer);
 TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::Peer &peer);
 
 #endif // TELEGRAMDEBUG_HPP

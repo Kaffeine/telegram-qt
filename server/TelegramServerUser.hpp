@@ -52,9 +52,9 @@ public:
         return { m_peer.id() };
     }
 
-    void setUserId(quint32 userId)
+    void setUserId(UserId userId)
     {
-        m_peer = Peer::fromUserId(userId);
+        m_peer = userId;
     }
 
     quint32 unreadCount() const
@@ -80,6 +80,7 @@ public:
 class AbstractUser : public MessageRecipient
 {
 public:
+    virtual UserId userId() const = 0;
     virtual quint32 id() const = 0;
     virtual QString phoneNumber() const = 0;
     virtual QString userName() const = 0;
@@ -101,8 +102,8 @@ public:
 class AuthorizedUser : public AbstractUser
 {
 public:
-    quint32 userId() const { return m_id; }
-    quint32 id() const override { return m_id; }
+    UserId userId() const override { return m_id; }
+    quint32 id() const override { return m_id.id; }
 
     quint32 dcId() const override { return m_dcId; }
     void setDcId(quint32 id);
@@ -121,14 +122,14 @@ protected:
     QVector<quint64> m_authKeyIds;
     QVector<Session*> m_sessions; // Sessions are owned by the Server class
 
-    quint32 m_id = 0;
+    UserId m_id = 0;
     quint32 m_dcId = 0;
 };
 
 class LocalUser : public AuthorizedUser
 {
 public:
-    explicit LocalUser(quint32 userId, const QString &phoneNumber);
+    explicit LocalUser(UserId userId, const QString &phoneNumber);
     LocalUser() = default;
     ~LocalUser() override;
 
@@ -182,7 +183,7 @@ public:
 
 protected:
     UserDialog *ensureDialog(const Telegram::Peer &peer);
-    void setUserId(quint32 userId);
+    void setUserId(UserId userId);
 
     UserPostBox m_box;
 

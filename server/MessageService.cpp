@@ -33,7 +33,7 @@ MessageService::MessageService(QObject *parent) :
 {
 }
 
-MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const MessageContent &content)
+MessageData *MessageService::addMessage(UserId fromId, Peer toPeer, const MessageContent &content)
 {
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, content));
@@ -43,7 +43,7 @@ MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const Messa
     return message;
 }
 
-MessageData *MessageService::addServiceMessage(quint32 fromId, Peer toPeer, const ServiceMessageAction &action)
+MessageData *MessageService::addServiceMessage(UserId fromId, Peer toPeer, const ServiceMessageAction &action)
 {
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, action));

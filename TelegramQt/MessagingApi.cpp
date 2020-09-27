@@ -286,10 +286,10 @@ PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessageF
     return apiOp;
 }
 
-PendingOperation *MessagingApiPrivate::createChat(const QString &title, const QVector<quint32> &contacts)
+PendingOperation *MessagingApiPrivate::createChat(const QString &title, const QVector<UserId> &contacts)
 {
     TLVector<TLInputUser> users;
-    for (quint32 userId : contacts) {
+    for (UserId userId : contacts) {
         TLInputUser inputUser = dataInternalApi()->toInputUser(userId);
         if (inputUser.tlType == TLValue::InputUserEmpty) {
             const QString text = QLatin1String("Invalid contact for createChat()");
@@ -455,7 +455,7 @@ void MessagingApi::setSyncLimit(quint32 perDialogLimit)
     d->m_syncLimit = perDialogLimit;
 }
 
-quint32 MessagingApi::selfUserId() const
+Telegram::UserId MessagingApi::selfUserId() const
 {
     Q_D(const MessagingApi);
     return d->dataStorage()->selfUserId();
@@ -492,7 +492,7 @@ PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const Messa
     return d->getHistory(peer, options);
 }
 
-PendingOperation *MessagingApi::createChat(const QString &title, const QVector<quint32> &contacts)
+PendingOperation *MessagingApi::createChat(const QString &title, const QVector<UserId> &contacts)
 {
     Q_D(MessagingApi);
     return d->createChat(title, contacts);

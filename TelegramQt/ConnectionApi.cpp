@@ -809,7 +809,7 @@ void ConnectionApiPrivate::onRpcExportAuthorizationResult(quint32 dcId, BasePend
     TLAuthExportedAuthorization result;
     operation->getResult(&result);
 
-    if (result.id != dataStorage()->selfUserId()) {
+    if (dataStorage()->selfUserId() != result.id) {
         qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "Exported id:" << result.id
                                                   << "own:" << dataStorage()->selfUserId();
     }
@@ -864,8 +864,8 @@ void ConnectionApiPrivate::importAuthentication(Connection *connection)
     BaseRpcLayerExtension::RpcProcessingMethod method = authLayer->rpcProcessingMethod();
     authLayer->setRpcProcessingMethod(nullptr);
     const QByteArray bytes = m_exportedAuthorizations.value(connection->dcOption().id);
-    const quint32 userId = dataStorage()->selfUserId();
-    AuthRpcLayer::PendingAuthAuthorization *rpcOperation = authLayer->importAuthorization(userId, bytes);
+    const UserId userId = dataStorage()->selfUserId();
+    AuthRpcLayer::PendingAuthAuthorization *rpcOperation = authLayer->importAuthorization(userId.id, bytes);
     rpcOperation->setObjectName(rpcOperation->objectName()
                                 + QStringLiteral("/dc%1").arg(connection->dcOption().id));
 

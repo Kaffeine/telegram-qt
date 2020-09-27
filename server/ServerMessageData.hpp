@@ -97,7 +97,7 @@ public:
 
     Type type = Type::Empty;
     QString title;
-    TLVector<quint32> users;
+    TLVector<UserId> users;
 
     PeerList getPeers() const;
 };
@@ -106,14 +106,14 @@ class MessageData
 {
 public:
     MessageData() = default;
-    MessageData(quint32 from, Peer to, const MessageContent &content);
-    MessageData(quint32 from, Peer to, const ServiceMessageAction &action);
+    MessageData(UserId from, Peer to, const MessageContent &content);
+    MessageData(UserId from, Peer to, const ServiceMessageAction &action);
 
     quint64 globalId() const { return m_globalId; }
     void setGlobalId(quint64 id);
 
     Peer toPeer() const { return m_to; }
-    quint32 fromId() const { return m_fromId; }
+    UserId fromId() const { return m_fromId; }
 
     quint32 date() const;
     void setDate(quint32 date);
@@ -131,7 +131,7 @@ public:
     void addReference(const Peer &peer, quint32 messageId);
     quint32 getReference(const Peer &peer) const { return m_references.value(peer); }
 
-    Peer getDialogPeer(quint32 applicantUserId) const;
+    Peer getDialogPeer(UserId applicantUserId) const;
 
 protected:
     MessageContent m_content;
@@ -140,7 +140,7 @@ protected:
     Peer m_to;
     quint64 m_globalId = 0;
     quint32 m_date = 0;
-    quint32 m_fromId = 0;
+    UserId m_fromId = 0;
     quint32 m_editDate = 0;
 };
 

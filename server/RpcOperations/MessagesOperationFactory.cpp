@@ -739,7 +739,7 @@ void MessagesRpcOperation::runCreateChat()
 {
     MTProto::Functions::TLMessagesCreateChat &arguments = m_createChat;
     LocalUser *selfUser = layer()->getUser();
-    QVector<quint32> members;
+    QVector<UserId> members;
     members.reserve(arguments.users.count());
     for (const TLInputUser &inputUser : arguments.users) {
         const AbstractUser *user = api()->getAbstractUser(inputUser, selfUser);
@@ -1202,7 +1202,7 @@ void MessagesRpcOperation::runGetFullChat()
 
     QSet<Peer> interestingPeers;
     TLMessagesChatFull result;
-    interestingPeers.insert(Peer::fromUserId(groupChat->creatorId()));
+    interestingPeers.insert(groupChat->creatorId());
     Utils::setupTLChatFull(&result.fullChat, groupChat, selfUser);
     Utils::getInterestingPeers(&interestingPeers, result.fullChat);
     Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);

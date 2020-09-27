@@ -77,8 +77,8 @@ void JsonDataImporter::exportForServer(Server *server)
 
     {
         QJsonArray usersArray;
-        const QList<quint32> localUserIds = importApi.getLocalUsers();
-        for (quint32 userId : localUserIds) {
+        const QList<UserId> localUserIds = importApi.getLocalUsers();
+        for (UserId userId : localUserIds) {
             const LocalUser *user = server->getUser(userId);
             QJsonObject userObject;
             userObject[QLatin1String("id")] = Json::toValue(user->id());
