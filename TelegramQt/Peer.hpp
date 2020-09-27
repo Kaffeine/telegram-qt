@@ -96,15 +96,15 @@ inline uint qHash(const Peer &key, uint seed)
 }
 
 template <Peer::Type peerType>
-class BareId
+class BasePeerId
 {
 public:
-    constexpr BareId(quint32 bareId)
+    constexpr BasePeerId(quint32 bareId)
         :id(bareId)
     {
     }
-    constexpr BareId() = default;
-    constexpr bool operator==(BareId bareId) const
+    constexpr BasePeerId() = default;
+    constexpr bool operator==(BasePeerId bareId) const
     {
         return bareId.id == id;
     }
@@ -112,7 +112,7 @@ public:
     {
         return bareId == id;
     }
-    constexpr bool operator!=(BareId bareId) const
+    constexpr bool operator!=(BasePeerId bareId) const
     {
         return bareId.id != id;
     }
@@ -133,9 +133,9 @@ public:
     static const Peer::Type type = peerType;
 };
 
-using UserId = BareId<Peer::Type::User>;
-using ChatId = BareId<Peer::Type::Chat>;
-using ChannelId = BareId<Peer::Type::Channel>;
+using UserId = BasePeerId<Peer::Type::User>;
+using ChatId = BasePeerId<Peer::Type::Chat>;
+using ChannelId = BasePeerId<Peer::Type::Channel>;
 
 inline uint qHash(const UserId &key, uint seed)
 {

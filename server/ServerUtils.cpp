@@ -286,7 +286,7 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
     case ServiceMessageAction::Type::ChatCreate:
         output->action.tlType = TLValue::MessageActionChatCreate;
         output->action.title = messageData->action().title;
-        // FIXME UserId output->action.users = messageData->action().users;
+        // output->action.users = messageData->action().users;
         break;
     }
 

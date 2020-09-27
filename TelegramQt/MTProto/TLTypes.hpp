@@ -20,6 +20,7 @@
 
 #include "telegramqt_global.h"
 
+#include "Peer.hpp"
 #include "TLValues.hpp"
 #include "TLNumbers.hpp"
 #include "UniqueLazyPointer.hpp"
@@ -29,6 +30,8 @@
 
 template <typename TL>
 using TLPtr = Telegram::UniqueLazyPointer<TL>;
+
+using TLId32 = quint32;
 
 struct TLBool
 {
@@ -3777,7 +3780,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     quint32 quint32Id = 0;
     quint64 randomId = 0;
     TLVector<quint32> messages;
-    quint32 userId = 0;
+    TLId32 userId = 0;
     TLSendMessageAction action;
     quint32 chatId = 0;
     TLChatParticipants participants;

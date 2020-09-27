@@ -65,7 +65,9 @@ static const QHash<QString,QString> c_privacyFilter = {
 };
 
 static const QHash<QString, QString> c_preferredMemberTypes = {
-    { "userId", "quint32" },
+    { "userId", "UserId" },
+    { "chatId", "ChatId" },
+    { "channelId", "ChannelId" },
     { "msgId", "quint32" },
     { "peer", "TLPeer" },
 };
@@ -1656,6 +1658,19 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
     solvedTypesNames.append(tlValueName);
 
     {
+        qCDebug(c_loggingTypes) << "Bake peer id members...";
+        for (const QString &typeName : types.keys()) {
+            TLType &type = types[typeName];
+
+            for (TLSubType &subType : type.subTypes) {
+                for (TLParam &member : subType.members) {
+                    if (member.getName() == QLatin1String("userId")) {
+                        member.setType(QLatin1String("UserId"));
+                    }
+                }
+            }
+        }
+
         qCDebug(c_loggingTypes) << "Bake types...";
         for (const QString &typeName : types.keys()) {
             TLType &type = types[typeName];
