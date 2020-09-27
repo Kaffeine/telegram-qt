@@ -40,7 +40,7 @@ class MessagesRpcLayer;
 struct UserMessageAction : public MessageAction
 {
     UserMessageAction() = default;
-    UserMessageAction(Peer p, quint32 user)
+    UserMessageAction(Peer p, UserId user)
         : peer(p)
         , userId(user)
     {
@@ -48,7 +48,7 @@ struct UserMessageAction : public MessageAction
 
     static int findInVector(const QVector<UserMessageAction> &vector,
                             Peer p,
-                            quint32 id)
+                            UserId id)
     {
         for (int i = 0; i < vector.count(); ++i) {
             const UserMessageAction &a = vector.at(i);
@@ -60,7 +60,7 @@ struct UserMessageAction : public MessageAction
     }
 
     Peer peer;
-    quint32 userId = 0;
+    UserId userId = 0;
     int remainingTime = 0; // (ms)
 };
 
@@ -84,7 +84,7 @@ public:
     void setMessageRead(const Telegram::Peer peer, quint32 messageId);
 
     void setMessageAction(const Peer peer, const Telegram::MessageAction &action);
-    void processMessageAction(const Peer peer, quint32 userId, const MessageAction &action);
+    void processMessageAction(const Peer peer, UserId userId, const MessageAction &action);
 
     void onChatCreatedResult(MessagesRpcLayer::PendingUpdates *rpcOperation);
     void onSendMessageResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
@@ -94,8 +94,8 @@ public:
     void onMessageReceived(const TLMessage &message);
     void onMessageInboxRead(const Telegram::Peer peer, quint32 messageId);
     void onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId);
-    void onUserActionChanged(quint32 userId, const TLSendMessageAction &action);
-    void onChatUserActionChanged(const Telegram::Peer peer, quint32 userId, const TLSendMessageAction &action);
+    void onUserActionChanged(UserId userId, const TLSendMessageAction &action);
+    void onChatUserActionChanged(const Telegram::Peer peer, UserId userId, const TLSendMessageAction &action);
 
     PendingOperation *syncPeers(const Telegram::PeerList &peers);
     void syncMorePeerMessages(const Peer &peer, const DialogState *state);

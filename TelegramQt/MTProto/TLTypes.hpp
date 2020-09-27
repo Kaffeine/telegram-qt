@@ -301,7 +301,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInfo {
     static bool hasType(const quint32 value);
     bool operator==(const TLBotInfo &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     QString description;
     TLVector<TLBotCommand> commands;
     TLValue tlType = TLValue::BotInfo;
@@ -344,14 +344,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipantsFilter {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipant {
-    constexpr TLChatParticipant() = default;
+    TLChatParticipant() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLChatParticipant &v) const;
 
-    quint32 userId = 0;
-    quint32 inviterId = 0;
+    Telegram::UserId userId;
+    Telegram::UserId inviterId;
     quint32 date = 0;
     TLValue tlType = TLValue::ChatParticipant;
 };
@@ -367,7 +367,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipants {
     };
 
     quint32 flags = 0;
-    quint32 chatId = 0;
+    Telegram::ChatId chatId;
     TLChatParticipant selfParticipant;
     TLVector<TLChatParticipant> participants;
     quint32 version = 0;
@@ -389,25 +389,25 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLClientDHInnerData {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLContact {
-    constexpr TLContact() = default;
+    TLContact() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLContact &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     bool mutual = false;
     TLValue tlType = TLValue::Contact;
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLContactBlocked {
-    constexpr TLContactBlocked() = default;
+    TLContactBlocked() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLContactBlocked &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     quint32 date = 0;
     TLValue tlType = TLValue::ContactBlocked;
 };
@@ -507,7 +507,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedMessage {
     bool operator==(const TLEncryptedMessage &v) const;
 
     quint64 randomId = 0;
-    quint32 chatId = 0;
+    Telegram::ChatId chatId;
     quint32 date = 0;
     QByteArray bytes;
     TLEncryptedFile file;
@@ -637,14 +637,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpTermsOfService {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLHighScore {
-    constexpr TLHighScore() = default;
+    TLHighScore() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLHighScore &v) const;
 
     quint32 pos = 0;
-    quint32 userId = 0;
+    Telegram::UserId userId;
     quint32 score = 0;
     TLValue tlType = TLValue::HighScore;
 };
@@ -663,13 +663,13 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHttpWait {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLImportedContact {
-    constexpr TLImportedContact() = default;
+    TLImportedContact() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLImportedContact &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     quint64 clientId = 0;
     TLValue tlType = TLValue::ImportedContact;
 };
@@ -714,13 +714,13 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessageID {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLInputChannel {
-    constexpr TLInputChannel() = default;
+    TLInputChannel() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputChannel &v) const;
 
-    quint32 channelId = 0;
+    Telegram::ChannelId channelId;
     quint64 accessHash = 0;
     TLValue tlType = TLValue::InputChannelEmpty;
 };
@@ -752,13 +752,13 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputDocument {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedChat {
-    constexpr TLInputEncryptedChat() = default;
+    TLInputEncryptedChat() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputEncryptedChat &v) const;
 
-    quint32 chatId = 0;
+    Telegram::ChatId chatId;
     quint64 accessHash = 0;
     TLValue tlType = TLValue::InputEncryptedChat;
 };
@@ -821,16 +821,16 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputGeoPoint {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeer {
-    constexpr TLInputPeer() = default;
+    TLInputPeer() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputPeer &v) const;
 
-    quint32 chatId = 0;
-    quint32 userId = 0;
+    Telegram::ChatId chatId;
+    Telegram::UserId userId;
     quint64 accessHash = 0;
-    quint32 channelId = 0;
+    Telegram::ChannelId channelId;
     TLValue tlType = TLValue::InputPeerEmpty;
 };
 
@@ -904,13 +904,13 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickeredMedia {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLInputUser {
-    constexpr TLInputUser() = default;
+    TLInputUser() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputUser &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     quint64 accessHash = 0;
     TLValue tlType = TLValue::InputUserEmpty;
 };
@@ -1015,7 +1015,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageEntity {
     quint32 length = 0;
     QString language;
     QString url;
-    quint32 userId = 0;
+    Telegram::UserId userId;
     TLInputUser inputUserUserId;
     TLValue tlType = TLValue::MessageEntityUnknown;
 };
@@ -1034,9 +1034,9 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageFwdHeader {
     };
 
     quint32 flags = 0;
-    quint32 fromId = 0;
+    Telegram::UserId fromId;
     quint32 date = 0;
-    quint32 channelId = 0;
+    Telegram::ChannelId channelId;
     quint32 channelPost = 0;
     QString postAuthor;
     TLValue tlType = TLValue::MessageFwdHeader;
@@ -1243,15 +1243,15 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentSavedCredentials {
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLPeer {
-    constexpr TLPeer() = default;
+    TLPeer() = default;
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLPeer &v) const;
 
-    quint32 userId = 0;
-    quint32 chatId = 0;
-    quint32 channelId = 0;
+    Telegram::UserId userId;
+    Telegram::ChatId chatId;
+    Telegram::ChannelId channelId;
     TLValue tlType = TLValue::PeerUser;
 };
 
@@ -1363,7 +1363,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPrivacyRule {
     static bool hasType(const quint32 value);
     bool operator==(const TLPrivacyRule &v) const;
 
-    TLVector<quint32> users;
+    TLVector<Telegram::UserId> users;
     TLValue tlType = TLValue::PrivacyValueAllowContacts;
 };
 
@@ -1845,9 +1845,9 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipant {
     bool canEdit() const { return flags & CanEdit; }
     bool left() const { return flags & Left; }
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     quint32 date = 0;
-    quint32 inviterId = 0;
+    Telegram::UserId inviterId;
     quint32 flags = 0;
     quint32 promotedBy = 0;
     TLChannelAdminRights adminRights;
@@ -1875,7 +1875,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactStatus {
     static bool hasType(const quint32 value);
     bool operator==(const TLContactStatus &v) const;
 
-    quint32 userId = 0;
+    Telegram::UserId userId;
     TLUserStatus status;
     TLValue tlType = TLValue::ContactStatus;
 };
@@ -2444,7 +2444,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUser {
     bool min() const { return flags & Min; }
     bool botInlineGeo() const { return flags & BotInlineGeo; }
 
-    quint32 id = 0;
+    Telegram::UserId id;
     quint32 flags = 0;
     quint64 accessHash = 0;
     QString firstName;
@@ -2603,7 +2603,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChat {
     bool signatures() const { return flags & Signatures; }
     bool min() const { return flags & Min; }
 
-    quint32 id = 0;
+    Telegram::ChatId id;
     quint32 flags = 0;
     QString title;
     TLChatPhoto photo;
@@ -3063,12 +3063,12 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageAction {
     };
 
     QString title;
-    TLVector<quint32> users;
+    TLVector<Telegram::UserId> users;
     TLPhoto photo;
-    quint32 userId = 0;
-    quint32 inviterId = 0;
-    quint32 channelId = 0;
-    quint32 chatId = 0;
+    Telegram::UserId userId;
+    Telegram::UserId inviterId;
+    Telegram::ChannelId channelId;
+    Telegram::ChatId chatId;
     quint64 gameId = 0;
     quint32 score = 0;
     quint32 flags = 0;
@@ -3550,7 +3550,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia {
     QString phoneNumber;
     QString firstName;
     QString lastName;
-    quint32 userId = 0;
+    Telegram::UserId userId;
     TLDocument document;
     TLWebPage webpage;
     QString title;
@@ -3636,8 +3636,8 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl {
     bool operator==(const TLRecentMeUrl &v) const;
 
     QString url;
-    quint32 userId = 0;
-    quint32 chatId = 0;
+    Telegram::UserId userId;
+    Telegram::ChatId chatId;
     TLChatInvite chatInvite;
     TLStickerSetCovered set;
     TLValue tlType = TLValue::RecentMeUrlUnknown;
@@ -3687,7 +3687,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessage {
 
     quint32 id = 0;
     quint32 flags = 0;
-    quint32 fromId = 0;
+    Telegram::UserId fromId;
     TLPeer toId;
     TLMessageFwdHeader fwdFrom;
     quint32 viaBotId = 0;
@@ -3780,9 +3780,9 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     quint32 quint32Id = 0;
     quint64 randomId = 0;
     TLVector<quint32> messages;
-    TLId32 userId = 0;
+    Telegram::UserId userId;
     TLSendMessageAction action;
-    quint32 chatId = 0;
+    Telegram::ChatId chatId;
     TLChatParticipants participants;
     TLUserStatus status;
     QString firstName;
@@ -3797,7 +3797,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     quint32 qts = 0;
     TLEncryptedChat chat;
     quint32 maxDate = 0;
-    quint32 inviterId = 0;
+    Telegram::UserId inviterId;
     quint32 version = 0;
     TLVector<TLDcOption> dcOptions;
     bool blocked = false;
@@ -3815,7 +3815,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     TLPeer peer;
     quint32 maxId = 0;
     TLWebPage webpage;
-    quint32 channelId = 0;
+    Telegram::ChannelId channelId;
     quint32 views = 0;
     bool enabled = false;
     bool isAdmin = false;
@@ -3871,7 +3871,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdates {
 
     quint32 flags = 0;
     quint32 id = 0;
-    quint32 userId = 0;
+    Telegram::UserId userId;
     QString message;
     quint32 pts = 0;
     quint32 ptsCount = 0;
@@ -3880,8 +3880,8 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdates {
     quint32 viaBotId = 0;
     quint32 replyToMsgId = 0;
     TLVector<TLMessageEntity> entities;
-    quint32 fromId = 0;
-    quint32 chatId = 0;
+    Telegram::UserId fromId;
+    Telegram::ChatId chatId;
     TLUpdate update;
     TLVector<TLUpdate> updates;
     TLVector<TLUser> users;
@@ -3984,7 +3984,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEvent {
 
     quint64 id = 0;
     quint32 date = 0;
-    quint32 userId = 0;
+    Telegram::UserId userId;
     TLChannelAdminLogEventAction action;
     TLValue tlType = TLValue::ChannelAdminLogEvent;
 };

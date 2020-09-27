@@ -71,7 +71,7 @@ public:
 
     virtual AbstractUser *getAbstractUser(UserId userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
-    virtual GroupChat *getGroupChat(quint32 chatId) const = 0;
+    virtual GroupChat *getGroupChat(ChatId chatId) const = 0;
 
     virtual void queueServerUpdates(const QVector<UpdateNotification> &updates) = 0;
 };

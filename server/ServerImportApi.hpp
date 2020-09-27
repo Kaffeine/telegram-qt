@@ -22,7 +22,7 @@ public:
 
     QList<QByteArray> getAuthorizations() const;
     QList<Session *> getSessions() const;
-    QList<Telegram::UserId> getLocalUsers() const;
+    QList<UserId> getLocalUsers() const;
 
     void addAuthKey(quint64 authId, const QByteArray &authKey);
     Session *addSession(quint64 sessionId);

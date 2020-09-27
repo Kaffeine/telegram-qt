@@ -34,7 +34,7 @@ public:
     explicit PendingContactsOperation(QObject *parent = nullptr);
     ~PendingContactsOperation() override;
 
-    QVector<quint32> contacts() const;
+    QVector<UserId> contacts() const;
     Telegram::PeerList peers() const;
 
 protected:

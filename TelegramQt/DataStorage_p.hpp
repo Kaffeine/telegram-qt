@@ -107,7 +107,7 @@ public:
     TLInputUser toInputUser(UserId userId) const;
     TLInputChannel toInputChannel(ChannelId channelId) const;
 
-    static quint64 channelMessageToKey(quint32 channelId, quint32 messageId);
+    static quint64 channelMessageToKey(ChannelId channelId, quint32 messageId);
 
     TLVector<TLContact> contactList() const { return m_contactList; }
     const QHash<UserId, TLUser *> &users() const { return m_users; }

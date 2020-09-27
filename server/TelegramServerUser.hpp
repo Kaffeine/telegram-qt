@@ -93,7 +93,7 @@ public:
     virtual const UserPostBox *getPostBox() const = 0;
     virtual QVector<ImageDescriptor> getImages() const = 0;
     virtual ImageDescriptor getCurrentImage() const = 0;
-    virtual QVector<quint32> contactList() const = 0;
+    virtual QVector<UserId> contactList() const = 0;
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
     UserContact toContact() const;
@@ -170,7 +170,7 @@ public:
     const UserPostBox *getPostBox() const override { return &m_box; }
 
     void importContact(const UserContact &contact);
-    QVector<quint32> contactList() const override { return m_contactList; }
+    QVector<UserId> contactList() const override { return m_contactList; }
     const QVector<UserDialog *> dialogs() const { return m_dialogs; }
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
@@ -197,7 +197,7 @@ protected:
     QVector<ImageDescriptor> m_photos;
 
     QVector<UserDialog *> m_dialogs;
-    QVector<quint32> m_contactList; // Contains only registered users from the added contacts
+    QVector<UserId> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
 
     quint32 m_onlineTimestamp = 0;

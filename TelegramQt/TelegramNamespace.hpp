@@ -373,7 +373,7 @@ public:
 
     QString getBestDisplayName() const;
 
-    quint32 id() const;
+    UserId id() const;
     QString firstName() const;
     QString lastName() const;
     QString userName() const;

@@ -49,6 +49,9 @@ static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" <<
 static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray"
                                                      << tlPrefix + QLatin1String("Number128")
                                                      << tlPrefix + QLatin1String("Number256")
+                                                     << "Telegram::UserId"
+                                                     << "Telegram::ChatId"
+                                                     << "Telegram::ChannelId"
                                                         ;
 static const QLatin1String c_internalExportMacro = QLatin1String("TELEGRAMQT_INTERNAL_EXPORT");
 
@@ -65,9 +68,9 @@ static const QHash<QString,QString> c_privacyFilter = {
 };
 
 static const QHash<QString, QString> c_preferredMemberTypes = {
-    { "userId", "UserId" },
-    { "chatId", "ChatId" },
-    { "channelId", "ChannelId" },
+    { "userId", "Telegram::UserId" },
+    { "chatId", "Telegram::ChatId" },
+    { "channelId", "Telegram::ChannelId" },
     { "msgId", "quint32" },
     { "peer", "TLPeer" },
 };
@@ -1664,8 +1667,37 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
 
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
-                    if (member.getName() == QLatin1String("userId")) {
-                        member.setType(QLatin1String("UserId"));
+                    if (member.bareType() != QLatin1String("quint32")) {
+                        continue;
+                    }
+                    if (member.getName() == "id") {
+                        if (type.getName() == tlPrefix + "User") {
+                            member.setType(QLatin1String("Telegram::UserId"));
+                        }
+                        if (type.getName() == tlPrefix + "Chat") {
+                            member.setType(QLatin1String("Telegram::ChatId"));
+                        }
+                    }
+
+                    static const QStringList userIdMemberList {
+                        "userId",
+                        "fromId",
+                        "inviterId",
+                    };
+
+                    if (userIdMemberList.contains(member.getName())) {
+                        member.setType(QLatin1String("Telegram::UserId"));
+                    }
+                    if (member.getName() == QLatin1String("chatId")) {
+                        member.setType(QLatin1String("Telegram::ChatId"));
+                    }
+                    if (member.getName() == QLatin1String("channelId")) {
+                        member.setType(QLatin1String("Telegram::ChannelId"));
+                    }
+                    if (member.getName() == QLatin1String("users")) {
+                        if (member.isVector()) {
+                            member.setType(tlVectorType + "<Telegram::UserId>");
+                        }
                     }
                 }
             }

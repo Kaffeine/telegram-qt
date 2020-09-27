@@ -81,7 +81,7 @@ public:
     AbstractUser *getAbstractUser(UserId userId, quint64 accessHash, const LocalUser *applicant) const override;
     AbstractUser *getRemoteUser(UserId userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
-    GroupChat *getGroupChat(quint32 chatId) const override;
+    GroupChat *getGroupChat(ChatId chatId) const override;
 
     QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const override;
 
@@ -91,7 +91,7 @@ public:
     MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const override;
     MessageRecipient *getRecipient(const Peer &peer) const override;
 
-    QVector<quint32> getPeerWatchers(const Peer &peer) const override;
+    QVector<UserId> getPeerWatchers(const Peer &peer) const override;
 
     LocalUser *getUser(const QString &identifier) const override;
     LocalUser *getUser(UserId userId) const override;
@@ -181,7 +181,7 @@ private:
     // Data
     QHash<UserId, LocalUser*> m_users; // userId to User
     QHash<quint64, Session*> m_sessions; // Session id to Session
-    QHash<quint32, LocalGroupChat*> m_groups; // groupId to GroupChat
+    QHash<ChatId, LocalGroupChat*> m_groups; // groupId to GroupChat
 
     // Maps for faster lookup
     QHash<QString, UserId> m_phoneToUserId;

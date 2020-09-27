@@ -52,7 +52,7 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
         // Reconstruct full update from this short update.
         TLUpdate update;
 
-        if (update.message.toId.channelId) {
+        if (update.message.toId.channelId.isValid()) {
             update.tlType = TLValue::UpdateNewChannelMessage;
         } else {
             update.tlType = TLValue::UpdateNewMessage;
@@ -165,10 +165,10 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         processReadOutbox(Utils::toPublicPeer(update.peer), update.maxId);
         return true;
     case TLValue::UpdateReadChannelInbox:
-        processReadInbox(Peer::fromChannelId(update.channelId), update.maxId);
+        processReadInbox(update.channelId, update.maxId);
         return true;
     case TLValue::UpdateReadChannelOutbox:
-        processReadOutbox(Peer::fromChannelId(update.channelId), update.maxId);
+        processReadOutbox(update.channelId, update.maxId);
         return true;
     case TLValue::UpdateUserStatus:
         contactsApi()->onUserStatusChanged(update.userId, update.status);
@@ -177,7 +177,7 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         messagingApi()->onUserActionChanged(update.userId, update.action);
         return true;
     case TLValue::UpdateChatUserTyping:
-        messagingApi()->onChatUserActionChanged(Peer::fromChatId(update.chatId), update.userId, update.action);
+        messagingApi()->onChatUserActionChanged(update.chatId, update.userId, update.action);
         return true;
     case TLValue::UpdateUserPhoto:
         contactsApi()->onUserPhotoChanged(update.userId, update.photo);

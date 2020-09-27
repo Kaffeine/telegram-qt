@@ -12,11 +12,11 @@ Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, UserId selfId)
     case TLValue::InputPeerSelf:
         return selfId;
     case TLValue::InputPeerUser:
-        return Telegram::Peer::fromUserId(inputPeer.userId);
+        return inputPeer.userId;
     case TLValue::InputPeerChat:
-        return Telegram::Peer::fromChatId(inputPeer.chatId);
+        return inputPeer.chatId;
     case TLValue::InputPeerChannel:
-        return Telegram::Peer::fromChannelId(inputPeer.channelId);
+        return inputPeer.channelId;
     case TLValue::InputPeerEmpty:
     default:
         return Telegram::Peer();
@@ -27,11 +27,11 @@ Telegram::Peer toPublicPeer(const TLPeer &peer)
 {
     switch (peer.tlType) {
     case TLValue::PeerChat:
-        return Telegram::Peer::fromChatId(peer.chatId);
+        return peer.chatId;
     case TLValue::PeerChannel:
-        return Telegram::Peer::fromChannelId(peer.channelId);
+        return peer.channelId;
     case TLValue::PeerUser:
-        return Telegram::Peer::fromUserId(peer.userId);
+        return peer.userId;
     default:
         return Telegram::Peer();
     }
@@ -39,10 +39,10 @@ Telegram::Peer toPublicPeer(const TLPeer &peer)
 
 Telegram::Peer toPublicPeer(const TLUser &user)
 {
-    if (!user.isValid() || !user.id) {
+    if (!user.isValid() || !user.id.isValid()) {
         return Telegram::Peer();
     }
-    return Telegram::Peer(user.id, Telegram::Peer::User);
+    return user.id;
 }
 
 Telegram::Peer toPublicPeer(const TLChat *chat)
@@ -50,10 +50,10 @@ Telegram::Peer toPublicPeer(const TLChat *chat)
     switch(chat->tlType) {
     case TLValue::Chat:
     case TLValue::ChatForbidden:
-        return Telegram::Peer::fromChatId(chat->id);
+        return chat->id;
     case TLValue::Channel:
     case TLValue::ChannelForbidden:
-        return Telegram::Peer::fromChannelId(chat->id);
+        return Telegram::Peer::fromChannelId(chat->id.id);
     default:
         return Telegram::Peer();
     }
@@ -83,8 +83,8 @@ Peer getMessageDialogPeer(const TLMessage &message, UserId applicantUserId)
 {
     if (message.toId.tlType == TLValue::PeerUser) {
         if (applicantUserId == message.toId.userId) {
-            if (message.fromId) {
-                return Peer::fromUserId(message.fromId);
+            if (message.fromId.isValid()) {
+                return message.fromId;
             }
         }
     }

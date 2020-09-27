@@ -24,20 +24,18 @@ void getInterestingPeers(QSet<Peer> *peers, const TLChatFull &chatFull)
     }
 
     for (const TLChatParticipant &participant : chatFull.participants.participants) {
-        peers->insert(Peer::fromUserId(participant.userId));
+        peers->insert(participant.userId);
     }
 }
 
 void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
 {
     for (const TLMessage &message : messages) {
-        if (message.fromId) {
-            Telegram::Peer messagePeer = Peer::fromUserId(message.fromId);
-            peers->insert(messagePeer);
+        if (message.fromId.isValid()) {
+            peers->insert(message.fromId);
         }
-        if (message.media.userId) {
-            Telegram::Peer messagePeer = Peer::fromUserId(message.media.userId);
-            peers->insert(messagePeer);
+        if (message.media.userId.isValid()) {
+            peers->insert(message.media.userId);
         }
     }
 }
@@ -286,7 +284,7 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
     case ServiceMessageAction::Type::ChatCreate:
         output->action.tlType = TLValue::MessageActionChatCreate;
         output->action.title = messageData->action().title;
-        // output->action.users = messageData->action().users;
+        output->action.users = messageData->action().users;
         break;
     }
 

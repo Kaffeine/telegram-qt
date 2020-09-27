@@ -164,16 +164,16 @@ void Message::Private::reset()
     *this = Private();
 }
 
-void Message::Private::setForwardFromUser(quint32 userId)
+void Message::Private::setForwardFromUser(UserId userId)
 {
     flags |= Namespace::MessageFlagForwarded;
-    forwardFromPeer = Peer::fromUserId(userId);
+    forwardFromPeer = userId;
 }
 
-void Message::Private::setForwardFromChannel(quint32 channelId, quint32 messageId, const QString &postAuthor)
+void Message::Private::setForwardFromChannel(ChannelId channelId, quint32 messageId, const QString &postAuthor)
 {
     flags |= Namespace::MessageFlagForwarded;
-    forwardFromPeer = Peer::fromChannelId(channelId);
+    forwardFromPeer = channelId;
     forwardFromMessageId = messageId;
     forwardPostAuthor = postAuthor;
 }
@@ -456,7 +456,7 @@ bool MessageMediaInfo::getContactInfo(UserInfo *info) const
 
     UserInfo::Private *infoPrivate = UserInfo::Private::get(info);
     *infoPrivate = UserInfo::Private(); // Reset
-    infoPrivate->id = d->userId;
+    // infoPrivate->id = d->userId;
     infoPrivate->firstName = d->firstName;
     infoPrivate->lastName = d->lastName;
     infoPrivate->phone = d->phoneNumber;
@@ -941,7 +941,7 @@ UserInfo::~UserInfo()
 
 Peer UserInfo::peer() const
 {
-    return Peer::fromUserId(d->id);
+    return d->id;
 }
 
 QString UserInfo::displayName() const
@@ -980,7 +980,7 @@ QString UserInfo::getBestDisplayName() const
     return name;
 }
 
-quint32 UserInfo::id() const
+UserId UserInfo::id() const
 {
     return d->id;
 }
@@ -1106,10 +1106,10 @@ Peer ChatInfo::peer() const
     switch(d->tlType) {
     case TLValue::Chat:
     case TLValue::ChatForbidden:
-        return Peer(d->id, Peer::Chat);
+        return d->id;
     case TLValue::Channel:
     case TLValue::ChannelForbidden:
-        return Peer(d->id, Peer::Channel);
+        return Peer(d->id.id, Peer::Channel);
     default:
         break;
     }
@@ -1151,7 +1151,7 @@ Peer ChatInfo::migratedTo() const
     if (d->migratedTo.tlType == TLValue::InputChannelEmpty) {
         return Peer();
     }
-    return Peer(d->migratedTo.channelId, Peer::Channel);
+    return d->migratedTo.channelId;
 }
 
 bool ChatInfo::getPeerPicture(FileInfo *file, PeerPictureSize size) const

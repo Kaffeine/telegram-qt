@@ -114,7 +114,7 @@ void MessagingApiPrivate::setMessageAction(const Peer peer, const MessageAction 
     messagesLayer()->setTyping(inputPeer, act);
 }
 
-void MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, const MessageAction &action)
+void MessagingApiPrivate::processMessageAction(const Peer peer, UserId userId, const MessageAction &action)
 {
     Q_Q(MessagingApi);
     const int index = UserMessageAction::findInVector(m_currentMessageActions, peer, userId);
@@ -244,12 +244,12 @@ void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32
     emit q->messageReadOutbox(peer, messageId);
 }
 
-void MessagingApiPrivate::onUserActionChanged(quint32 userId, const TLSendMessageAction &action)
+void MessagingApiPrivate::onUserActionChanged(UserId userId, const TLSendMessageAction &action)
 {
-    processMessageAction(Peer::fromUserId(userId), userId, Utils::toPublic(action));
+    processMessageAction(userId, userId, Utils::toPublic(action));
 }
 
-void MessagingApiPrivate::onChatUserActionChanged(const Peer peer, quint32 userId, const TLSendMessageAction &action)
+void MessagingApiPrivate::onChatUserActionChanged(const Peer peer, UserId userId, const TLSendMessageAction &action)
 {
     processMessageAction(peer, userId, Utils::toPublic(action));
 }
@@ -795,7 +795,7 @@ void MessagingApiPrivate::onMessageActionTimerTimeout()
         int remainingTime = action->remainingTime - m_messageActionTimer->interval();
         if (remainingTime < 15) { // Consider 15 ms as an acceptable deviation
             const Peer peer = action->peer;
-            const quint32 userId = action->userId;
+            const UserId userId = action->userId;
             m_currentMessageActions.remove(i);
 
             emit q->messageActionChanged(peer, userId, Telegram::MessageAction::None);

@@ -300,11 +300,11 @@ Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
     case TLValue::InputPeerSelf:
         return Peer::fromUserId(applicant->id());
     case TLValue::InputPeerChat:
-        return Peer::fromChatId(peer.chatId);
+        return peer.chatId;
     case TLValue::InputPeerUser:
-        return Peer::fromUserId(peer.userId);
+        return peer.userId;
     case TLValue::InputPeerChannel:
-        return Peer::fromChannelId(peer.channelId);
+        return peer.channelId;
     default:
         qCWarning(loggingCategoryServerApi) << this << __func__ << "Invalid input peer type" << peer.tlType;
         return Peer();
@@ -353,9 +353,9 @@ MessageRecipient *Server::getRecipient(const Peer &peer) const
 }
 
 // Returns the list of Users who interesting in the peer info updates
-QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
+QVector<UserId> Server::getPeerWatchers(const Peer &peer) const
 {
-    QVector<quint32> watchers;
+    QVector<UserId> watchers;
     if (peer.type() == Peer::User) {
         const LocalUser *localUser = getUser(peer.id());
         if (localUser) {
@@ -371,8 +371,8 @@ QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
             }
         }
         const AbstractUser *user = localUser ? localUser : getAbstractUser(peer.id());
-        const QVector<quint32> contactList = user->contactList();
-        for (const quint32 contactId : contactList) {
+        const QVector<UserId> contactList = user->contactList();
+        for (const UserId contactId : contactList) {
             if (watchers.contains(contactId)) {
                 continue;
             }
@@ -914,7 +914,7 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
 {
     QVector<UpdateNotification> notifications;
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
-    const QVector<quint32> watchers = getPeerWatchers(applicant->toPeer());
+    const QVector<UserId> watchers = getPeerWatchers(applicant->toPeer());
 
     UpdateNotification notification;
 
@@ -933,7 +933,7 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
         return { };
     }
 
-    for (const quint32 userId : watchers) {
+    for (const UserId userId : watchers) {
         notification.userId = userId;
         notifications.append(notification);
     }
@@ -1021,8 +1021,8 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
         update->ptsCount = 1;
 
         interestingPeers->insert(messageData->toPeer());
-        if (update->message.fromId) {
-            interestingPeers->insert(Peer::fromUserId(update->message.fromId));
+        if (update->message.fromId.isValid()) {
+            interestingPeers->insert(update->message.fromId);
         }
 
         if (messageData->isServiceMessage()) {
@@ -1298,7 +1298,7 @@ void Server::insertGroup(LocalGroupChat *chat)
     m_groups.insert(chat->id(), chat);
 }
 
-GroupChat *Server::getGroupChat(quint32 chatId) const
+GroupChat *Server::getGroupChat(ChatId chatId) const
 {
     return m_groups.value(chatId);
 }

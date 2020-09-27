@@ -37,7 +37,7 @@ public:
 
     static PendingContactsOperationPrivate *get(PendingContactsOperation *parent);
 
-    QVector<quint32> m_userIds;
+    QVector<UserId> m_userIds;
 };
 
 } // Client namespace

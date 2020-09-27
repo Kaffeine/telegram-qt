@@ -45,8 +45,8 @@ struct TELEGRAMQT_INTERNAL_EXPORT Message::Private
     static Private *get(Message *info) { return info->d; }
 
     void reset();
-    void setForwardFromUser(quint32 userId);
-    void setForwardFromChannel(quint32 channelId, quint32 messageId, const QString &postAuthor);
+    void setForwardFromUser(UserId userId);
+    void setForwardFromChannel(ChannelId channelId, quint32 messageId, const QString &postAuthor);
 
     void setReplyToMessageId(quint32 messageId);
 

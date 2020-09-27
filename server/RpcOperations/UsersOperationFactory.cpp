@@ -78,7 +78,7 @@ void UsersRpcOperation::runGetFullUser()
     if (!result.profilePhoto.sizes.isEmpty()) {
         flags = TLUserFull::ProfilePhoto;
     }
-    if (result.botInfo.userId) {
+    if (result.botInfo.userId.isValid()) {
         flags = TLUserFull::BotInfo;
     }
     result.flags = flags;

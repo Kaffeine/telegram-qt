@@ -51,6 +51,15 @@ public:
     Stream &operator>>(TLBool &b);
     Stream &operator<<(const TLBool &b);
 
+    Stream &operator>>(Telegram::UserId &id);
+    Stream &operator<<(const Telegram::UserId &id);
+
+    Stream &operator>>(Telegram::ChatId &id);
+    Stream &operator<<(const Telegram::ChatId &id);
+
+    Stream &operator>>(Telegram::ChannelId &id);
+    Stream &operator<<(const Telegram::ChannelId &id);
+
     template <typename T>
     Stream &operator>>(TLVector<T> &v);
     template <typename T>
@@ -425,6 +434,42 @@ inline Stream &Stream::operator>>(TLValue &v)
 inline Stream &Stream::operator<<(const TLValue v)
 {
     *this << quint32(v);
+    return *this;
+}
+
+inline Stream &Stream::operator>>(UserId &id)
+{
+    *this >> id.id;
+    return *this;
+}
+
+inline Stream &Stream::operator<<(const UserId &id)
+{
+    *this << id.id;
+    return *this;
+}
+
+inline Stream &Stream::operator>>(ChatId &id)
+{
+    *this >> id.id;
+    return *this;
+}
+
+inline Stream &Stream::operator<<(const ChatId &id)
+{
+    *this << id.id;
+    return *this;
+}
+
+inline Stream &Stream::operator>>(ChannelId &id)
+{
+    *this >> id.id;
+    return *this;
+}
+
+inline Stream &Stream::operator<<(const ChannelId &id)
+{
+    *this << id.id;
     return *this;
 }
 

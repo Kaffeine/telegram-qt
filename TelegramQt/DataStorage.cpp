@@ -92,7 +92,7 @@ QVector<Peer> DataStorage::contactList() const
     QVector<Peer> result;
     result.reserve(contacts.count());
     for (const TLContact &contact : contacts) {
-        result.append(Peer::fromUserId(contact.userId));
+        result.append(contact.userId);
     }
     return result;
 }
@@ -408,7 +408,7 @@ void DataInternalApi::processData(const TLUser &user)
         m_users.insert(user.id, new TLUser(user));
     }
     if (user.self()) {
-        if (m_selfUserId.isValid() && (m_selfUserId.id != user.id)) {
+        if (m_selfUserId.isValid() && (m_selfUserId != user.id)) {
             qWarning() << "Got self user with different id.";
         }
         m_selfUserId = user.id;
@@ -697,9 +697,9 @@ TLInputChannel DataInternalApi::toInputChannel(ChannelId channelId) const
     return inputChannel;
 }
 
-quint64 DataInternalApi::channelMessageToKey(quint32 channelId, quint32 messageId)
+quint64 DataInternalApi::channelMessageToKey(ChannelId channelId, quint32 messageId)
 {
-    quint64 key = channelId;
+    quint64 key = channelId.id;
     return (key << 32) + messageId;
 }
 
