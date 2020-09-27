@@ -28,7 +28,7 @@ public:
     quint32 bumpPts() { return ++m_pts; }
     quint32 pts() const { return m_pts; }
     quint32 lastMessageId() const { return m_lastMessageId; }
-    virtual QVector<quint32> users() const = 0;
+    virtual QVector<UserId> users() const = 0;
 
     quint32 addMessage(quint64 globalId);
     quint64 getMessageGlobalId(quint32 messageId) const;
@@ -47,9 +47,9 @@ class UserPostBox : public PostBox
 public:
     UserPostBox() = default;
 
-    QVector<quint32> users() const override
+    QVector<UserId> users() const override
     {
-        return { m_peer.id() };
+        return { m_peer };
     }
 
     void setUserId(UserId userId)
@@ -81,7 +81,6 @@ class AbstractUser : public MessageRecipient
 {
 public:
     virtual UserId userId() const = 0;
-    virtual quint32 id() const = 0;
     virtual QString phoneNumber() const = 0;
     virtual QString userName() const = 0;
     virtual QString firstName() const = 0;
@@ -95,7 +94,7 @@ public:
     virtual ImageDescriptor getCurrentImage() const = 0;
     virtual QVector<UserId> contactList() const = 0;
 
-    Peer toPeer() const override { return Peer::fromUserId(id()); }
+    Peer toPeer() const override { return userId(); }
     UserContact toContact() const;
 };
 
@@ -103,7 +102,6 @@ class AuthorizedUser : public AbstractUser
 {
 public:
     UserId userId() const override { return m_id; }
-    quint32 id() const override { return m_id.id; }
 
     quint32 dcId() const override { return m_dcId; }
     void setDcId(quint32 id);
@@ -122,7 +120,7 @@ protected:
     QVector<quint64> m_authKeyIds;
     QVector<Session*> m_sessions; // Sessions are owned by the Server class
 
-    UserId m_id = 0;
+    UserId m_id;
     quint32 m_dcId = 0;
 };
 

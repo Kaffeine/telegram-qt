@@ -135,14 +135,13 @@ bool DataStorage::getUserInfo(UserInfo *info, UserId userId) const
 bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
 {
     Q_D(const DataStorage);
-    const ChatId chatId = peer.id();
-    const QHash<ChatId, TLChat *> &chats = d->m_api->chats();
-    if (!chats.contains(chatId)) {
-        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown chat" << chatId;
+    const QHash<Peer, TLChat *> &chats = d->m_api->chats();
+    if (!chats.contains(peer)) {
+        qCWarning(lcClientDataStorage) << Q_FUNC_INFO << "Unknown chat" << peer;
         return false;
     }
 
-    const TLChat *chat = chats.value(chatId);
+    const TLChat *chat = chats.value(peer);
     TLChat *infoData = Telegram::ChatInfo::Private::get(info);
     *infoData = *chat;
     return true;
@@ -320,7 +319,7 @@ const TLUser *DataInternalApi::getSelfUser() const
 const TLMessage *DataInternalApi::getMessage(const Peer &peer, quint32 messageId) const
 {
     if (peer.type() == Peer::Channel) {
-        quint64 key = DataInternalApi::channelMessageToKey(peer.id(), messageId);
+        quint64 key = DataInternalApi::channelMessageToKey(peer, messageId);
         return m_channelMessages.value(key);
     }
     return m_clientMessages.value(messageId);
@@ -626,13 +625,13 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
     switch (peer.type()) {
     case Telegram::Peer::Chat:
         inputPeer.tlType = TLValue::InputPeerChat;
-        inputPeer.chatId = peer.id();
+        inputPeer.chatId = peer;
         break;
     case Telegram::Peer::Channel:
-        if (m_chats.contains(peer.id())) {
+        if (m_chats.contains(peer)) {
             inputPeer.tlType = TLValue::InputPeerChannel;
-            inputPeer.channelId = peer.id();
-            inputPeer.accessHash = m_chats.value(peer.id())->accessHash;
+            inputPeer.channelId = peer;
+            inputPeer.accessHash = m_chats.value(peer)->accessHash;
         } else {
             qCWarning(lcClientDataStorage) << Q_FUNC_INFO
                                            << "Unknown public channel id" << peer.id();
@@ -642,10 +641,10 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
         if (peer == m_selfUserId) {
             inputPeer.tlType = TLValue::InputPeerSelf;
         } else {
-            if (m_users.contains(peer.id())) {
+            inputPeer.userId = peer;
+            if (m_users.contains(inputPeer.userId)) {
                 inputPeer.tlType = TLValue::InputPeerUser;
-                inputPeer.userId = peer.id();
-                inputPeer.accessHash = m_users.value(peer.id())->accessHash;
+                inputPeer.accessHash = m_users.value(inputPeer.userId)->accessHash;
             } else {
                 qCWarning(lcClientDataStorage) << Q_FUNC_INFO
                                                << "Unknown user" << peer.id();
@@ -684,10 +683,10 @@ TLInputUser DataInternalApi::toInputUser(UserId userId) const
 TLInputChannel DataInternalApi::toInputChannel(ChannelId channelId) const
 {
     TLInputChannel inputChannel;
-    const TLChat *channel = m_chats.value(channelId.id);
+    const TLChat *channel = m_chats.value(channelId);
     if (channel) {
         inputChannel.tlType = TLValue::InputChannel;
-        inputChannel.channelId = channelId.id;
+        inputChannel.channelId = channelId;
         inputChannel.accessHash = channel->accessHash;
     } else {
         qCWarning(lcClientDataStorage) << Q_FUNC_INFO

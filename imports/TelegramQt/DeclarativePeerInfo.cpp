@@ -85,7 +85,7 @@ void DeclarativePeerInfo::updateInfo()
 
     if (m_peer.type() == Peer::User) {
         UserInfo info;
-        dataStorage()->getUserInfo(&info, m_peer.id());
+        dataStorage()->getUserInfo(&info, m_peer);
         setChatType(Namespace::ChatTypeInvalid);
         updateInfo(&info);
     } else {

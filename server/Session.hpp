@@ -59,8 +59,8 @@ protected:
 
     quint64 m_sessionId = 0;
     RemoteClientConnection *m_connection = nullptr;
-    UserId m_wanterUserId = 0;
-    UserId m_userId = 0;
+    UserId m_wanterUserId;
+    UserId m_userId;
     mutable QVector<ServerSalt> m_salts;
     mutable ServerSalt m_oldSalt;
     quint32 m_layer = 0;

@@ -165,7 +165,7 @@ QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client 
 {
     if (peer.type() == Telegram::Peer::Type::User) {
         Telegram::UserInfo info;
-        if (client->dataStorage()->getUserInfo(&info, peer.id())) {
+        if (client->dataStorage()->getUserInfo(&info, peer)) {
             return info.getBestDisplayName();
         }
     } else {
@@ -182,7 +182,7 @@ QString getPeerPictureId(const Telegram::Peer &peer, const Telegram::Client::Cli
     FileInfo file;
     if (peer.type() == Telegram::Peer::Type::User) {
         Telegram::UserInfo info;
-        if (client->dataStorage()->getUserInfo(&info, peer.id())) {
+        if (client->dataStorage()->getUserInfo(&info, peer)) {
             info.getPeerPicture(&file, PeerPictureSize::Small);
         }
     } else {

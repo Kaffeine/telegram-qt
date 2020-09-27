@@ -31,7 +31,21 @@
 template <typename TL>
 using TLPtr = Telegram::UniqueLazyPointer<TL>;
 
-using TLId32 = quint32;
+class ChatOrChannelId
+{
+public:
+    quint32 id = 0;
+
+    operator Telegram::ChatId() const
+    {
+        return Telegram::ChatId(id);
+    }
+
+    operator Telegram::ChannelId() const
+    {
+        return Telegram::ChannelId(id);
+    }
+};
 
 struct TLBool
 {
@@ -217,7 +231,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthExportedAuthorization {
     static bool hasType(const quint32 value);
     bool operator==(const TLAuthExportedAuthorization &v) const;
 
-    quint32 id = 0;
+    Telegram::UserId id;
     QByteArray bytes;
     TLValue tlType = TLValue::AuthExportedAuthorization;
 };

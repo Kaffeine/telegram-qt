@@ -43,15 +43,15 @@ TLPeer MessageRecipient::toTLPeer() const
     switch (p.type()) {
     case Peer::User:
         result.tlType = TLValue::PeerUser;
-        result.userId = p.id();
+        result.userId = p;
         break;
     case Peer::Chat:
         result.tlType = TLValue::PeerChat;
-        result.chatId = p.id();
+        result.chatId = p;
         break;
     case Peer::Channel:
         result.tlType = TLValue::PeerChannel;
-        result.channelId = p.id();
+        result.channelId = p;
         break;
     }
     return result;
@@ -60,7 +60,7 @@ TLPeer MessageRecipient::toTLPeer() const
 UserContact AbstractUser::toContact() const
 {
     UserContact contact;
-    contact.id = id();
+    contact.id = userId();
     contact.phone = phoneNumber();
     contact.firstName = firstName();
     contact.lastName = lastName();
@@ -82,7 +82,7 @@ void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
     if (!m_id.isValid()) {
-        setUserId(qHash(m_phoneNumber));
+        setUserId(UserId(qHash(m_phoneNumber)));
     }
 }
 
@@ -204,7 +204,7 @@ void LocalUser::importContact(const UserContact &contact)
     // Check for contact registration status and the contact id setup performed out of this function
     m_importedContacts.append(contact);
 
-    if (contact.id) {
+    if (contact.id.isValid()) {
         m_contactList.append(contact.id);
     }
 }

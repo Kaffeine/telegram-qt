@@ -165,7 +165,7 @@ AbstractServerApi *LocalCluster::getServerApiInstance(quint32 dcId)
 
 void LocalCluster::sendMessage(MessageData *messageData)
 {
-    if (messageData->fromId() == 0) {
+    if (!messageData->fromId().isValid()) {
         qCWarning(lcCluster) << CALL_INFO << "Unable to process message without a sender";
         return;
     }

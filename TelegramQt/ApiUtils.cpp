@@ -65,15 +65,15 @@ TLPeer toTLPeer(const Telegram::Peer &peer)
     switch (peer.type()) {
     case Telegram::Peer::Chat:
         result.tlType = TLValue::PeerChat;
-        result.chatId = peer.id();
+        result.chatId = peer;
         break;
     case Telegram::Peer::Channel:
         result.tlType = TLValue::PeerChannel;
-        result.channelId = peer.id();
+        result.channelId = peer;
         break;
     case Telegram::Peer::User:
         result.tlType = TLValue::PeerUser;
-        result.userId = peer.id();
+        result.userId = peer;
         break;
     }
     return result;

@@ -81,7 +81,7 @@ void JsonDataImporter::exportForServer(Server *server)
         for (UserId userId : localUserIds) {
             const LocalUser *user = server->getUser(userId);
             QJsonObject userObject;
-            userObject[QLatin1String("id")] = Json::toValue(user->id());
+            userObject[QLatin1String("id")] = Json::toValue(user->userId().bareId());
             userObject[QLatin1String("phoneNumber")] = user->phoneNumber();
             userObject[QLatin1String("firstName")] = user->firstName();
             userObject[QLatin1String("lastName")] = user->lastName();
@@ -173,7 +173,7 @@ void JsonDataImporter::importForServer(Server *server)
         for (const QJsonValue &userValue : usersArray) {
             const QJsonObject userObject = userValue.toObject();
 
-            const quint32 userId = Json::fromValue<quint32>(userObject[QLatin1String("id")]);
+            const UserId userId = UserId(Json::fromValue<quint32>(userObject[QLatin1String("id")]));
             const QString phoneNumber = Json::fromValue<QString>(userObject[QLatin1String("phoneNumber")]);
 
             LocalUser *user = new LocalUser(userId, phoneNumber);

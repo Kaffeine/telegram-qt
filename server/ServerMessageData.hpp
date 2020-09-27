@@ -140,7 +140,7 @@ protected:
     Peer m_to;
     quint64 m_globalId = 0;
     quint32 m_date = 0;
-    UserId m_fromId = 0;
+    UserId m_fromId;
     quint32 m_editDate = 0;
 };
 

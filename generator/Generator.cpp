@@ -1671,6 +1671,9 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                         continue;
                     }
                     if (member.getName() == "id") {
+                        if (type.getName() == tlPrefix + "AuthExportedAuthorization") {
+                            member.setType(QLatin1String("Telegram::UserId"));
+                        }
                         if (type.getName() == tlPrefix + "User") {
                             member.setType(QLatin1String("Telegram::UserId"));
                         }

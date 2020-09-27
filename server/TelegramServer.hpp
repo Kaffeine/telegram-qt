@@ -138,7 +138,7 @@ public:
     void insertGroup(LocalGroupChat *chat);
     bool isLocalBox(const PostBox *box) const;
 
-    quint32 generateChatId();
+    ChatId generateChatId();
 
 signals:
 

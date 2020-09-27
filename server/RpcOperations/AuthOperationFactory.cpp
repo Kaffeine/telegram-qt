@@ -239,7 +239,7 @@ void AuthRpcOperation::runExportAuthorization()
 void AuthRpcOperation::runImportAuthorization()
 {
     MTProto::Functions::TLAuthImportAuthorization &arguments = m_importAuthorization;
-    AuthorizedUser *user = api()->getAuthorizedUser(arguments.id, arguments.bytes);
+    AuthorizedUser *user = api()->getAuthorizedUser(UserId(arguments.id), arguments.bytes);
     if (!user) {
         // TODO: Proper error
         sendRpcError(RpcError::UnknownReason);
@@ -247,7 +247,7 @@ void AuthRpcOperation::runImportAuthorization()
     }
 
     if (layer()->session()->userOrWantedUserId().isValid()) {
-        if (layer()->session()->userId() == arguments.id) {
+        if (layer()->session()->userId() == UserId(arguments.id)) {
             TLAuthAuthorization result;
             Utils::setupTLUser(&result.user, user, user);
             sendRpcReply(result);
@@ -556,7 +556,7 @@ void AuthRpcOperation::onExportedAuthorizationFinished()
     }
     const LocalUser *selfUser = layer()->getUser();
     TLAuthExportedAuthorization result;
-    result.id = selfUser->id();
+    result.id = selfUser->userId();
     result.bytes = m_authBytes;
     sendRpcReply(result);
 }

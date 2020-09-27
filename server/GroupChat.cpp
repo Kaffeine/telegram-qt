@@ -10,9 +10,9 @@ namespace Telegram {
 
 namespace Server {
 
-LocalGroupChat::LocalGroupChat(quint32 chatId, quint32 dcId)
+LocalGroupChat::LocalGroupChat(const Peer &peer, quint32 dcId)
 {
-    m_id = chatId;
+    m_peer = peer;
     m_dcId = dcId;
 }
 
@@ -29,7 +29,7 @@ void LocalGroupChat::setTitle(const QString &title)
 void LocalGroupChat::setCreator(UserId creatorId)
 {
     if (!m_members.isEmpty()) {
-        qWarning(lcServerGroupChat) << "Invalid setCreator() call for group" << m_id;
+        qWarning(lcServerGroupChat) << "Invalid setCreator() call for group" << m_peer;
         return;
     }
     ChatMember creator;
@@ -44,7 +44,7 @@ void LocalGroupChat::inviteMembers(const QVector<UserId> &members, UserId invite
     for (UserId userId : members) {
         if (currentMembers.contains(userId)) {
             qWarning(lcServerGroupChat) << "Unable to invite an already active member"
-                                        << userId << "of group" << m_id;
+                                        << userId << "of group" << m_peer;
             continue;
         }
         ChatMember member;
@@ -60,8 +60,8 @@ void LocalGroupChat::inviteMembers(const QVector<UserId> &members, UserId invite
 UserId GroupChat::creatorId() const
 {
     if (m_members.isEmpty()) {
-        qWarning(lcServerGroupChat) << "Invalid creatorId() call for group" << m_id;
-        return 0;
+        qWarning(lcServerGroupChat) << "Invalid creatorId() call for group" << m_peer;
+        return UserId();
     }
     return m_members.first().userId;
 }

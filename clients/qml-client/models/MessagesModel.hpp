@@ -119,7 +119,7 @@ public:
 
     MessageEvent();
 
-    UserId fromId = 0; // Sender handle
+    UserId fromId; // Sender handle
 
     const Peer forwardFromPeer() const { return m_forwardPeer; }
     void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }

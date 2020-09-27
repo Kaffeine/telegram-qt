@@ -27,7 +27,7 @@ struct UserContact
     bool operator==(const UserContact &another) const;
     bool operator!=(const UserContact &another) const;
 
-    quint32 id = 0;
+    UserId id;
     QString phone;
     QString firstName;
     QString lastName;

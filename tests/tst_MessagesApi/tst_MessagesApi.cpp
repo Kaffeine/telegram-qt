@@ -137,7 +137,7 @@ void tst_MessagesApi::getSelfUserDialog()
 
     Server::LocalUser *user = tryAddUser(&cluster, c_user1);
     const UserId uId = user->userId();
-    QCOMPARE(uId.id, user->id());
+    QCOMPARE(uId, user->userId());
 
     QVERIFY(user);
     Server::AbstractServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
@@ -187,7 +187,7 @@ void tst_MessagesApi::getSelfUserDialog()
         QCOMPARE(message.id(), clientMessages.constFirst());
         QCOMPARE(message.peer(), user->toPeer());
         QCOMPARE(message.text(), c_messageText);
-        QCOMPARE(message.fromUserId(), user->id());
+        QCOMPARE(message.fromUserId(), user->userId());
         QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type(), Namespace::MessageTypeText);
@@ -256,7 +256,7 @@ void tst_MessagesApi::getDialogs()
         QVERIFY(client2AsClient1Peer.isValid());
         QCOMPARE(client2AsClient1Peer.type(), Telegram::Peer::User);
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
         QVERIFY(userInfo.isContact());
 
@@ -935,7 +935,7 @@ void tst_MessagesApi::sendMessage()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
 
         PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
@@ -1000,7 +1000,7 @@ void tst_MessagesApi::sendMessage()
         QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text(), c_message1Text);
-        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id());
+        QCOMPARE(message.fromUserId().toPeer(), client1AsClient2Peer);
         QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type(), Namespace::MessageTypeText);
@@ -1180,7 +1180,7 @@ void tst_MessagesApi::getHistory()
 
     for (int i = 0; i < messagesCount; ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
-                    user2->id(), user1->toPeer(), QString::number(i + 1));
+                    user2->userId(), user1->toPeer(), QString::number(i + 1));
         messageData->setDate(static_cast<quint32>(baseDate + i));
         cluster.sendMessage(messageData);
     }
@@ -1248,7 +1248,7 @@ void tst_MessagesApi::syncPeerDialogs()
     MessageIdList messagesVol1;
     for (quint32 i = 0; i < c_lastId1; ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
-                    user2->id(), user1->toPeer(), QString::number(i + 1));
+                    user2->userId(), user1->toPeer(), QString::number(i + 1));
         cluster.sendMessage(messageData);
         messagesVol1.append(c_lastId1 - i);
     }
@@ -1300,7 +1300,7 @@ void tst_MessagesApi::syncPeerDialogs()
     MessageIdList messagesVol2;
     for (quint32 i = 0; i < (c_lastId2 - c_lastId1); ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
-                    user2->id(), user1->toPeer(), QString::number(i + c_lastId1 + 1));
+                    user2->userId(), user1->toPeer(), QString::number(i + c_lastId1 + 1));
         cluster.sendMessage(messageData);
         messagesVol2.append(c_lastId2 - i);
     }
@@ -1443,7 +1443,7 @@ void tst_MessagesApi::syncPeerDialogs()
     MessageIdList messagesVol3_1;
     MessageIdList messagesVol3_2;
     for (quint32 i = 0; i < (c_lastId3 - c_lastId2); ++i) {
-        const quint32 fromId = i %2 ? user2->id() : user3->id();
+        const UserId fromId = i %2 ? user2->userId() : user3->userId();
         Server::MessageData *messageData = server->messageService()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId2 + 1));
         cluster.sendMessage(messageData);
@@ -1515,7 +1515,7 @@ void tst_MessagesApi::syncPeerDialogs()
     MessageIdList messagesVol4_1;
     MessageIdList messagesVol4_2;
     for (quint32 i = 0; i < (c_lastId4 - c_lastId3); ++i) {
-        const quint32 fromId = i %2 ? user2->id() : user3->id();
+        const UserId fromId = i %2 ? user2->userId() : user3->userId();
         Server::MessageData *messageData = server->messageService()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId3 + 1));
         cluster.sendMessage(messageData);
@@ -1571,11 +1571,11 @@ void tst_MessagesApi::syncPeerDialogs()
         QVERIFY2(!syncOp->isFinished(), "We need to check new messages during sync");
 
         Server::MessageData *message1Data = server->messageService()->addMessage(
-                    user2->id(), user1->toPeer(), QString::number(c_lastId4 + 1));
+                    user2->userId(), user1->toPeer(), QString::number(c_lastId4 + 1));
         Server::MessageData *message2Data = server->messageService()->addMessage(
-                    user3->id(), user1->toPeer(), QString::number(c_lastId4 + 2));
+                    user3->userId(), user1->toPeer(), QString::number(c_lastId4 + 2));
         Server::MessageData *message3Data = server->messageService()->addMessage(
-                    user4->id(), user1->toPeer(), QString::number(c_lastId4 + 3));
+                    user4->userId(), user1->toPeer(), QString::number(c_lastId4 + 3));
 
         QCOMPARE(receivedMessages.count(), 0);
         cluster.sendMessage(message1Data);
@@ -1610,9 +1610,9 @@ void tst_MessagesApi::syncPeerDialogs()
         QCOMPARE(receivedMessages.count(), 0);
 
         Server::MessageData *message4Data = server->messageService()->addMessage(
-                    user2->id(), user1->toPeer(), QString::number(c_lastId4 + 4));
+                    user2->userId(), user1->toPeer(), QString::number(c_lastId4 + 4));
         Server::MessageData *message5Data = server->messageService()->addMessage(
-                    user3->id(), user1->toPeer(), QString::number(c_lastId4 + 5));
+                    user3->userId(), user1->toPeer(), QString::number(c_lastId4 + 5));
         cluster.sendMessage(message4Data);
         cluster.sendMessage(message5Data);
         TRY_COMPARE(receivedMessages.count(), 2);
@@ -1666,7 +1666,7 @@ void tst_MessagesApi::syncPeerDialogs()
 
         QCOMPARE(receivedMessages.count(), 0);
         Server::MessageData *messageData = server->messageService()->addMessage(
-                    user4->id(), user1->toPeer(), QString::number(c_lastId5 + 1));
+                    user4->userId(), user1->toPeer(), QString::number(c_lastId5 + 1));
         cluster.sendMessage(messageData);
 
         TRY_COMPARE(receivedMessages.count(), 1);
@@ -1727,7 +1727,7 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
 
         PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
@@ -1792,7 +1792,7 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text(), c_message1Text);
-        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id());
+        QCOMPARE(message.fromUserId().toPeer(), client1AsClient2Peer);
         QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type(), Namespace::MessageTypeText);

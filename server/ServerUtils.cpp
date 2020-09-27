@@ -1,6 +1,7 @@
 #include "ServerUtils.hpp"
 
 #include "ApiUtils.hpp"
+#include "Debug.hpp"
 #include "GroupChat.hpp"
 #include "ServerApi.hpp"
 #include "ServerMessageData.hpp"
@@ -42,7 +43,7 @@ void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
 
 bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *applicant)
 {
-    output->id = input->id();
+    output->id = input->userId();
     output->tlType = TLValue::User;
     output->firstName = input->firstName();
     output->lastName = input->lastName();
@@ -81,12 +82,12 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *
     if (output->status.tlType != TLValue::UserStatusEmpty) {
         flags |= TLUser::Status;
     }
-    if (output->id == applicant->id()) {
+    if (output->id == applicant->userId()) {
         flags |= TLUser::Self;
     }
     if (applicant->contactList().contains(output->id)) {
         flags |= TLUser::Contact;
-        if (input->contactList().contains(applicant->id())) {
+        if (input->contactList().contains(applicant->userId())) {
             flags |= TLUser::MutualContact;
         }
     }
@@ -115,14 +116,14 @@ bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const Ab
 bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *forUser)
 {
     output->tlType = TLValue::Chat;
-    output->id = input->id();
+    output->id = input->peer();
     output->title = input->title();
     output->date = input->date();
     output->version = 1;
     output->participantsCount = input->members().count();
 
     quint32 flags = 0;
-    if (input->creatorId() == forUser->id()) {
+    if (input->creatorId() == forUser->userId()) {
         output->flags |= TLChat::Creator;
     }
     output->flags = flags;
@@ -132,7 +133,20 @@ bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *for
 
 bool setupTLChatFull(TLChatFull *output, const GroupChat *input, const AbstractUser *forUser)
 {
-    output->id = input->id();
+    switch (input->peer().type()) {
+    case Peer::Chat:
+        output->tlType = TLValue::ChatFull;
+        break;
+    case Peer::Channel:
+        output->tlType = TLValue::ChannelFull;
+        break;
+    case Peer::User:
+        qCritical() << Q_FUNC_INFO << "Invalid input" << input->peer();
+        return false;
+    }
+
+    output->id = input->peer().id();
+
     Utils::setupTLChatParticipants(&output->participants, input, forUser);
 
     return true;
@@ -143,25 +157,25 @@ bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input,
     const QVector<ChatMember> members = input->members();
 
     output->tlType = TLValue::ChatParticipants;
-    output->chatId = input->id();
+    output->chatId = input->peer();
     output->version = 1;
     output->participants.reserve(members.count());
     for (const ChatMember &member : members) {
         output->participants.append(TLChatParticipant());
         TLChatParticipant &participant = output->participants.last();
-        participant.userId = member.userId.id;
+        participant.userId = member.userId;
         switch (member.role) {
         case ChatMember::Role::Creator:
             participant.tlType = TLValue::ChatParticipantCreator;
             break;
         case ChatMember::Role::Admin:
             participant.tlType = TLValue::ChatParticipantAdmin;
-            participant.inviterId = member.inviterId.id;
+            participant.inviterId = member.inviterId;
             participant.date = member.date;
             break;
         case ChatMember::Role::User:
             participant.tlType = TLValue::ChatParticipant;
-            participant.inviterId = member.inviterId.id;
+            participant.inviterId = member.inviterId;
             participant.date = member.date;
             break;
         case ChatMember::Role::Invalid:
@@ -175,13 +189,13 @@ bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input,
 bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser)
 {
     setupTLUser(&output->user, input, forUser);
-    if (forUser->contactList().contains(input->id())) {
+    if (forUser->contactList().contains(input->userId())) {
         output->myLink.tlType = TLValue::ContactLinkContact;
     } else {
         output->myLink.tlType = TLValue::ContactLinkNone;
     }
 
-    if (input->contactList().contains(forUser->id())) {
+    if (input->contactList().contains(forUser->userId())) {
         output->foreignLink.tlType = TLValue::ContactLinkContact;
     } else {
         output->foreignLink.tlType = TLValue::ContactLinkNone;
@@ -214,9 +228,9 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
         case Peer::User:
         {
             users->append(TLUser());
-            AbstractUser *user = api->getAbstractUser(peer.id());
+            AbstractUser *user = api->getAbstractUser(peer);
             if (!user) {
-                qWarning() << Q_FUNC_INFO << "User not found:" << peer.id();
+                qWarning() << Q_FUNC_INFO << "User not found:" << peer;
                 continue;
             }
             setupTLUser(&users->last(), user, forUser);
@@ -225,9 +239,9 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
         case Peer::Chat:
         {
             chats->append(TLChat());
-            GroupChat *chat = api->getGroupChat(peer.id());
+            GroupChat *chat = api->getGroupChat(peer);
             if (!chat) {
-                qWarning() << Q_FUNC_INFO << "Chat not found:" << peer.id();
+                qWarning() << Q_FUNC_INFO << "Chat not found:" << peer;
                 continue;
             }
             setupTLChat(&chats->last(), chat, forUser);
@@ -246,7 +260,7 @@ static void setupUserMessage(TLMessage *output, const MessageData *messageData, 
 
     quint32 flags = 0;
     //if (!receiverInbox->isBroadcast()) {
-        output->fromId = messageData->fromId().id;
+        output->fromId = messageData->fromId();
         flags |= TLMessage::FromId;
     //}
     output->message = messageData->content().text();
@@ -261,7 +275,7 @@ static void setupUserMessage(TLMessage *output, const MessageData *messageData, 
     }
 
     const bool messageToSelf = messageData->toPeer() == forUser->toPeer();
-    if (messageData->fromId() == forUser->id()) {
+    if (messageData->fromId() == forUser->userId()) {
         if (!messageToSelf) {
             flags |= TLMessage::Out;
         }
@@ -275,7 +289,7 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
 
     quint32 flags = 0;
     //if (!receiverInbox->isBroadcast()) {
-        output->fromId = messageData->fromId().id;
+        output->fromId = messageData->fromId();
         flags |= TLMessage::FromId;
     //}
     switch (messageData->action().type) {

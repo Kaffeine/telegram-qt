@@ -298,7 +298,7 @@ Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
     case TLValue::InputPeerEmpty:
         return Peer();
     case TLValue::InputPeerSelf:
-        return Peer::fromUserId(applicant->id());
+        return applicant->userId();
     case TLValue::InputPeerChat:
         return peer.chatId;
     case TLValue::InputPeerUser:
@@ -317,7 +317,7 @@ MessageRecipient *Server::getRecipient(const TLInputPeer &peer, const LocalUser 
     case TLValue::InputPeerEmpty:
         return nullptr;
     case TLValue::InputPeerSelf:
-        return getAbstractUser(applicant->id());
+        return getAbstractUser(applicant->userId());
     case TLValue::InputPeerUser:
         return getAbstractUser(peer.userId);
     case TLValue::InputPeerChat: {
@@ -344,9 +344,9 @@ MessageRecipient *Server::getRecipient(const Peer &peer) const
     }
     switch (peer.type()) {
     case Peer::User:
-        return getAbstractUser(peer.id());
+        return getAbstractUser(peer);
     case Peer::Chat:
-        return getGroupChat(peer.id());
+        return getGroupChat(peer);
     default:
         return nullptr;
     }
@@ -357,7 +357,7 @@ QVector<UserId> Server::getPeerWatchers(const Peer &peer) const
 {
     QVector<UserId> watchers;
     if (peer.type() == Peer::User) {
-        const LocalUser *localUser = getUser(peer.id());
+        const LocalUser *localUser = getUser(peer);
         if (localUser) {
             const QVector<UserDialog *> dialogs = localUser->dialogs();
             for (const UserDialog *dialog : dialogs) {
@@ -366,11 +366,11 @@ QVector<UserId> Server::getPeerWatchers(const Peer &peer) const
                     continue;
                 }
                 if (dialog->peer.type() == Peer::User) {
-                    watchers.append(dialog->peer.id());
+                    watchers.append(dialog->peer);
                 }
             }
         }
-        const AbstractUser *user = localUser ? localUser : getAbstractUser(peer.id());
+        const AbstractUser *user = localUser ? localUser : getAbstractUser(peer);
         const QVector<UserId> contactList = user->contactList();
         for (const UserId contactId : contactList) {
             if (watchers.contains(contactId)) {
@@ -380,8 +380,8 @@ QVector<UserId> Server::getPeerWatchers(const Peer &peer) const
         }
 
         // Any user is interesting in themself
-        if (!watchers.contains(peer.id())) {
-            watchers << peer.id();
+        if (!watchers.contains(peer)) {
+            watchers << peer;
         }
     }
 
@@ -435,7 +435,7 @@ LocalUser *Server::addUser(const QString &identifier)
     if (existsUser) {
         qCDebug(loggingCategoryServerApi) << CALL_INFO << "Unable to add user"
                                           << identifier << "(the identifier is already taken)"
-                                          << "by user id" << existsUser->id();
+                                          << "by user id" << existsUser->userId();
         return nullptr;
     }
 
@@ -516,7 +516,7 @@ bool Server::setUserName(LocalUser *user, const QString &newUsername, RpcError *
     }
     const QString previousName = user->userName();
     if (!newUsername.isEmpty()) {
-        m_usernameToUserId.insert(newUsername, user->id());
+        m_usernameToUserId.insert(newUsername, user->userId());
     }
     user->setUserName(newUsername);
     m_usernameToUserId.remove(previousName);
@@ -548,11 +548,11 @@ bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
 GroupChat *Server::createChat(LocalUser *user, const QString &title, const QVector<UserId> &members)
 {
     const quint32 date = Telegram::Utils::getCurrentTime();
-    const quint32 chatId = generateChatId();
+    const ChatId chatId = generateChatId();
     LocalGroupChat *groupChat = new LocalGroupChat(chatId, dcId());
-    groupChat->setCreator(user->id());
+    groupChat->setCreator(user->userId());
     groupChat->setTitle(title);
-    groupChat->inviteMembers(members, user->id(), date);
+    groupChat->inviteMembers(members, user->userId(), date);
     groupChat->setDate(date);
 
     insertGroup(groupChat);
@@ -628,7 +628,7 @@ PendingOperation *Server::searchContacts(const QString &query, quint32 limit, QV
 void Server::reportMessageRead(const MessageData *messageData)
 {
     const Peer senderPostBoxPeer = messageData->fromId().isValid()
-            ? messageData->fromId()
+            ? Peer(messageData->fromId())
             : messageData->toPeer();
     const quint32 senderMessageId = messageData->getReference(senderPostBoxPeer);
 
@@ -661,7 +661,7 @@ QVector<UpdateNotification> Server::announceNewChat(const Peer &peer, Session *e
         return { };
     }
 
-    const GroupChat *groupChat = getGroupChat(peer.id());
+    const GroupChat *groupChat = getGroupChat(peer);
 
     ServiceMessageAction serviceAction;
     serviceAction.type = ServiceMessageAction::Type::ChatCreate;
@@ -732,13 +732,13 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData, Ses
             notification.pts = box->pts();
         }
 
-        for (const quint32 userId : box->users()) {
+        for (const UserId userId : box->users()) {
             // Box users:
             // single user in User boxes
             // a lot of users in Channel boxes
             notification.userId = userId;
             if (targetPeer.type() == Peer::User) {
-                if (userId == fromUser->id()) {
+                if (userId == fromUser->userId()) {
                     notification.dialogPeer = targetPeer;
                 } else {
                     notification.dialogPeer = fromUser->toPeer();
@@ -820,10 +820,10 @@ QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
         notification.date = requestDate;
         notification.messageId = messageId;
         notification.pts = box->pts();
-        for (const quint32 userId : box->users()) {
+        for (const UserId userId : box->users()) {
             notification.userId = userId;
             if (targetPeer.type() == Peer::User) {
-                if (userId == fromUser->id()) {
+                if (userId == fromUser->userId()) {
                     notification.dialogPeer = targetPeer;
                 } else {
                     notification.dialogPeer = fromUser->toPeer();
@@ -850,7 +850,7 @@ QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
                 continue;
             }
 
-            if ((userId == fromUser->id()) && !notifications.isEmpty()) {
+            if ((userId == fromUser->userId()) && !notifications.isEmpty()) {
                 // Keep the sender Notification on the first place
                 notifications.append(notifications.constFirst());
                 notifications.first() = notification;
@@ -876,14 +876,14 @@ void Server::processUserMessageAction(const Peer &targetPeer,
         UpdateNotification notification;
         notification.type = UpdateNotification::Type::MessageAction;
         notification.date = requestDate;
-        notification.fromId = applicant->id();
+        notification.fromId = applicant->userId();
         notification.messageAction = messageAction;
 
-        for (const quint32 userId : box->users()) {
+        for (const UserId userId : box->users()) {
             // The Update recipient
             notification.userId = userId;
             if (targetPeer.type() == Peer::User) {
-                if (userId == applicant->id()) {
+                if (userId == applicant->userId()) {
                     notification.dialogPeer = targetPeer;
                 } else {
                     notification.dialogPeer = applicant->toPeer();
@@ -892,7 +892,7 @@ void Server::processUserMessageAction(const Peer &targetPeer,
                 notification.dialogPeer = targetPeer;
             }
 
-            if (userId == applicant->id()) {
+            if (userId == applicant->userId()) {
                 notification.excludeSession = excludeSession;
             }
 
@@ -922,12 +922,12 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
     case UpdateNotification::Type::UpdateName:
         notification.type = updateType;
         notification.date = requestDate;
-        notification.fromId = applicant->id();
+        notification.fromId = applicant->userId();
         break;
     case UpdateNotification::Type::UpdateUserStatus:
         notification.type = updateType;
         notification.date = requestDate;
-        notification.fromId = applicant->id();
+        notification.fromId = applicant->userId();
         break;
     default:
         return { };
@@ -940,7 +940,7 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
 
     UpdateNotification *selfNotification = nullptr;
     for (UpdateNotification &notification : notifications) {
-        if (notification.userId == applicant->id()) {
+        if (notification.userId == applicant->userId()) {
             selfNotification = &notification;
             break;
         }
@@ -957,7 +957,7 @@ AbstractUser *Server::importUserContact(LocalUser *user, const UserContact &cont
     UserContact userContact = contact;
     AbstractUser *registeredUser = getAbstractUser(contact.phone);
     if (registeredUser) {
-        userContact.id = registeredUser->id();
+        userContact.id = registeredUser->userId();
     }
     user->importContact(userContact);
 
@@ -978,8 +978,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     {
         // This implementation is weak to race conditions.
         // The right way is to get all update data from the notification
-        quint32 chatId = notification.dialogPeer.id();
-        GroupChat *groupChat = getGroupChat(chatId);
+        GroupChat *groupChat = getGroupChat(notification.dialogPeer);
         if (!groupChat) {
             return false;
         }
@@ -1040,13 +1039,13 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
             break;
         case Peer::Chat:
             update->tlType = TLValue::UpdateChatUserTyping;
-            update->chatId = notification.dialogPeer.id();
+            update->chatId = notification.dialogPeer;
             break;
         case Peer::Channel:
             // Invalid peer
             break;
         }
-        update->userId = notification.fromId.id;
+        update->userId = notification.fromId;
         // Note: action depends on Layer. Process this to support different layers.
         update->action = Telegram::Utils::toTL(notification.messageAction);
     }
@@ -1066,7 +1065,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     case UpdateNotification::Type::UpdateName:
     {
         update->tlType = TLValue::UpdateUserName;
-        update->userId = notification.fromId.id;
+        update->userId = notification.fromId;
 
         if (!interestingUser || (interestingUser->userId() != update->userId)) {
             interestingUser = getAbstractUser(update->userId);
@@ -1086,7 +1085,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     case UpdateNotification::Type::UpdateUserStatus:
     {
         update->tlType = TLValue::UpdateUserStatus;
-        update->userId = notification.fromId.id;
+        update->userId = notification.fromId;
 
         if (!interestingUser || (interestingUser->userId() != notification.userId)) {
             interestingUser = getAbstractUser(update->userId);
@@ -1266,7 +1265,7 @@ QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNot
 
 void Server::processCreateChat(const UpdateNotification &notification)
 {
-    quint32 chatId = notification.dialogPeer.id();
+    ChatId chatId = notification.dialogPeer;
     if (getGroupChat(chatId)) {
         // The chat already created
         // Current implementation send one CreateChat notification for each user.
@@ -1287,15 +1286,15 @@ void Server::processCreateChat(const UpdateNotification &notification)
 
 void Server::insertUser(LocalUser *user)
 {
-    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
-    m_users.insert(user->id(), user);
-    m_phoneToUserId.insert(user->phoneNumber(), user->id());
+    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->userId();
+    m_users.insert(user->userId(), user);
+    m_phoneToUserId.insert(user->phoneNumber(), user->userId());
 }
 
 void Server::insertGroup(LocalGroupChat *chat)
 {
-    qCDebug(loggingCategoryServerApi) << "insert group" << chat << chat->id();
-    m_groups.insert(chat->id(), chat);
+    qCDebug(loggingCategoryServerApi) << "insert group" << chat << chat->peer();
+    m_groups.insert(chat->peer(), chat);
 }
 
 GroupChat *Server::getGroupChat(ChatId chatId) const
@@ -1307,15 +1306,15 @@ bool Server::isLocalBox(const PostBox *box) const
 {
     const Peer peer = box->peer();
     if (peer.type() == Peer::Type::User) {
-        return getUser(peer.id());
+        return getUser(peer);
     }
 
     return false;
 }
 
-quint32 Server::generateChatId()
+ChatId Server::generateChatId()
 {
-    return ++m_localGroupId;
+    return ChatId(++m_localGroupId);
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
@@ -1399,14 +1398,14 @@ QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *ap
 
     QVector<PostBox *> boxes;
     if (targetPeer.type() == Peer::User) {
-        AbstractUser *toUser = getAbstractUser(targetPeer.id());
+        AbstractUser *toUser = getAbstractUser(targetPeer);
         boxes.append(toUser->getPostBox());
-        if (applicant && applicant->id() != targetPeer.id()) {
+        if (applicant && applicant->userId() != targetPeer) {
             boxes.append(applicant->getPostBox());
         }
     }
     if (targetPeer.type() == Peer::Chat) {
-        const GroupChat *groupChat = getGroupChat(targetPeer.id());
+        const GroupChat *groupChat = getGroupChat(targetPeer);
         for (const UserId userId : groupChat->memberIds()) {
             boxes.append(getAbstractUser(userId)->getPostBox());
         }

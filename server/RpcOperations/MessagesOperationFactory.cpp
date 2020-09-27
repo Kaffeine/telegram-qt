@@ -743,7 +743,7 @@ void MessagesRpcOperation::runCreateChat()
     members.reserve(arguments.users.count());
     for (const TLInputUser &inputUser : arguments.users) {
         const AbstractUser *user = api()->getAbstractUser(inputUser, selfUser);
-        members.append(user->id());
+        members.append(user->userId());
     }
 
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
@@ -1194,7 +1194,7 @@ void MessagesRpcOperation::runGetFullChat()
     MTProto::Functions::TLMessagesGetFullChat &arguments = m_getFullChat;
     LocalUser *selfUser = layer()->getUser();
 
-    const GroupChat *groupChat = api()->getGroupChat(arguments.chatId);
+    const GroupChat *groupChat = api()->getGroupChat(ChatId(arguments.chatId));
     if (!groupChat) {
         sendRpcError(RpcError::PeerIdInvalid);
         return;
@@ -1289,7 +1289,7 @@ void MessagesRpcOperation::runGetHistory()
         }
 
         if (peer.isValid()) {
-            if (peer != messageData->getDialogPeer(selfUser->id())) {
+            if (peer != messageData->getDialogPeer(selfUser->userId())) {
                 continue;
             }
         }
@@ -1549,7 +1549,7 @@ void MessagesRpcOperation::runReadHistory()
     MTProto::Functions::TLMessagesReadHistory &arguments = m_readHistory;
 
     LocalUser *selfUser = layer()->getUser();
-    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->userId());
     if (targetPeer.type() == Peer::Channel) {
         // There is channels.readHistory for that
         sendRpcError(RpcError::PeerIdInvalid);
@@ -1577,7 +1577,7 @@ void MessagesRpcOperation::runReadHistory()
         }
 
         const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
-        if (messageData->getDialogPeer(selfUser->id()) != targetPeer) {
+        if (messageData->getDialogPeer(selfUser->userId()) != targetPeer) {
             continue;
         }
 
@@ -1839,7 +1839,7 @@ void MessagesRpcOperation::runSendMedia()
     switch (arguments.media.tlType) {
     case TLValue::InputMediaContact:
     {
-        Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
+        Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->userId());
         if (!contactPeer.isValid() || (contactPeer.type() != Peer::User)) {
             sendRpcError(RpcError::PeerIdInvalid); // TODO: Check if the error is correct
             return;
@@ -1849,7 +1849,7 @@ void MessagesRpcOperation::runSendMedia()
         media.contact.phone = arguments.media.phoneNumber;
         media.contact.firstName = arguments.media.firstName;
         media.contact.lastName = arguments.media.lastName;
-        media.contact.id = contactPeer.id();
+        media.contact.id = contactPeer;
         break;
     }
     case TLValue::InputMediaUploadedPhoto:
@@ -1900,7 +1900,7 @@ void MessagesRpcOperation::runSendMedia()
         break;
     }
 
-    MessageData *messageData = api()->messageService()->addMessage(selfUser->id(), recipient->toPeer(), media);
+    MessageData *messageData = api()->messageService()->addMessage(selfUser->userId(), recipient->toPeer(), media);
     submitMessageData(messageData, arguments.randomId);
 }
 
@@ -1916,7 +1916,7 @@ void MessagesRpcOperation::runSendMessage()
         sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
-    MessageData *messageData = api()->messageService()->addMessage(selfUser->id(), targetPeer, arguments.message);
+    MessageData *messageData = api()->messageService()->addMessage(selfUser->userId(), targetPeer, arguments.message);
 
     submitMessageData(messageData, arguments.randomId);
 }
@@ -2006,7 +2006,7 @@ void MessagesRpcOperation::runSetTyping()
     MTProto::Functions::TLMessagesSetTyping &arguments = m_setTyping;
 
     LocalUser *selfUser = layer()->getUser();
-    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->userId());
     MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {

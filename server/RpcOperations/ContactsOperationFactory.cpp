@@ -208,7 +208,7 @@ void ContactsRpcOperation::runGetContacts()
     TLUser userInfo;
     TLContact outputContact;
     for (const UserContact &contact : importedContacts) {
-        if (contact.id) {
+        if (contact.id.isValid()) {
             const AbstractUser *contactUser = api()->getAbstractUser(contact.id);
             Utils::setupTLUser(&userInfo, contactUser, selfUser);
             result.users.append(userInfo);
@@ -272,7 +272,7 @@ void ContactsRpcOperation::runImportContacts()
 
             TLImportedContact imported;
             imported.clientId = c.clientId;
-            imported.userId = contactUser->id();
+            imported.userId = contactUser->userId();
             result.imported.append(imported);
         } else {
             // TODO: Check if this is correct.

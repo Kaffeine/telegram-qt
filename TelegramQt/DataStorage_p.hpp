@@ -111,7 +111,7 @@ public:
 
     TLVector<TLContact> contactList() const { return m_contactList; }
     const QHash<UserId, TLUser *> &users() const { return m_users; }
-    const QHash<ChatId, TLChat *> &chats() const { return m_chats; }
+    const QHash<Peer, TLChat *> &chats() const { return m_chats; }
     const TLVector<UserDialog *> &dialogs() const { return m_dialogs; }
     const QVector<Peer> &pinnedDialogs() const { return m_pinnedDialogs; }
     UserDialog *getDialog(const Peer &peer) const;
@@ -129,14 +129,14 @@ protected:
     QHash<Telegram::Peer, DialogState> m_dialogStates;
 
     QHash<UserId, TLUser *> m_users;
-    QHash<ChatId, TLChat *> m_chats;
+    QHash<Peer, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;
     QHash<quint64, TLMessage *> m_channelMessages;
     TLVector<UserDialog *> m_dialogs;
     QVector<Peer> m_pinnedDialogs;
     TLVector<TLContact> m_contactList;
     QQueue<SentMessage> m_queuedMessages;
-    UserId m_selfUserId = 0;
+    UserId m_selfUserId;
 };
 
 } // Client namespace

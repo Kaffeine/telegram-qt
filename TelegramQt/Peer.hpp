@@ -99,7 +99,13 @@ template <Peer::Type peerType>
 class BasePeerId
 {
 public:
-    constexpr BasePeerId(quint32 bareId)
+    BasePeerId(const Peer &peer)
+    {
+        Q_ASSERT(peer.type() == type);
+        id = peer.id();
+    }
+
+    explicit constexpr BasePeerId(quint32 bareId)
         :id(bareId)
     {
     }
@@ -108,25 +114,35 @@ public:
     {
         return bareId.id == id;
     }
-    constexpr bool operator==(quint32 bareId) const
-    {
-        return bareId == id;
-    }
+//    constexpr bool operator==(quint32 bareId) const
+//    {
+//        return bareId == id;
+//    }
     constexpr bool operator!=(BasePeerId bareId) const
     {
         return bareId.id != id;
     }
-    constexpr bool operator!=(quint32 bareId) const
-    {
-        return bareId != id;
-    }
+//    constexpr bool operator!=(quint32 bareId) const
+//    {
+//        return bareId != id;
+//    }
     constexpr bool isValid() const
     {
         return id;
     }
     constexpr operator Peer() const
     {
+        return toPeer();
+    }
+
+    constexpr Peer toPeer() const
+    {
         return Peer(id, type);
+    }
+
+    constexpr quint32 bareId() const
+    {
+        return id;
     }
 
     quint32 id = 0;

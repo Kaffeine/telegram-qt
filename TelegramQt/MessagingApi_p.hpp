@@ -60,7 +60,7 @@ struct UserMessageAction : public MessageAction
     }
 
     Peer peer;
-    UserId userId = 0;
+    UserId userId;
     int remainingTime = 0; // (ms)
 };
 

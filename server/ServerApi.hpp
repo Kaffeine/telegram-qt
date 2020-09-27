@@ -44,8 +44,8 @@ public:
 
     Peer dialogPeer;
     MessageAction messageAction;
-    UserId userId = 0; // The Update recipient
-    UserId fromId = 0;
+    UserId userId; // The Update recipient
+    UserId fromId;
     quint32 messageId = 0;
     quint64 messageDataId = 0;
     quint32 dcId = 0;

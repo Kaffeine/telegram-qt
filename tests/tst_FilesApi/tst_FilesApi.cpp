@@ -258,7 +258,7 @@ void tst_FilesApi::getDialogListPictures()
         FileInfo pictureFile;
         if (dialog.type() == Telegram::Peer::User) {
             UserInfo userInfo;
-            client.dataStorage()->getUserInfo(&userInfo, dialog.id());
+            client.dataStorage()->getUserInfo(&userInfo, dialog);
             userInfo.getPeerPicture(&pictureFile, PeerPictureSize::Small);
             QVERIFY(!pictureFile.getFileId().isEmpty());
         }
