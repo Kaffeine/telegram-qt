@@ -186,7 +186,6 @@ void MessagingApiPrivate::onShortSentMessage(quint32 messageId)
         return;
     }
     onSentMessageIdResolved(m_expectedRandomMessageId, messageId);
-    m_expectedRandomMessageId = 0;
 }
 
 void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId)
@@ -212,6 +211,10 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
     state->syncedMessageId = messageId;
 
     emit q->messageSent(sentMessage.peer, randomMessageId, messageId);
+
+    if (randomMessageId == m_expectedRandomMessageId) {
+        m_expectedRandomMessageId = 0;
+    }
 }
 
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
