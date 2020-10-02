@@ -92,18 +92,20 @@ QDebug operator<<(QDebug d, const TLValue &v)
 
 QDebug operator<<(QDebug d, const Telegram::Peer &peer)
 {
+    QDebugStateSaver saver(d);
+    d.nospace();
     switch (peer.type()) {
     case Telegram::Peer::User:
-        d << "Telegram::Peer(User, " << peer.id() << ")";
+        d << "Peer(User, " << peer.id() << ")";
         break;
     case Telegram::Peer::Chat:
-        d << "Telegram::Peer(Chat, " << peer.id() << ")";
+        d << "Peer(Chat, " << peer.id() << ")";
         break;
     case Telegram::Peer::Channel:
-        d << "Telegram::Peer(Channel, " << peer.id() << ")";
+        d << "Peer(Channel, " << peer.id() << ")";
         break;
     default:
-        d << "Telegram::Peer(Invalid:" << peer.type() << ", " << peer.id() << ")";
+        d << "Peer(Invalid:" << peer.type() << ", " << peer.id() << ")";
         break;
     }
     return d;
