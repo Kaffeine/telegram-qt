@@ -486,6 +486,8 @@ quint64 DataInternalApi::enqueueMessage(const Telegram::Peer peer, const QString
     sentMessage.text = message;
     sentMessage.replyToMsgId = replyToMsgId;
     sentMessage.randomId = RandomGenerator::instance()->generate<quint64>();
+    qCDebug(lcClientDataStorage) << THIS_FUNC_INFO << sentMessage.randomId
+                                 << "to" << peer;
     m_queuedMessages.append(sentMessage);
     return sentMessage.randomId;
 }
@@ -502,23 +504,24 @@ DataInternalApi::SentMessage DataInternalApi::getQueuedMessage(quint64 randomMes
 
 DataInternalApi::SentMessage DataInternalApi::dequeueMessage(quint64 messageRandomId, quint32 messageId)
 {
+    qCDebug(lcClientDataStorage) << THIS_FUNC_INFO << messageRandomId
+                                 << "messageId" << messageId;
     if (m_queuedMessages.isEmpty()) {
-        qCWarning(lcClientDataStorage) << Q_FUNC_INFO
-                                       << "Invalid dequeue request (message queue is empty):"
-                                       << messageRandomId << messageId;
+        qCDebug(lcClientDataStorage) << "Unable to dequeue: message queue is empty";
         return SentMessage();
     }
-    if (m_queuedMessages.head().randomId == messageRandomId) {
-        return m_queuedMessages.dequeue();
-    }
-    for (int i = 0; i < m_queuedMessages.count(); ++i) {
-        if (m_queuedMessages.at(i).randomId == messageRandomId) {
-            return m_queuedMessages.takeAt(i);
+    if (messageRandomId) {
+        if (m_queuedMessages.head().randomId == messageRandomId) {
+            return m_queuedMessages.dequeue();
+        }
+        for (int i = 0; i < m_queuedMessages.count(); ++i) {
+            if (m_queuedMessages.at(i).randomId == messageRandomId) {
+                return m_queuedMessages.takeAt(i);
+            }
         }
     }
-    qCWarning(lcClientDataStorage) << Q_FUNC_INFO
-                                   << "Invalid dequeue request (message not found):"
-                                   << messageRandomId << messageId;
+
+    qCDebug(lcClientDataStorage) << "Unable to dequeue: message not found";
     return SentMessage();
 }
 
