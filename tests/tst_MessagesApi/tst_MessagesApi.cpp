@@ -585,8 +585,6 @@ void tst_MessagesApi::groupChatMessaging()
         QCOMPARE(client3ExpectedMessageId, messageId);
         Telegram::Message messageData;
         client3.dataStorage()->getMessage(&messageData, groupChatPeer, messageId);
-
-        qWarning() << messageData.text();
         QCOMPARE(messageData.type(), Telegram::Namespace::MessageTypeService);
     }
 
