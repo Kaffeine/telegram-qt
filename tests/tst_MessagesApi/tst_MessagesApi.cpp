@@ -59,12 +59,6 @@
 
 using namespace Telegram;
 
-static const UserData c_userWithPassword = []() {
-    UserData userData = mkUserData(1, 1);
-    userData.setPassword(QByteArrayLiteral("mypassword"), QByteArrayLiteral("mysalt"));
-    return userData;
-}();
-
 static const UserData c_user1 = mkUserData(1000, 1);
 static const UserData c_user2 = mkUserData(2000, 1);
 static const UserData c_user3 = mkUserData(3000, 1);
@@ -193,7 +187,7 @@ void tst_MessagesApi::getSelfUserDialog()
 
 void tst_MessagesApi::getDialogs()
 {
-    const UserData user1Data = c_userWithPassword;
+    const UserData user1Data = c_user1;
     const UserData user2Data = c_user2;
     const DcOption clientDcOption = c_localDcOptions.first();
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
@@ -1150,7 +1144,7 @@ void tst_MessagesApi::getHistory()
     QFETCH(int, messagesCount);
     QFETCH(quint32, baseDate);
 
-    const UserData user1Data = c_userWithPassword;
+    const UserData user1Data = c_user1;
     const UserData user2Data = c_user2;
 
     const DcOption clientDcOption = c_localDcOptions.first();
