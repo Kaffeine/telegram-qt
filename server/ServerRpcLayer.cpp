@@ -233,6 +233,7 @@ void RpcLayer::sendUpdates(const TLUpdates &updates)
 bool RpcLayer::processInitConnection(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
+    quint32 flags = 0;
     quint32 appId;
     QString deviceInfo;
     QString osInfo;
@@ -240,6 +241,9 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
     QString systemLanguage;
     QString languagePack;
     QString languageCode;
+    if (activeLayerNumber() >= MTProto::LayerNumber81) {
+        stream >> flags;
+    }
     stream >> appId;
     stream >> deviceInfo;
     stream >> osInfo;
@@ -250,6 +254,10 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
         stream >> languagePack;
     }
     stream >> languageCode;
+    if (flags & 1) {
+        TLInputClientProxy proxy;
+        stream >> proxy;
+    }
 
     qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
     if (stream.error()) {

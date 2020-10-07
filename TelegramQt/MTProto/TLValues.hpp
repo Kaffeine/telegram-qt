@@ -32,6 +32,7 @@ namespace Telegram {
 
 namespace MTProto {
 
+constexpr quint32 LayerNumber81 = 81;
 constexpr quint32 LayerNumber67 = 67;
 
 } // MTProto namespace
