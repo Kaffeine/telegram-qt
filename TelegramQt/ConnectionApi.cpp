@@ -638,9 +638,9 @@ void ConnectionApiPrivate::onConnectionStatusChanged(Connection *connection, Bas
                 importAuthentication(connection);
             }
         }
-        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO
-                                                  << connection
-                                                  << status << reason << "is not processed";
+        qCDebug(c_connectionApiLoggingCategory) << THIS_FUNC_INFO
+                                                << connection
+                                                << status << reason << "is not processed";
     }
 
     for (const ConnectionSpec &spec : m_connectionOperations.keys()) {
