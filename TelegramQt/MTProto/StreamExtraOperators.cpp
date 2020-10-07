@@ -7,10 +7,10 @@ namespace Telegram {
 namespace MTProto {
 
 template Stream &Stream::operator<<(const TLVector<TLDcOption> &v);
-template Stream &Stream::operator<<(const TLVector<TLCdnFileHash> &v);
 template Stream &Stream::operator<<(const TLVector<TLLangPackString> &v);
 template Stream &Stream::operator<<(const TLVector<TLStickerSetCovered> &v);
 template Stream &Stream::operator<<(const TLVector<TLUser> &v);
+template Stream &Stream::operator<<(const TLVector<TLSavedContact> &v);
 
 // Generated vector write templates instancing
 // End of generated vector write templates instancing

@@ -2041,7 +2041,7 @@ void MessagesRpcOperation::runSendMedia()
         }
 
         media.type = MediaData::Photo;
-        media.caption = arguments.media.caption;
+        //media.caption = arguments.media.caption;
         media.image = image;
         break;
     }
@@ -2059,7 +2059,7 @@ void MessagesRpcOperation::runSendMedia()
         media.type = MediaData::Document;
         media.file = file;
         media.mimeType = arguments.media.mimeType;
-        media.caption = arguments.media.caption;
+        //media.caption = arguments.media.caption;
         for (const TLDocumentAttribute &attribute : arguments.media.attributes) {
             switch (attribute.tlType) {
             case TLValue::DocumentAttributeFilename:

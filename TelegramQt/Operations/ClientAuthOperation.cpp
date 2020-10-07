@@ -230,7 +230,9 @@ PendingOperation *AuthOperationPrivate::submitPassword(const QString &password)
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "slt:" << Utils::maskByteArray(m_passwordCurrentSalt);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "pwd:" << Utils::maskByteArray(pwdHash);
 
-    PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(pwdHash);
+    TLInputCheckPasswordSRP passwordData;
+
+    PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(passwordData);
     connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperationPrivate::onCheckPasswordFinished);
     return sendPasswordOperation;
 }
@@ -450,7 +452,11 @@ void AuthOperationPrivate::onPasswordRequestFinished(PendingRpcOperation *operat
 #ifdef DEVELOPER_BUILD
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO << result;
 #endif
+#if TELEGRAMQT_LAYER >= 86
+    // result.srpB
+#else
     setPasswordCurrentSalt(result.currentSalt);
+#endif
     setPasswordHint(result.hint);
     emit q->passwordRequired();
 }

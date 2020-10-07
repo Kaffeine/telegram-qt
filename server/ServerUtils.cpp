@@ -417,10 +417,12 @@ bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData)
         break;
     }
 
+#if TELEGRAMQT_LAYER < 73
     if (!mediaData->caption.isEmpty()) {
         output->caption = mediaData->caption;
         output->flags |= TLMessageMedia::Caption;
     }
+#endif
 
     return true;
 }

@@ -542,13 +542,13 @@ void AccountRpcOperation::runGetPassword()
     PasswordInfo info = api()->authService()->getPassword(user);
 
     TLAccountPassword result;
-    if (info.hasPassword()) {
-        result.tlType = TLValue::AccountPassword;
-        result.currentSalt = info.currentSalt;
-        result.hint = info.hint;
-    } else {
-        result.tlType = TLValue::AccountNoPassword;
-    }
+//    if (info.hasPassword()) {
+//        result.tlType = TLValue::AccountPassword;
+//        result.currentSalt = info.currentSalt;
+//        result.hint = info.hint;
+//    } else {
+//        result.tlType = TLValue::AccountNoPassword;
+//    }
     sendRpcReply(result);
 }
 

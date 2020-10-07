@@ -57,7 +57,9 @@ static const QVector<TLValue> c_unregisteredUserAllowedRpcList =
     TLValue::AuthSendCode,
     TLValue::AuthResendCode,
     TLValue::AuthCheckPassword,
+#if TELEGRAMQT_LAYER < 82
     TLValue::AuthCheckPhone,
+#endif
     TLValue::AuthSignIn,
     TLValue::AuthSignUp,
     TLValue::AuthImportAuthorization,

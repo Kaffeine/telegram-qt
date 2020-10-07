@@ -35,7 +35,6 @@ template Stream &Stream::operator>>(TLVector<TLImportedContact> &v);
 template Stream &Stream::operator>>(TLVector<TLChat> &v);
 template Stream &Stream::operator>>(TLVector<TLPeer> &v);
 template Stream &Stream::operator>>(TLVector<TLDcOption> &v);
-template Stream &Stream::operator>>(TLVector<TLDisabledFeature> &v);
 template Stream &Stream::operator>>(TLVector<TLMessageEntity> &v);
 template Stream &Stream::operator>>(TLVector<TLUpdate> &v);
 template Stream &Stream::operator>>(TLVector<TLStickerSet> &v);

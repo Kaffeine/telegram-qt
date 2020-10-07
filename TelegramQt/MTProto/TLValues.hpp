@@ -25,7 +25,7 @@
 // TODO: Namespace?
 
 #ifndef TELEGRAMQT_LAYER
-#define TELEGRAMQT_LAYER 72
+#define TELEGRAMQT_LAYER 92
 #endif
 
 namespace Telegram {
