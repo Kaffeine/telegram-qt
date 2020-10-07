@@ -551,8 +551,6 @@ void tst_Generator::checkFunctionWithTheSameBitFlags()
     QString functionsCode = generator.generateFunctionStructs();
     QVERIFY(!functionsCode.isEmpty());
 
-    qWarning().noquote() << "code:" << functionsCode;
-
     COMPARE_WITH_DUMP(functionsCode, c_functionAuthSendCode);
 }
 
@@ -802,7 +800,6 @@ void tst_Generator::checkStreamReadOperator()
     generator.generate();
 
     QCOMPARE(generator.codeStreamReadDeclarations.toLatin1(), declarationsCode);
-    qWarning().noquote() << generator.codeStreamReadDefinitions;
     QCOMPARE(generator.codeStreamReadDefinitions.toLatin1(), definitionsCode);
 }
 
