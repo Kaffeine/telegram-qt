@@ -318,7 +318,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
 
     // answerDcGenOk
     {
-        qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "answerDcGenOk";
+        qCDebug(c_serverDhLayerCategory) << THIS_FUNC_INFO << "answerDcGenOk";
 
         QByteArray output;
         MTProto::Stream outputStream(&output, /* write */ true);
@@ -351,7 +351,7 @@ quint64 DhLayer::sendReplyPackage(const QByteArray &payload)
 void DhLayer::processReceivedPacket(const QByteArray &payload)
 {
     const TLValue v = TLValue::firstFromArray(payload);
-    qCInfo(c_serverDhLayerCategory) << this << __func__ << v.toString();
+    qCDebug(c_serverDhLayerCategory) << THIS_FUNC_INFO << v.toString();
     switch (v) {
     case TLValue::ReqPq:
         if (!processRequestPQ(payload)) {
