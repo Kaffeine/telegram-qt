@@ -97,7 +97,7 @@ public:
 
     Type type = Type::Empty;
     QString title;
-    TLVector<quint32> users;
+    QVector<quint32> users;
 
     PeerList getPeers() const;
 };

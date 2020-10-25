@@ -265,7 +265,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::setAccountTTL(const TLAccountDays
     return op;
 }
 
-AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules)
+AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::setPrivacy(const TLInputPrivacyKey &key, const QVector<TLInputPrivacyRule> &rules)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << key << rules;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

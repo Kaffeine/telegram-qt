@@ -37,15 +37,15 @@ public:
 
     // Generated Telegram operations using
     using PendingLangPackDifference = PendingRpcResult<TLLangPackDifference *>;
-    using PendingLangPackLanguageVector = PendingRpcResult<TLVector<TLLangPackLanguage> *>;
-    using PendingLangPackStringVector = PendingRpcResult<TLVector<TLLangPackString> *>;
+    using PendingLangPackLanguageVector = PendingRpcResult<QVector<TLLangPackLanguage> *>;
+    using PendingLangPackStringVector = PendingRpcResult<QVector<TLLangPackString> *>;
     // End of generated Telegram operations using
 
     // Generated Telegram API declarations
     PendingLangPackDifference *getDifference(quint32 fromVersion);
     PendingLangPackDifference *getLangPack(const QString &langCode);
     PendingLangPackLanguageVector *getLanguages();
-    PendingLangPackStringVector *getStrings(const QString &langCode, const TLVector<QString> &keys);
+    PendingLangPackStringVector *getStrings(const QString &langCode, const QVector<QString> &keys);
     // End of generated Telegram API declarations
 };
 

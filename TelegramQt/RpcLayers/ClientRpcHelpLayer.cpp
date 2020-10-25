@@ -137,7 +137,7 @@ HelpRpcLayer::PendingHelpTermsOfService *HelpRpcLayer::getTermsOfService()
     return op;
 }
 
-HelpRpcLayer::PendingBool *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEvent> &events)
+HelpRpcLayer::PendingBool *HelpRpcLayer::saveAppLog(const QVector<TLInputAppEvent> &events)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << events;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

@@ -22,7 +22,7 @@ class ImageDescriptor;
 namespace Utils {
 
 void getInterestingPeers(QSet<Peer> *peers, const TLChatFull &chatFull);
-void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages);
+void getInterestingPeers(QSet<Peer> *peers, const QVector<TLMessage> &messages);
 
 bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const AbstractUser *forUser);
@@ -31,7 +31,7 @@ bool setupTLChatFull(TLChatFull *output, const GroupChat *input, const AbstractU
 bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input, const AbstractUser *forUser);
 bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser);
-bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
+bool setupTLPeers(QVector<TLUser> *users, QVector<TLChat> *chats,
                   const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser);
 bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
                     const AbstractUser *forUser);

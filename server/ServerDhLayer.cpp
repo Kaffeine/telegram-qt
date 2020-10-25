@@ -74,7 +74,7 @@ bool DhLayer::processRequestPQ(const QByteArray &data)
 bool DhLayer::sendResultPQ()
 {
     RandomGenerator::instance()->generate(m_serverNonce.data, m_serverNonce.size());
-    const TLVector<quint64> fingerprints = { m_rsaKey.fingerprint };
+    const QVector<quint64> fingerprints = { m_rsaKey.fingerprint };
     QByteArray output;
     MTProto::Stream outputStream(&output, /* write */ true);
 //    qCDebug(c_serverDhLayerCategory) << "Write data:" << m_clientNonce << m_serverNonce << pqAsByteArray.toHex() << "fp:" << fingerprints << "(pq:" << m_pq << ")";

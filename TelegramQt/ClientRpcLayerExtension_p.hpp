@@ -46,13 +46,14 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLType 
 {
     MTProto::Stream stream;
     prepareReplyStream(&stream, operation);
+
     stream >> *output;
+    const TLValue v = TLValue::firstFromArray(stream.getData());
+    qCDebug(c_clientRpcDumpPackageCategory) << Q_FUNC_INFO << v;
 #ifdef DEVELOPER_BUILD
     qCDebug(c_clientRpcDumpPackageCategory) << *output;
-#else
-    qCDebug(c_clientRpcDumpPackageCategory) << Q_FUNC_INFO << output->tlType;
 #endif
-    return output->isValid() && !stream.error();
+    return !stream.error();
 }
 
 } // Client namespace

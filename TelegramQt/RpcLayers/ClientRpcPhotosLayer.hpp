@@ -36,14 +36,14 @@ public:
     explicit PhotosRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingQuint64Vector = PendingRpcResult<TLVector<quint64> *>;
+    using PendingQuint64Vector = PendingRpcResult<QVector<quint64> *>;
     using PendingPhotosPhotos = PendingRpcResult<TLPhotosPhotos *>;
     using PendingUserProfilePhoto = PendingRpcResult<TLUserProfilePhoto *>;
     using PendingPhotosPhoto = PendingRpcResult<TLPhotosPhoto *>;
     // End of generated Telegram operations using
 
     // Generated Telegram API declarations
-    PendingQuint64Vector *deletePhotos(const TLVector<TLInputPhoto> &id);
+    PendingQuint64Vector *deletePhotos(const QVector<TLInputPhoto> &id);
     PendingPhotosPhotos *getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit);
     PendingUserProfilePhoto *updateProfilePhoto(const TLInputPhoto &id);
     PendingPhotosPhoto *uploadProfilePhoto(const TLInputFile &file);

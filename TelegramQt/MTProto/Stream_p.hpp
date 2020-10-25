@@ -25,13 +25,14 @@ namespace Telegram {
 namespace MTProto {
 
 template <typename T>
-Stream &Stream::operator>>(TLVector<T> &v)
+Stream &Stream::operator>>(QVector<T> &v)
 {
-    TLVector<T> result;
+    QVector<T> result;
+    TLValue tlType;
 
-    *this >> result.tlType;
+    *this >> tlType;
 
-    if (result.tlType == TLValue::Vector) {
+    if (tlType == TLValue::Vector) {
         quint32 length = 0;
         *this >> length;
         for (quint32 i = 0; i < length; ++i) {
@@ -46,13 +47,14 @@ Stream &Stream::operator>>(TLVector<T> &v)
 }
 
 template <typename T>
-Stream &Stream::operator>>(TLVector<T*> &v)
+Stream &Stream::operator>>(QVector<T*> &v)
 {
-    TLVector<T*> result;
+    QVector<T*> result;
+    TLValue tlType;
 
-    *this >> result.tlType;
+    *this >> tlType;
 
-    if (result.tlType == TLValue::Vector) {
+    if (tlType == TLValue::Vector) {
         quint32 length = 0;
         *this >> length;
         for (quint32 i = 0; i < length; ++i) {
@@ -68,32 +70,26 @@ Stream &Stream::operator>>(TLVector<T*> &v)
 }
 
 template <typename T>
-Stream &Stream::operator<<(const TLVector<T> &v)
+Stream &Stream::operator<<(const QVector<T> &v)
 {
-    *this << v.tlType;
+    *this << TLValue::Vector;
+    *this << quint32(v.count());
 
-    if (v.tlType == TLValue::Vector) {
-        *this << quint32(v.count());
-
-        for (int i = 0; i < v.count(); ++i) {
-            *this << v.at(i);
-        }
+    for (int i = 0; i < v.count(); ++i) {
+        *this << v.at(i);
     }
 
     return *this;
 }
 
 template <typename T>
-Stream &Stream::operator<<(const TLVector<T*> &v)
+Stream &Stream::operator<<(const QVector<T*> &v)
 {
-    *this << v.tlType;
+    *this << TLValue::Vector;
+    *this << quint32(v.count());
 
-    if (v.tlType == TLValue::Vector) {
-        *this << quint32(v.count());
-
-        for (int i = 0; i < v.count(); ++i) {
-            *this << *v.at(i);
-        }
+    for (int i = 0; i < v.count(); ++i) {
+        *this << *v.at(i);
     }
 
     return *this;

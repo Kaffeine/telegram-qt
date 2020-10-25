@@ -94,7 +94,7 @@ void LangpackRpcOperation::runGetLanguages()
     if (processNotImplementedMethod(TLValue::LangpackGetLanguages)) {
         return;
     }
-    TLVector<TLLangPackLanguage> result;
+    QVector<TLLangPackLanguage> result;
     sendRpcReply(result);
 }
 
@@ -104,7 +104,7 @@ void LangpackRpcOperation::runGetStrings()
     if (processNotImplementedMethod(TLValue::LangpackGetStrings)) {
         return;
     }
-    TLVector<TLLangPackString> result;
+    QVector<TLLangPackString> result;
     sendRpcReply(result);
 }
 // End of generated run methods

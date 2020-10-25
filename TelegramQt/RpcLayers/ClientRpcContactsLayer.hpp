@@ -38,10 +38,10 @@ public:
     // Generated Telegram operations using
     using PendingBool = PendingRpcResult<TLBool *>;
     using PendingContactsLink = PendingRpcResult<TLContactsLink *>;
-    using PendingQuint32Vector = PendingRpcResult<TLVector<quint32> *>;
+    using PendingQuint32Vector = PendingRpcResult<QVector<quint32> *>;
     using PendingContactsBlocked = PendingRpcResult<TLContactsBlocked *>;
     using PendingContactsContacts = PendingRpcResult<TLContactsContacts *>;
-    using PendingContactStatusVector = PendingRpcResult<TLVector<TLContactStatus> *>;
+    using PendingContactStatusVector = PendingRpcResult<QVector<TLContactStatus> *>;
     using PendingContactsTopPeers = PendingRpcResult<TLContactsTopPeers *>;
     using PendingUser = PendingRpcResult<TLUser *>;
     using PendingContactsImportedContacts = PendingRpcResult<TLContactsImportedContacts *>;
@@ -52,14 +52,14 @@ public:
     // Generated Telegram API declarations
     PendingBool *block(const TLInputUser &id);
     PendingContactsLink *deleteContact(const TLInputUser &id);
-    PendingBool *deleteContacts(const TLVector<TLInputUser> &id);
+    PendingBool *deleteContacts(const QVector<TLInputUser> &id);
     PendingQuint32Vector *exportCard();
     PendingContactsBlocked *getBlocked(quint32 offset, quint32 limit);
     PendingContactsContacts *getContacts(quint32 hash);
     PendingContactStatusVector *getStatuses();
     PendingContactsTopPeers *getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash);
-    PendingUser *importCard(const TLVector<quint32> &exportCard);
-    PendingContactsImportedContacts *importContacts(const TLVector<TLInputContact> &contacts);
+    PendingUser *importCard(const QVector<quint32> &exportCard);
+    PendingContactsImportedContacts *importContacts(const QVector<TLInputContact> &contacts);
     PendingBool *resetSaved();
     PendingBool *resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer);
     PendingContactsResolvedPeer *resolveUsername(const QString &username);

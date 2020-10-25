@@ -79,15 +79,15 @@ public:
 
     bool processNewMessage(const TLMessage &message, quint32 pts);
     void processData(const TLMessage &message);
-    void processData(const TLVector<TLChat> &chats);
+    void processData(const QVector<TLChat> &chats);
     void processData(const TLChat &chat);
-    void processData(const TLVector<TLUser> &users);
+    void processData(const QVector<TLUser> &users);
     void processData(const TLUser &user);
     void processData(const TLAuthAuthorization &authorization);
     void processData(const TLMessagesDialogs &dialogs);
     void processData(const TLMessagesMessages &messages);
 
-    void setContactList(const TLVector<TLContact> &contacts);
+    void setContactList(const QVector<TLContact> &contacts);
     void clearPinnedDialogs();
 
     quint64 enqueueMessage(const Peer peer, const QString &message, quint32 replyToMsgId);
@@ -109,10 +109,10 @@ public:
 
     static quint64 channelMessageToKey(quint32 channelId, quint32 messageId);
 
-    TLVector<TLContact> contactList() const { return m_contactList; }
+    QVector<TLContact> contactList() const { return m_contactList; }
     const QHash<quint32, TLUser *> &users() const { return m_users; }
     const QHash<quint32, TLChat *> &chats() const { return m_chats; }
-    const TLVector<UserDialog *> &dialogs() const { return m_dialogs; }
+    const QVector<UserDialog *> &dialogs() const { return m_dialogs; }
     const QVector<Peer> &pinnedDialogs() const { return m_pinnedDialogs; }
     UserDialog *getDialog(const Peer &peer) const;
     UserDialog *ensureDialog(const Peer &peer);
@@ -132,9 +132,9 @@ protected:
     QHash<quint32, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;
     QHash<quint64, TLMessage *> m_channelMessages;
-    TLVector<UserDialog *> m_dialogs;
+    QVector<UserDialog *> m_dialogs;
     QVector<Peer> m_pinnedDialogs;
-    TLVector<TLContact> m_contactList;
+    QVector<TLContact> m_contactList;
     QQueue<SentMessage> m_queuedMessages;
     quint32 m_selfUserId = 0;
 };

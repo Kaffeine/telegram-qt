@@ -45,7 +45,7 @@ public:
     using PendingAccountPasswordSettings = PendingRpcResult<TLAccountPasswordSettings *>;
     using PendingAccountPrivacyRules = PendingRpcResult<TLAccountPrivacyRules *>;
     using PendingAccountTmpPassword = PendingRpcResult<TLAccountTmpPassword *>;
-    using PendingWallPaperVector = PendingRpcResult<TLVector<TLWallPaper> *>;
+    using PendingWallPaperVector = PendingRpcResult<QVector<TLWallPaper> *>;
     using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
     // End of generated Telegram operations using
 
@@ -69,7 +69,7 @@ public:
     PendingAuthSentCode *sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber);
     PendingAuthSentCode *sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber);
     PendingBool *setAccountTTL(const TLAccountDaysTTL &ttl);
-    PendingAccountPrivacyRules *setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules);
+    PendingAccountPrivacyRules *setPrivacy(const TLInputPrivacyKey &key, const QVector<TLInputPrivacyRule> &rules);
     PendingBool *unregisterDevice(quint32 tokenType, const QString &token);
     PendingBool *updateDeviceLocked(quint32 period);
     PendingBool *updateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);

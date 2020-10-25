@@ -35,7 +35,7 @@ public:
 
     // Generated Telegram operations using
     using PendingUploadCdnFile = PendingRpcResult<TLUploadCdnFile *>;
-    using PendingCdnFileHashVector = PendingRpcResult<TLVector<TLCdnFileHash> *>;
+    using PendingCdnFileHashVector = PendingRpcResult<QVector<TLCdnFileHash> *>;
     using PendingUploadFile = PendingRpcResult<TLUploadFile *>;
     using PendingUploadWebFile = PendingRpcResult<TLUploadWebFile *>;
     using PendingBool = PendingRpcResult<TLBool *>;

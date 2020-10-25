@@ -99,7 +99,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::deleteHistory(const TLInputChan
     return op;
 }
 
-ChannelsRpcLayer::PendingMessagesAffectedMessages *ChannelsRpcLayer::deleteMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
+ChannelsRpcLayer::PendingMessagesAffectedMessages *ChannelsRpcLayer::deleteMessages(const TLInputChannel &channel, const QVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -208,7 +208,7 @@ ChannelsRpcLayer::PendingExportedMessageLink *ChannelsRpcLayer::exportMessageLin
     return op;
 }
 
-ChannelsRpcLayer::PendingChannelsAdminLogResults *ChannelsRpcLayer::getAdminLog(quint32 flags, const TLInputChannel &channel, const QString &q, const TLChannelAdminLogEventsFilter &eventsFilter, const TLVector<TLInputUser> &admins, quint64 maxId, quint64 minId, quint32 limit)
+ChannelsRpcLayer::PendingChannelsAdminLogResults *ChannelsRpcLayer::getAdminLog(quint32 flags, const TLInputChannel &channel, const QString &q, const TLChannelAdminLogEventsFilter &eventsFilter, const QVector<TLInputUser> &admins, quint64 maxId, quint64 minId, quint32 limit)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << flags << channel << q << eventsFilter << admins << maxId << minId << limit;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -240,7 +240,7 @@ ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getAdminedPublicChanne
     return op;
 }
 
-ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getChannels(const TLVector<TLInputChannel> &id)
+ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getChannels(const QVector<TLInputChannel> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -262,7 +262,7 @@ ChannelsRpcLayer::PendingMessagesChatFull *ChannelsRpcLayer::getFullChannel(cons
     return op;
 }
 
-ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
+ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const TLInputChannel &channel, const QVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -301,7 +301,7 @@ ChannelsRpcLayer::PendingChannelsChannelParticipants *ChannelsRpcLayer::getParti
     return op;
 }
 
-ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::inviteToChannel(const TLInputChannel &channel, const TLVector<TLInputUser> &users)
+ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::inviteToChannel(const TLInputChannel &channel, const QVector<TLInputUser> &users)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << users;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -347,7 +347,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readHistory(const TLInputChanne
     return op;
 }
 
-ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readMessageContents(const TLInputChannel &channel, const TLVector<quint32> &id)
+ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readMessageContents(const TLInputChannel &channel, const QVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -359,7 +359,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readMessageContents(const TLInp
     return op;
 }
 
-ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::reportSpam(const TLInputChannel &channel, const TLInputUser &userId, const TLVector<quint32> &id)
+ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::reportSpam(const TLInputChannel &channel, const TLInputUser &userId, const QVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

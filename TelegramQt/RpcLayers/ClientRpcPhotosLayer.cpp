@@ -42,7 +42,7 @@ PhotosRpcLayer::PhotosRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PhotosRpcLayer::PendingQuint64Vector *PhotosRpcLayer::deletePhotos(const TLVector<TLInputPhoto> &id)
+PhotosRpcLayer::PendingQuint64Vector *PhotosRpcLayer::deletePhotos(const QVector<TLInputPhoto> &id)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

@@ -52,13 +52,13 @@ public:
     Stream &operator<<(const TLBool &b);
 
     template <typename T>
-    Stream &operator>>(TLVector<T> &v);
+    Stream &operator>>(QVector<T> &v);
     template <typename T>
-    Stream &operator>>(TLVector<T*> &v);
+    Stream &operator>>(QVector<T*> &v);
     template <typename T>
-    Stream &operator<<(const TLVector<T> &v);
+    Stream &operator<<(const QVector<T> &v);
     template <typename T>
-    Stream &operator<<(const TLVector<T*> &v);
+    Stream &operator<<(const QVector<T*> &v);
 
     template <int Size>
     Stream &operator<<(const TLNumber<Size> &n);

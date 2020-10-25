@@ -353,7 +353,7 @@ void AccountRpcOperation::runGetWallPapers()
     if (processNotImplementedMethod(TLValue::AccountGetWallPapers)) {
         return;
     }
-    TLVector<TLWallPaper> result;
+    QVector<TLWallPaper> result;
     sendRpcReply(result);
 }
 

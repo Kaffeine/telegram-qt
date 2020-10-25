@@ -38,7 +38,7 @@ template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserProfilePhoto *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserStatus *output);
 // End of generated Telegram API reply template specializations
-template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLVector<TLUser> *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, QVector<TLUser> *output);
 
 UsersRpcLayer::UsersRpcLayer(QObject *parent) :
     BaseRpcLayerExtension(parent)
@@ -57,7 +57,7 @@ UsersRpcLayer::PendingUserFull *UsersRpcLayer::getFullUser(const TLInputUser &id
     return op;
 }
 
-UsersRpcLayer::PendingUserVector *UsersRpcLayer::getUsers(const TLVector<TLInputUser> &id)
+UsersRpcLayer::PendingUserVector *UsersRpcLayer::getUsers(const QVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

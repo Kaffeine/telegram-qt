@@ -145,7 +145,7 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
         m_q = div1;
     }
 
-    TLVector<quint64> fingerprints;
+    QVector<quint64> fingerprints;
     inputStream >> fingerprints;
     if (fingerprints.count() != 1) {
         qCDebug(c_clientDhLayerCategory) << "Error: Unexpected Server RSA Fingersprints vector size:"

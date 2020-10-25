@@ -71,7 +71,7 @@ ContactsRpcLayer::PendingContactsLink *ContactsRpcLayer::deleteContact(const TLI
     return op;
 }
 
-ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const TLVector<TLInputUser> &id)
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const QVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -145,7 +145,7 @@ ContactsRpcLayer::PendingContactsTopPeers *ContactsRpcLayer::getTopPeers(quint32
     return op;
 }
 
-ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint32> &exportCard)
+ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const QVector<quint32> &exportCard)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << exportCard;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -156,7 +156,7 @@ ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint
     return op;
 }
 
-ContactsRpcLayer::PendingContactsImportedContacts *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts)
+ContactsRpcLayer::PendingContactsImportedContacts *ContactsRpcLayer::importContacts(const QVector<TLInputContact> &contacts)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << contacts;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

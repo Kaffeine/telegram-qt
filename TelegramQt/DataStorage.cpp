@@ -88,7 +88,7 @@ QVector<Peer> DataStorage::pinnedDialogs() const
 QVector<Peer> DataStorage::contactList() const
 {
     Q_D(const DataStorage);
-    const TLVector<TLContact> contacts = d->m_api->contactList();
+    const QVector<TLContact> contacts = d->m_api->contactList();
     QVector<Peer> result;
     result.reserve(contacts.count());
     for (const TLContact &contact : contacts) {
@@ -375,7 +375,7 @@ void DataInternalApi::processData(const TLMessage &message)
     *m = message;
 }
 
-void DataInternalApi::processData(const TLVector<TLChat> &chats)
+void DataInternalApi::processData(const QVector<TLChat> &chats)
 {
     for (const TLChat &chat : chats) {
         processData(chat);
@@ -392,7 +392,7 @@ void DataInternalApi::processData(const TLChat &chat)
     }
 }
 
-void DataInternalApi::processData(const TLVector<TLUser> &users)
+void DataInternalApi::processData(const QVector<TLUser> &users)
 {
     for (const TLUser &user : users) {
         processData(user);
@@ -469,7 +469,7 @@ void DataInternalApi::processData(const TLMessagesMessages &messages)
     }
 }
 
-void DataInternalApi::setContactList(const TLVector<TLContact> &contacts)
+void DataInternalApi::setContactList(const QVector<TLContact> &contacts)
 {
     m_contactList = contacts;
 }

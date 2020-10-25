@@ -58,7 +58,7 @@ public:
     PendingHelpRecentMeUrls *getRecentMeUrls(const QString &referer);
     PendingHelpSupport *getSupport();
     PendingHelpTermsOfService *getTermsOfService();
-    PendingBool *saveAppLog(const TLVector<TLInputAppEvent> &events);
+    PendingBool *saveAppLog(const QVector<TLInputAppEvent> &events);
     PendingBool *setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message);
     // End of generated Telegram API declarations
 };

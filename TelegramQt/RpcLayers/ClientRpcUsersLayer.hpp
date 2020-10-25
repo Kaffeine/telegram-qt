@@ -35,12 +35,12 @@ public:
 
     // Generated Telegram operations using
     using PendingUserFull = PendingRpcResult<TLUserFull *>;
-    using PendingUserVector = PendingRpcResult<TLVector<TLUser> *>;
+    using PendingUserVector = PendingRpcResult<QVector<TLUser> *>;
     // End of generated Telegram operations using
 
     // Generated Telegram API declarations
     PendingUserFull *getFullUser(const TLInputUser &id);
-    PendingUserVector *getUsers(const TLVector<TLInputUser> &id);
+    PendingUserVector *getUsers(const QVector<TLInputUser> &id);
     // End of generated Telegram API declarations
 };
 

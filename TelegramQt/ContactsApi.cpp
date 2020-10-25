@@ -51,7 +51,7 @@ PendingContactsOperation *ContactsApiPrivate::importContacts(const ContactsApi::
 {
     PendingContactsOperation *operation = new PendingContactsOperation(this);
 
-    TLVector<TLInputContact> tlContacts;
+    QVector<TLInputContact> tlContacts;
     tlContacts.reserve(contacts.count());
     for (const ContactsApi::ContactInfo &info : contacts) {
         TLInputContact contact;
@@ -161,7 +161,7 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
 void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation,
                                           UsersRpcLayer::PendingUserVector *rpcOperation)
 {
-    TLVector<TLUser> result;
+    QVector<TLUser> result;
     rpcOperation->getResult(&result);
     if (rpcOperation->isFailed()) {
         qCCritical(c_contactsApiLoggingCategory) << Q_FUNC_INFO << "failed";

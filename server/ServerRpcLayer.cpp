@@ -196,7 +196,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 bool RpcLayer::processMessageAck(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
-    TLVector<quint64> idsVector;
+    QVector<quint64> idsVector;
     stream >> idsVector;
     qCDebug(c_serverRpcLayerCategory) << "processMessageAck():" << idsVector;
 

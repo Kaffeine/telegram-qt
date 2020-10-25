@@ -33,10 +33,7 @@ public:
 
     bool getResult(TLTypePtr output)
     {
-        if (isSucceeded()) {
-            m_layer->processReply(this, output);
-        }
-        return isSucceeded() && output->isValid();
+        return isSucceeded() && m_layer->processReply(this, output);
     }
 };
 

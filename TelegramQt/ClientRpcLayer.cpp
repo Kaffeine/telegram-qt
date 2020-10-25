@@ -176,7 +176,7 @@ bool RpcLayer::processUpdates(const MTProto::Message &message)
 bool RpcLayer::processMessageAck(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
-    TLVector<quint64> idsVector;
+    QVector<quint64> idsVector;
     stream >> idsVector;
     qCDebug(c_clientRpcLayerCategory) << "processMessageAck():" << idsVector;
 
@@ -345,7 +345,7 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
 void RpcLayer::acknowledgeMessages()
 {
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    TLVector<quint64> idsVector = m_messagesToAck;
+    QVector<quint64> idsVector = m_messagesToAck;
     m_messagesToAck.clear();
     outputStream << TLValue::MsgsAck;
     outputStream << idsVector;

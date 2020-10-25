@@ -70,7 +70,7 @@ LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages(
     return op;
 }
 
-LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langCode, const TLVector<QString> &keys)
+LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langCode, const QVector<QString> &keys)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode << keys;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

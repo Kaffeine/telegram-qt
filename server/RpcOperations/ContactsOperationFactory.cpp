@@ -180,7 +180,7 @@ void ContactsRpcOperation::runExportCard()
     if (processNotImplementedMethod(TLValue::ContactsExportCard)) {
         return;
     }
-    TLVector<quint32> result;
+    QVector<quint32> result;
     sendRpcReply(result);
 }
 
@@ -229,7 +229,7 @@ void ContactsRpcOperation::runGetStatuses()
     if (processNotImplementedMethod(TLValue::ContactsGetStatuses)) {
         return;
     }
-    TLVector<TLContactStatus> result;
+    QVector<TLContactStatus> result;
     sendRpcReply(result);
 }
 

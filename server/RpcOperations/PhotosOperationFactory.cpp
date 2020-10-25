@@ -77,7 +77,7 @@ void PhotosRpcOperation::runDeletePhotos()
     if (processNotImplementedMethod(TLValue::PhotosDeletePhotos)) {
         return;
     }
-    TLVector<quint64> result;
+    QVector<quint64> result;
     sendRpcReply(result);
 }
 

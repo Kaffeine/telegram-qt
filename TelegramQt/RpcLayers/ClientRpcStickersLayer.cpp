@@ -65,7 +65,7 @@ StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::changeStickerPosi
     return op;
 }
 
-StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers)
+StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const QVector<TLInputStickerSetItem> &stickers)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << flags << userId << title << shortName << stickers;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

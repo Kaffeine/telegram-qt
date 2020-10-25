@@ -109,7 +109,7 @@ void UploadRpcOperation::runGetCdnFileHashes()
     if (processNotImplementedMethod(TLValue::UploadGetCdnFileHashes)) {
         return;
     }
-    TLVector<TLCdnFileHash> result;
+    QVector<TLCdnFileHash> result;
     sendRpcReply(result);
 }
 
@@ -197,7 +197,7 @@ void UploadRpcOperation::runReuploadCdnFile()
     if (processNotImplementedMethod(TLValue::UploadReuploadCdnFile)) {
         return;
     }
-    TLVector<TLCdnFileHash> result;
+    QVector<TLCdnFileHash> result;
     sendRpcReply(result);
 }
 

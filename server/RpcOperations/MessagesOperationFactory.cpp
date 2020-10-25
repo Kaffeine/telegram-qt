@@ -1026,7 +1026,7 @@ void MessagesRpcOperation::runGetAttachedStickers()
     if (processNotImplementedMethod(TLValue::MessagesGetAttachedStickers)) {
         return;
     }
-    TLVector<TLStickerSetCovered> result;
+    QVector<TLStickerSetCovered> result;
     sendRpcReply(result);
 }
 
@@ -1378,7 +1378,7 @@ void MessagesRpcOperation::runGetMessagesViews()
     if (processNotImplementedMethod(TLValue::MessagesGetMessagesViews)) {
         return;
     }
-    TLVector<quint32> result;
+    QVector<quint32> result;
     sendRpcReply(result);
 }
 
@@ -1658,7 +1658,7 @@ void MessagesRpcOperation::runReceivedMessages()
     if (processNotImplementedMethod(TLValue::MessagesReceivedMessages)) {
         return;
     }
-    TLVector<TLReceivedNotifyMessage> result;
+    QVector<TLReceivedNotifyMessage> result;
     sendRpcReply(result);
 }
 
@@ -1668,7 +1668,7 @@ void MessagesRpcOperation::runReceivedQueue()
     if (processNotImplementedMethod(TLValue::MessagesReceivedQueue)) {
         return;
     }
-    TLVector<quint64> result;
+    QVector<quint64> result;
     sendRpcReply(result);
 }
 

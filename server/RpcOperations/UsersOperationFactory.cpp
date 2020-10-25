@@ -89,7 +89,7 @@ void UsersRpcOperation::runGetUsers()
 {
     const LocalUser *selfUser = layer()->getUser();
     TLUser user;
-    TLVector<TLUser> result;
+    QVector<TLUser> result;
     result.reserve(m_getUsers.id.count());
     for (const TLInputUser &input : m_getUsers.id) {
         const AbstractUser *targetUser = api()->getAbstractUser(input, selfUser);

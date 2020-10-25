@@ -291,7 +291,7 @@ PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessageF
 
 PendingOperation *MessagingApiPrivate::createChat(const QString &title, const QVector<quint32> &contacts)
 {
-    TLVector<TLInputUser> users;
+    QVector<TLInputUser> users;
     for (quint32 userId : contacts) {
         TLInputUser inputUser = dataInternalApi()->toInputUser(userId);
         if (inputUser.tlType == TLValue::InputUserEmpty) {

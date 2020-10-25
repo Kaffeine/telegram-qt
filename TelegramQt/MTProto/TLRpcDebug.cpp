@@ -288,7 +288,7 @@ void dumpRpc(Stream &stream)
         TLInputPrivacyKey key;
         stream >> key;
         d << spacer.innerSpaces() << "key: " << key << TELEGRAMQT_ENDL;
-        TLVector<TLInputPrivacyRule> rules;
+        QVector<TLInputPrivacyRule> rules;
         stream >> rules;
         d << spacer.innerSpaces() << "rules: " << rules << TELEGRAMQT_ENDL;
     }
@@ -441,7 +441,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint64> exceptAuthKeys;
+        QVector<quint64> exceptAuthKeys;
         stream >> exceptAuthKeys;
         d << spacer.innerSpaces() << "exceptAuthKeys: " << exceptAuthKeys << TELEGRAMQT_ENDL;
     }
@@ -554,7 +554,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<QString> phoneNumbers;
+        QVector<QString> phoneNumbers;
         stream >> phoneNumbers;
         d << spacer.innerSpaces() << "phoneNumbers: " << phoneNumbers << TELEGRAMQT_ENDL;
         QString message;
@@ -695,7 +695,7 @@ void dumpRpc(Stream &stream)
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -851,7 +851,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputChannel> id;
+        QVector<TLInputChannel> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -876,7 +876,7 @@ void dumpRpc(Stream &stream)
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -927,7 +927,7 @@ void dumpRpc(Stream &stream)
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        TLVector<TLInputUser> users;
+        QVector<TLInputUser> users;
         stream >> users;
         d << spacer.innerSpaces() << "users: " << users << TELEGRAMQT_ENDL;
     }
@@ -977,7 +977,7 @@ void dumpRpc(Stream &stream)
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -994,7 +994,7 @@ void dumpRpc(Stream &stream)
         TLInputUser userId;
         stream >> userId;
         d << spacer.innerSpaces() << "userId: " << userId << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1114,7 +1114,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputUser> id;
+        QVector<TLInputUser> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1178,7 +1178,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> exportCard;
+        QVector<quint32> exportCard;
         stream >> exportCard;
         d << spacer.innerSpaces() << "exportCard: " << exportCard << TELEGRAMQT_ENDL;
     }
@@ -1189,7 +1189,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputContact> contacts;
+        QVector<TLInputContact> contacts;
         stream >> contacts;
         d << spacer.innerSpaces() << "contacts: " << contacts << TELEGRAMQT_ENDL;
     }
@@ -1304,7 +1304,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputAppEvent> events;
+        QVector<TLInputAppEvent> events;
         stream >> events;
         d << spacer.innerSpaces() << "events: " << events << TELEGRAMQT_ENDL;
     }
@@ -1358,7 +1358,7 @@ void dumpRpc(Stream &stream)
         QString langCode;
         stream >> langCode;
         d << spacer.innerSpaces() << "langCode: " << langCode << TELEGRAMQT_ENDL;
-        TLVector<QString> keys;
+        QVector<QString> keys;
         stream >> keys;
         d << spacer.innerSpaces() << "keys: " << keys << TELEGRAMQT_ENDL;
     }
@@ -1425,7 +1425,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputUser> users;
+        QVector<TLInputUser> users;
         stream >> users;
         d << spacer.innerSpaces() << "users: " << users << TELEGRAMQT_ENDL;
         QString title;
@@ -1473,7 +1473,7 @@ void dumpRpc(Stream &stream)
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1619,10 +1619,10 @@ void dumpRpc(Stream &stream)
         TLInputPeer fromPeer;
         stream >> fromPeer;
         d << spacer.innerSpaces() << "fromPeer: " << fromPeer << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
-        TLVector<quint64> randomId;
+        QVector<quint64> randomId;
         stream >> randomId;
         d << spacer.innerSpaces() << "randomId: " << randomId << TELEGRAMQT_ENDL;
         TLInputPeer toPeer;
@@ -1636,7 +1636,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> exceptIds;
+        QVector<quint32> exceptIds;
         stream >> exceptIds;
         d << spacer.innerSpaces() << "exceptIds: " << exceptIds << TELEGRAMQT_ENDL;
     }
@@ -1707,7 +1707,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1933,7 +1933,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1947,7 +1947,7 @@ void dumpRpc(Stream &stream)
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
         bool increment;
@@ -1961,7 +1961,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputPeer> peers;
+        QVector<TLInputPeer> peers;
         stream >> peers;
         d << spacer.innerSpaces() << "peers: " << peers << TELEGRAMQT_ENDL;
     }
@@ -2149,7 +2149,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint64> id;
+        QVector<quint64> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -2185,7 +2185,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> id;
+        QVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -2221,7 +2221,7 @@ void dumpRpc(Stream &stream)
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLVector<TLInputPeer> order;
+        QVector<TLInputPeer> order;
         stream >> order;
         d << spacer.innerSpaces() << "order: " << order << TELEGRAMQT_ENDL;
     }
@@ -2235,7 +2235,7 @@ void dumpRpc(Stream &stream)
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLVector<quint64> order;
+        QVector<quint64> order;
         stream >> order;
         d << spacer.innerSpaces() << "order: " << order << TELEGRAMQT_ENDL;
     }
@@ -2633,7 +2633,7 @@ void dumpRpc(Stream &stream)
         quint64 queryId;
         stream >> queryId;
         d << spacer.innerSpaces() << "queryId: " << queryId << TELEGRAMQT_ENDL;
-        TLVector<TLInputBotInlineResult> results;
+        QVector<TLInputBotInlineResult> results;
         stream >> results;
         d << spacer.innerSpaces() << "results: " << results << TELEGRAMQT_ENDL;
         quint32 cacheTime;
@@ -2948,7 +2948,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputPhoto> id;
+        QVector<TLInputPhoto> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -3041,7 +3041,7 @@ void dumpRpc(Stream &stream)
         QString shortName;
         stream >> shortName;
         d << spacer.innerSpaces() << "shortName: " << shortName << TELEGRAMQT_ENDL;
-        TLVector<TLInputStickerSetItem> stickers;
+        QVector<TLInputStickerSetItem> stickers;
         stream >> stickers;
         d << spacer.innerSpaces() << "stickers: " << stickers << TELEGRAMQT_ENDL;
     }
@@ -3237,7 +3237,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputUser> id;
+        QVector<TLInputUser> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }

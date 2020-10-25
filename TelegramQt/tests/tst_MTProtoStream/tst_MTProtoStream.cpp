@@ -650,7 +650,7 @@ void tst_MTProtoStream::intSerialization()
 
 void tst_MTProtoStream::vectorOfIntsSerialization()
 {
-    TLVector<quint64> vector;
+    QVector<quint64> vector;
     vector.append(0x12345678);
     QByteArray encoded = QByteArray::fromHex("15c4b51c010000007856341200000000");
 
@@ -667,7 +667,7 @@ void tst_MTProtoStream::vectorOfIntsSerialization()
 
     {
         Telegram::MTProto::Stream stream(encoded);
-        TLVector<quint64> value;
+        QVector<quint64> value;
         stream >> value;
 
         QCOMPARE(value, vector);
@@ -676,7 +676,7 @@ void tst_MTProtoStream::vectorOfIntsSerialization()
 
 void tst_MTProtoStream::vectorDeserializationError()
 {
-    TLVector<quint32> vector;
+    QVector<quint32> vector;
 
     const QByteArray encoded = QByteArray::fromHex("12345678");
 
@@ -684,14 +684,14 @@ void tst_MTProtoStream::vectorDeserializationError()
         Telegram::MTProto::Stream stream(encoded);
 
         stream >> vector;
-        QVERIFY(!vector.isValid());
+        QVERIFY(!stream.error());
     }
 }
 
 void tst_MTProtoStream::pointerVectorSerialization()
 {
-    TLVector<quint32> values = { 1, 2, 3, 4, 5 };
-    const TLVector<quint32*> writePtrs = {
+    QVector<quint32> values = { 1, 2, 3, 4, 5 };
+    const QVector<quint32*> writePtrs = {
         &values[0],
         &values[1],
         &values[2],
@@ -707,7 +707,7 @@ void tst_MTProtoStream::pointerVectorSerialization()
     QVERIFY(!buffer.isEmpty());
 
     Telegram::MTProto::Stream stream(buffer);
-    TLVector<quint32> readValues;
+    QVector<quint32> readValues;
     stream >> readValues;
     QCOMPARE(values.count(), readValues.count());
     for (int i = 0; i < values.count(); ++i) {
@@ -717,7 +717,7 @@ void tst_MTProtoStream::pointerVectorSerialization()
 
 void tst_MTProtoStream::pointerVectorDeserialization()
 {
-    const TLVector<quint32> writeValues = { 1, 2, 3, 4, 5 };
+    const QVector<quint32> writeValues = { 1, 2, 3, 4, 5 };
 
     QByteArray buffer;
     {
@@ -727,7 +727,7 @@ void tst_MTProtoStream::pointerVectorDeserialization()
     QVERIFY(!buffer.isEmpty());
 
     Telegram::MTProto::Stream stream(buffer);
-    TLVector<quint32*> readPtrs;
+    QVector<quint32*> readPtrs;
     stream >> readPtrs;
     QCOMPARE(writeValues.count(), readPtrs.count());
     for (int i = 0; i < writeValues.count(); ++i) {
@@ -801,7 +801,7 @@ void tst_MTProtoStream::tlDcOptionDeserialization()
 {
     QByteArray dcOptionsData;
     Telegram::MTProto::Stream inputStream(&dcOptionsData, /* write */ true);
-    TLVector<TLDcOption> optionsVector;
+    QVector<TLDcOption> optionsVector;
 
     TLDcOption opt1;
     opt1.flags = 0;
@@ -822,7 +822,7 @@ void tst_MTProtoStream::tlDcOptionDeserialization()
     inputStream << optionsVector;
 
     Telegram::MTProto::Stream stream(dcOptionsData);
-    TLVector<TLDcOption> readOptionsVector;
+    QVector<TLDcOption> readOptionsVector;
     stream >> readOptionsVector;
 
     QCOMPARE(readOptionsVector.size(), 3);
@@ -835,7 +835,7 @@ void tst_MTProtoStream::tlDcOptionDeserialization()
     QCOMPARE(readOptionsVector.at(1).id, opt2.id);
     QCOMPARE(readOptionsVector.at(2).id, opt3.id);
 
-    QVERIFY(readOptionsVector.isValid());
+    QVERIFY(!stream.error());
 }
 
 void tst_MTProtoStream::recursiveTypeWriteRead()
@@ -929,7 +929,7 @@ void tst_MTProtoStream::reqPqData()
     QByteArray pqAsByteArray(sizeof(pq), Qt::Uninitialized);
     qToBigEndian<quint64>(pq, (uchar *) pqAsByteArray.data());
 
-    const TLVector<quint64> fingersprints = { fingerprint };
+    const QVector<quint64> fingersprints = { fingerprint };
 
     QVector<int> bytes;
     QByteArray output;
@@ -980,7 +980,7 @@ void tst_MTProtoStream::reqPqData()
     }
 
     {
-        TLVector<quint64> fingersprints;
+        QVector<quint64> fingersprints;
         inputStream >> fingersprints;
         QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(4));
         QCOMPARE(fingersprints.count(), 1);

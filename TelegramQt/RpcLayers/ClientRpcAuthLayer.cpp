@@ -95,7 +95,7 @@ AuthRpcLayer::PendingAuthCheckedPhone *AuthRpcLayer::checkPhone(const QString &p
     return op;
 }
 
-AuthRpcLayer::PendingBool *AuthRpcLayer::dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys)
+AuthRpcLayer::PendingBool *AuthRpcLayer::dropTempAuthKeys(const QVector<quint64> &exceptAuthKeys)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << exceptAuthKeys;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -214,7 +214,7 @@ AuthRpcLayer::PendingAuthSentCode *AuthRpcLayer::sendCode(quint32 flags, const Q
     return op;
 }
 
-AuthRpcLayer::PendingBool *AuthRpcLayer::sendInvites(const TLVector<QString> &phoneNumbers, const QString &message)
+AuthRpcLayer::PendingBool *AuthRpcLayer::sendInvites(const QVector<QString> &phoneNumbers, const QString &message)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumbers << message;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);

@@ -28,7 +28,7 @@ void getInterestingPeers(QSet<Peer> *peers, const TLChatFull &chatFull)
     }
 }
 
-void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
+void getInterestingPeers(QSet<Peer> *peers, const QVector<TLMessage> &messages)
 {
     for (const TLMessage &message : messages) {
         if (message.fromId) {
@@ -203,7 +203,7 @@ bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser)
     return true;
 }
 
-bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
+bool setupTLPeers(QVector<TLUser> *users, QVector<TLChat> *chats,
                   const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser)
 {
     users->clear();

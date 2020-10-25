@@ -409,7 +409,7 @@ void MessageMediaInfo::setCaption(const QString &caption)
 
 QByteArray MessageMediaInfo::getCachedPhoto() const
 {
-    const TLVector<TLPhotoSize> *sizes = nullptr;
+    const QVector<TLPhotoSize> *sizes = nullptr;
     switch (d->tlType) {
     case TLValue::MessageMediaPhoto:
         sizes = &d->photo.sizes;

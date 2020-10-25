@@ -42,7 +42,7 @@ public:
     // Generated Telegram API declarations
     PendingMessagesStickerSet *addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker);
     PendingMessagesStickerSet *changeStickerPosition(const TLInputDocument &sticker, quint32 position);
-    PendingMessagesStickerSet *createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers);
+    PendingMessagesStickerSet *createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const QVector<TLInputStickerSetItem> &stickers);
     PendingMessagesStickerSet *removeStickerFromSet(const TLInputDocument &sticker);
     // End of generated Telegram API declarations
 };
