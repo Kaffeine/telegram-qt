@@ -37,8 +37,8 @@ bool RandomGenerator::hasInstance()
 
 RandomGenerator *RandomGenerator::instance()
 {
-    Q_ASSERT_X(s_randomGenerator, "RandomGenerator", "RandomGenerator is not set."
-                                        " Ensure that Telegram::initialize() was called.");
+    Q_ASSERT_X(s_randomGenerator, "RandomGenerator",
+               "RandomGenerator is not set. Ensure that Telegram::initialize() was called.");
     return s_randomGenerator;
 }
 
