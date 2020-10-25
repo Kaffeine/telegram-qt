@@ -20,6 +20,10 @@
 #include "DeclarativeRsaKey.hpp"
 #include "DeclarativeSettings.hpp"
 
+#if QT_VERSION > QT_VERSION_CHECK(5, 10, 0)
+#include <QRandomGenerator>
+#endif
+
 class AccountSecretHelper : public QObject
 {
     Q_OBJECT
@@ -131,12 +135,21 @@ public slots:
             return false;
         }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
         const auto existsDataSize = file.size();
         while (file.pos() < existsDataSize) {
             auto r = qrand();
             file.write(reinterpret_cast<const char *>(&r), sizeof(r));
         }
+#else
+        const qint64 existsDataSize = file.size();
+        qint64 atLeastDataSizeDivisible4 = (existsDataSize / 4) * 4 + 4;
+        QVector<quint32> garbage;
+        garbage.resize(atLeastDataSizeDivisible4);
+        QRandomGenerator::system()->fillRange(garbage.data(), garbage.size());
+        file.write(reinterpret_cast<const char*>(garbage.constData()), existsDataSize);
         file.flush();
+#endif
         QTimer::singleShot(0, this, &AccountSecretHelper::updateCredentialDataExist);
         return file.remove();
     }
