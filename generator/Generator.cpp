@@ -2414,9 +2414,10 @@ quint32 Generator::getCrc32(const QByteArray &bytes)
 
 Generator::LineParseResult Generator::parseLine(const QString &line)
 {
-    const int sectionsSplitterIndex = line.indexOf(QLatin1Char('='));
-    const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
-    const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
+    const int delimiterIndex = line.indexOf(QLatin1Char('='));
+    const int eolIndex = line.indexOf(QLatin1Char(';'));
+    const QStringRef basePart = line.leftRef(delimiterIndex).trimmed();
+    const QStringRef typePart = line.midRef(delimiterIndex + 1, eolIndex - delimiterIndex - 1).trimmed();
     const int hashIndex = basePart.indexOf(QLatin1Char('#'));
     if ((hashIndex == 0) || (hashIndex + 1 > basePart.length())) {
         return LineParseResult();
@@ -2482,7 +2483,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
     LineParseResult result;
     result.predicateName = predicateBaseName.toString();
     result.predicateId = predicateId;
-    result.typeName = typePart.trimmed().toString();
+    result.typeName = typePart.toString();
     result.params = tlParams;
 
     return result;
