@@ -1015,7 +1015,7 @@ QString Generator::streamReadOperatorDefinition(const TLType *type)
 
 QString Generator::streamReadVectorTemplate(const QString &type)
 {
-    return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);")).arg(streamClassName, type);
+    return QString(QLatin1String("template %1 &%1::operator>>(%2<%3> &v);")).arg(streamClassName, tlVectorType, type);
 }
 
 QString Generator::streamWriteOperatorDeclaration(const TLType *type)
@@ -1049,7 +1049,7 @@ QString Generator::streamWriteFreeOperatorDefinition(const TLType *type)
 
 QString Generator::streamWriteVectorTemplate(const QString &type)
 {
-    return QString(QLatin1String("template %1 &%1::operator<<(const TLVector<%2> &v);")).arg(streamClassName).arg(type);
+    return QString(QLatin1String("template %1 &%1::operator<<(const %2<%3> &v);")).arg(streamClassName, tlVectorType, type);
 }
 
 QStringList Generator::generateRpcReplyTemplates(const QString &groupName) const
