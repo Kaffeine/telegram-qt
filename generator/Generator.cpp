@@ -36,7 +36,8 @@ static const QString tlNamespacePrefix = tlNamespace + QLatin1Literal("::");
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
-static const QString tlVectorType = tlPrefix + QLatin1String("Vector");
+static const QString tlVectorType = QLatin1String("QVector");
+static const QString vectorSchemeName = QLatin1String("Vector t");
 static const QString functionsType = QLatin1String("Functions");
 static const QString tlTrueType = tlPrefix + QLatin1String("True");
 static const QString tlNullType = tlPrefix + QLatin1String("Null");
@@ -77,7 +78,7 @@ static const QString streamClassName = QLatin1String("Stream");
 static const QString methodsClassName = QLatin1String("CTelegramConnection");
 
 static const QStringList typesBlackList = QStringList()
-        << tlVectorType + QLatin1String(" t")
+        << tlVectorType
         << tlNullType
         << tlTrueType
            ;
@@ -336,6 +337,10 @@ QString Generator::formatType(QString type)
 {
     if (type.contains(QLatin1Char('?'))) {
         type = type.section(QLatin1Char('?'), 1);
+    }
+
+    if (type == vectorSchemeName) {
+        return tlVectorType;
     }
 
     if (plainTypes.contains(type)) {

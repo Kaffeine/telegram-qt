@@ -316,7 +316,7 @@ static const QString c_typeHeaderCodeSecureValueError =
         "    TLSecureValueType type;\n"
         "    QByteArray fileHash;\n"
         "    QString text;\n"
-        "    TLVector<QByteArray> fileHashVector;\n"
+        "    QVector<QByteArray> fileHashVector;\n"
         "    QByteArray hash;\n"
         "    TLValue tlType = TLValue::SecureValueErrorSelfie;\n"
         "};\n\n";
@@ -525,7 +525,7 @@ void tst_Generator::checkTypeWithMemberConflicts()
         QStringLiteral("TLInputFile thumb;"),
         QStringLiteral("TLInputVideo inputVideoId;"),
         QStringLiteral("TLInputAudio inputAudioId;"),
-        QStringLiteral("TLVector<TLDocumentAttribute> attributes;"),
+        QStringLiteral("QVector<TLDocumentAttribute> attributes;"),
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
@@ -623,7 +623,7 @@ void tst_Generator::recursiveTypeMembers()
         QStringLiteral("QString email;"),
         QStringLiteral("QString stringText;"),
         QStringLiteral("TLRichTextPtr richText;"),
-        QStringLiteral("TLVector<TLRichText*> texts;"),
+        QStringLiteral("QVector<TLRichText*> texts;"),
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
@@ -653,9 +653,9 @@ void tst_Generator::doubleRecursiveTypeMembers()
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
         QStringLiteral("TLRichTextPtr text;"),
-        QStringLiteral("TLVector<TLRichText*> richTextItemsVector;"),
-        QStringLiteral("TLVector<TLPageBlock*> blocks;"),
-        QStringLiteral("TLVector<TLPageBlock*> pageBlockItemsVector;"),
+        QStringLiteral("QVector<TLRichText*> richTextItemsVector;"),
+        QStringLiteral("QVector<TLPageBlock*> blocks;"),
+        QStringLiteral("QVector<TLPageBlock*> pageBlockItemsVector;"),
         QStringLiteral("TLRichTextPtr caption;"),
     };
     for (const QString &mustHaveMember : checkList) {
