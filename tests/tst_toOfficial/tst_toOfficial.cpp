@@ -25,7 +25,7 @@
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
-#include "CClientTcpTransport.hpp"
+#include "ClientTcpTransport.hpp"
 #include "ConnectionApi.hpp"
 #include "DataStorage.hpp"
 #include "PendingRpcOperation.hpp"
@@ -92,7 +92,7 @@ public:
         return m_transport->getNewMessageId(ts);
     }
 
-    void sendPackage(const QByteArray &package) override
+    void sendPacket(const QByteArray &package) override
     {
         return m_transport->sendPacket(package);
     }
@@ -186,7 +186,7 @@ void tst_toOfficial::testGetConfiguration()
 
     Client::Client client;
     Client::AccountStorage accountStorage;
-    Client::DataStorage dataStorage;
+    Client::InMemoryDataStorage dataStorage;
     Client::Settings clientSettings;
     client.setAppInformation(getAppInfo());
     client.setSettings(&clientSettings);
