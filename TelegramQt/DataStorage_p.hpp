@@ -87,6 +87,8 @@ public:
     void processData(const TLMessagesDialogs &dialogs);
     void processData(const TLMessagesMessages &messages);
 
+    bool hasContact(quint32 contactId) const;
+    void ensureContacts(const QVector<quint32> &newContacts);
     void setContactList(const QVector<TLContact> &contacts);
     void clearPinnedDialogs();
 

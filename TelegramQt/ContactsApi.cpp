@@ -1,7 +1,7 @@
 #include "ContactsApi_p.hpp"
 
 #include "ClientBackend.hpp"
-#include "ContactList.hpp"
+#include "ContactList_p.hpp"
 #include "RandomGenerator.hpp"
 #include "RpcLayers/ClientRpcContactsLayer.hpp"
 
@@ -79,7 +79,7 @@ ContactList *ContactsApiPrivate::getContactList()
 {
     Q_Q(ContactsApi);
     if (!m_contactList) {
-        m_contactList = new ContactList(q);
+        m_contactList = ContactListPrivate::create(q);
     }
     return m_contactList;
 }
@@ -134,7 +134,15 @@ void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
         priv->m_userIds.append(user.id);
     }
 
-    DataInternalApi::get(m_backend->dataStorage())->processData(result.users);
+    DataInternalApi *dataApi = dataInternalApi();
+    dataApi->processData(result.users);
+
+    if (m_contactList) {
+        dataApi->ensureContacts(priv->m_userIds);
+
+        ContactListPrivate *listPrivate = ContactListPrivate::get(m_contactList);
+        listPrivate->addUserIds(priv->m_userIds);
+    }
 
     operation->setFinished();
 }
@@ -154,6 +162,11 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
 
     dataInternalApi()->processData(result.users);
     dataInternalApi()->setContactList(result.contacts);
+
+    if (m_contactList) {
+        ContactListPrivate *listPrivate = ContactListPrivate::get(m_contactList);
+        listPrivate->setUserIds(priv->m_userIds);
+    }
 
     operation->setFinished();
 }

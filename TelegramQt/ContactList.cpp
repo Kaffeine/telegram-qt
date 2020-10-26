@@ -1,4 +1,5 @@
-#include "ContactList.hpp"
+#include "ContactList_p.hpp"
+
 #include "ContactsApi.hpp"
 #include "ContactsApi_p.hpp"
 #include "DataStorage.hpp"
@@ -9,35 +10,81 @@ namespace Telegram {
 
 namespace Client {
 
-ContactList::ContactList(ContactsApi *backend) :
-    QObject(backend),
-    m_backend(backend)
+ContactList::ContactList(ContactsApi *api) :
+    QObject(api),
+    d(new ContactListPrivate)
 {
+    d->m_q = this;
+    d->m_api = api;
+}
+
+ContactList::~ContactList()
+{
+}
+
+QVector<quint32> ContactList::list() const
+{
+    Q_D(const ContactList);
+    return d->m_userIds;
 }
 
 bool ContactList::isReady() const
 {
-    return m_readyOperation && m_readyOperation->isSucceeded();
+    Q_D(const ContactList);
+    return d->m_readyOperation && d->m_readyOperation->isSucceeded();
 }
 
 PendingOperation *ContactList::becomeReady()
 {
-    ContactsApiPrivate *api = ContactsApiPrivate::get(m_backend);
-    if (!m_readyOperation) {
-        m_readyOperation = api->getContacts();
-        connect(m_readyOperation, &PendingOperation::finished, this, &ContactList::onFinished);
-        m_readyOperation->startLater();
+    Q_D(ContactList);
+    ContactsApiPrivate *api = ContactsApiPrivate::get(d->m_api);
+    if (!d->m_readyOperation) {
+        d->m_readyOperation = api->getContacts();
+        d->m_readyOperation->startLater();
     }
-    return m_readyOperation;
+    return d->m_readyOperation;
 }
 
-void ContactList::onFinished()
+ContactList *ContactListPrivate::create(ContactsApi *api)
 {
-    if (m_readyOperation->isFailed()) {
-        return;
+    return new ContactList(api);
+}
+
+ContactListPrivate *ContactListPrivate::get(ContactList *parent)
+{
+    return parent->d.data();
+}
+
+void ContactListPrivate::addUserIds(const QVector<quint32> &ids)
+{
+    Q_Q(ContactList);
+    QVector<quint32> added;
+    for (const quint32 id : ids) {
+        if (!m_userIds.contains(id)) {
+            added << id;
+        }
     }
-    ContactsApiPrivate *api = ContactsApiPrivate::get(m_backend);
-    m_peers = api->dataStorage()->contactList();
+    m_userIds.append(added);
+    emit q->listChanged(added, { });
+}
+
+void ContactListPrivate::setUserIds(const QVector<quint32> &ids)
+{
+    Q_Q(ContactList);
+    QVector<quint32> added;
+    for (const quint32 id : ids) {
+        if (!m_userIds.contains(id)) {
+            added << id;
+        }
+    }
+    QVector<quint32> removed;
+    for (const quint32 id : m_userIds) {
+        if (!ids.contains(id)) {
+            removed << id;
+        }
+    }
+    m_userIds = ids;
+    emit q->listChanged(added, removed);
 }
 
 } // Client namespace

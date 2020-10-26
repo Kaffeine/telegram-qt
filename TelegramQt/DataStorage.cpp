@@ -469,6 +469,43 @@ void DataInternalApi::processData(const TLMessagesMessages &messages)
     }
 }
 
+bool DataInternalApi::hasContact(quint32 contactId) const
+{
+    for (const TLContact &contact : m_contactList) {
+        if (contact.userId == contactId) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void DataInternalApi::ensureContacts(const QVector<quint32> &newContacts)
+{
+    for (const quint32 contactId : newContacts) {
+        const TLUser *user = m_users.value(contactId);
+        if (!user) {
+            // Warning
+            continue;
+        }
+
+        if (!user->contact()) {
+            // Warning;
+            continue;
+        }
+
+        if (hasContact(contactId)) {
+            // Debug
+            continue;
+        }
+
+        TLContact contact;
+        contact.userId = user->id;
+        contact.mutual = user->mutualContact();
+        m_contactList << contact;
+    }
+}
+
 void DataInternalApi::setContactList(const QVector<TLContact> &contacts)
 {
     m_contactList = contacts;
