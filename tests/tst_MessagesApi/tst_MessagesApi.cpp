@@ -23,7 +23,6 @@
 #include "Client.hpp"
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"
-#include "ContactList.hpp"
 #include "ContactsApi.hpp"
 #include "DataStorage.hpp"
 #include "TelegramNamespace.hpp"
@@ -230,7 +229,6 @@ void tst_MessagesApi::getDialogs()
     Telegram::Peer client1AsClient2Peer;
 
     // Everyone is online. Setup contacts
-    Telegram::Client::ContactList *client1ContactList = client1.contactsApi()->getContactList();
     Telegram::Client::DialogList *client2DialogList = client2.messagingApi()->getDialogList();
     {
         Telegram::Client::ContactsApi::ContactInfo user2ContactInfo;
@@ -249,12 +247,6 @@ void tst_MessagesApi::getDialogs()
         QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
         QVERIFY(userInfo.isContact());
-
-        PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
-        TRY_VERIFY(contactListReadyOperation->isFinished());
-        QVERIFY(contactListReadyOperation->isSucceeded());
-        QCOMPARE(client1ContactList->peers().count(), 1);
-        QCOMPARE(client1ContactList->peers().first().toString(), client2AsClient1Peer.toString());
     }
     {
         PendingOperation *dialogListReadyOperation = client2DialogList->becomeReady();
@@ -910,7 +902,6 @@ void tst_MessagesApi::sendMessage()
     Telegram::Peer client1AsClient2Peer;
 
     // Everyone is online. Setup contacts
-    Telegram::Client::ContactList *client1ContactList = client1.contactsApi()->getContactList();
     {
         Telegram::Client::ContactsApi::ContactInfo user2ContactInfo;
         user2ContactInfo.phoneNumber = user2->phoneNumber();
@@ -925,11 +916,6 @@ void tst_MessagesApi::sendMessage()
         UserInfo userInfo;
         QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
-
-        PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
-        TRY_VERIFY(contactListReadyOperation->isFinished());
-        QVERIFY(contactListReadyOperation->isSucceeded());
-        QCOMPARE(client1ContactList->peers().count(), 1);
     }
 
     const QString c_message1Text = QStringLiteral("Hello");
@@ -1705,7 +1691,6 @@ void tst_MessagesApi::messageAction()
     // Everyone is online. Setup contacts
     Peer client2AsClient1Peer;
     Peer client1AsClient2Peer;
-    Client::ContactList *client1ContactList = client1.contactsApi()->getContactList();
     {
         const Client::ContactsApi::ContactInfo user2ContactInfo = toContactInfo(user2);
         Client::PendingContactsOperation *addContactOperation = client1.contactsApi()->addContacts({user2ContactInfo});
@@ -1717,11 +1702,6 @@ void tst_MessagesApi::messageAction()
         UserInfo userInfo;
         QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
-
-        PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
-        TRY_VERIFY(contactListReadyOperation->isFinished());
-        QVERIFY(contactListReadyOperation->isSucceeded());
-        QCOMPARE(client1ContactList->peers().count(), 1);
     }
 
     const QString c_message1Text = QStringLiteral("Hello");
