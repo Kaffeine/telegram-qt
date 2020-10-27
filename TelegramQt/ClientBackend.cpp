@@ -2,6 +2,7 @@
 
 #include "AccountApi.hpp"
 #include "AccountStorage.hpp"
+#include "AppInformation.hpp"
 #include "Client.hpp"
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
@@ -39,11 +40,17 @@ namespace Telegram {
 
 namespace Client {
 
-Backend::Backend(Client *parent) :
+Backend::Backend(Client *parent, bool bare) :
     QObject(parent),
     m_client(parent)
 {
     Telegram::initialize();
+
+    if (!bare) {
+        m_appInformation = new Telegram::Client::AppInformation(this);
+        m_settings = new Telegram::Client::Settings(this);
+        m_dataStorage = new Telegram::Client::InMemoryDataStorage(this);
+    }
 
     Backend *b = this;
     BaseRpcLayerExtension::RpcProcessingMethod rpcProcessMethod = [b](PendingRpcOperation *operation) mutable {

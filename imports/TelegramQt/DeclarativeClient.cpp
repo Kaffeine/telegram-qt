@@ -13,7 +13,7 @@ namespace Client {
 
 DeclarativeClient::DeclarativeClient(QObject *parent) :
     QObject(parent),
-    m_client(new Client(this))
+    m_client(new Client(this, true)) // 'true' stands for bare client
 {
     connect(m_client, &Client::signedInChanged, this, &DeclarativeClient::signedInChanged);
 }

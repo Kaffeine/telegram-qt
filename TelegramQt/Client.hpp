@@ -45,7 +45,7 @@ class TELEGRAMQT_EXPORT Client : public QObject
 {
     Q_OBJECT
 public:
-    explicit Client(QObject *parent = nullptr);
+    explicit Client(QObject *parent = nullptr, bool bare = false);
     ~Client();
 
     bool isSignedIn() const;

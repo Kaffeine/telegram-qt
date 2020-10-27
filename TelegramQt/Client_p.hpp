@@ -16,7 +16,7 @@ class ClientPrivate : public Backend
 {
     Q_OBJECT
 public:
-    explicit ClientPrivate(Client *parent) : Backend(parent) { }
+    explicit ClientPrivate(Client *parent, bool bare) : Backend(parent, bare) { }
     static const ClientPrivate *get(const Client *c) { return c->d; }
     static ClientPrivate *get(Client *c) { return c->d; }
 };

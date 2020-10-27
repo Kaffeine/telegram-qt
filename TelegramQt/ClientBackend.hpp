@@ -44,7 +44,7 @@ class Backend : public QObject
 {
     Q_OBJECT
 public:
-    explicit Backend(Client *parent);
+    explicit Backend(Client *parent, bool bare);
 
     bool isSignedIn() const;
 
