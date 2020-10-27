@@ -11,9 +11,9 @@ namespace Client {
     \ingroup Client
     \inheaderfile TelegramQt/Client
 */
-Client::Client(QObject *parent) :
+Client::Client(QObject *parent, bool bare) :
     QObject(parent),
-    d(new ClientPrivate(this))
+    d(new ClientPrivate(this, bare))
 {
 }
 

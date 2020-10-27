@@ -38,13 +38,9 @@ void setupClientHelper(Telegram::Client::Client *client, const UserData &userDat
     Telegram::Client::AccountStorage *accountStorage = new Telegram::Client::AccountStorage(client);
     accountStorage->setPhoneNumber(userData.phoneNumber);
     accountStorage->setDcInfo(clientDcOption);
-    Telegram::Client::Settings *clientSettings = new Telegram::Client::Settings(client);
-    Telegram::Client::InMemoryDataStorage *dataStorage = new Telegram::Client::InMemoryDataStorage(client);
-    client->setAppInformation(new Client::AppInformation(client));
     setupAppInfo(client->appInformation());
-    client->setSettings(clientSettings);
+    Telegram::Client::Settings *clientSettings = client->settings();
     client->setAccountStorage(accountStorage);
-    client->setDataStorage(dataStorage);
     QVERIFY(clientSettings->setServerConfiguration({clientDcOption}));
     QVERIFY(clientSettings->setServerRsaKey(serverPublicKey));
 }
@@ -102,10 +98,7 @@ public:
     explicit Client(QObject *parent = nullptr)
         : Telegram::Client::Client(parent)
     {
-        setSettings(new Telegram::Client::Settings(this));
         setAccountStorage(new Telegram::Client::AccountStorage(this));
-        setDataStorage(new Telegram::Client::InMemoryDataStorage(this));
-        setAppInformation(new Telegram::Client::AppInformation(this));
         setupAppInfo(appInformation());
     }
 };
