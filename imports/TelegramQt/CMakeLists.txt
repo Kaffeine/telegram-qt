@@ -92,8 +92,6 @@ install(
 add_library(TelegramQmlPlugin SHARED plugin.cpp)
 
 target_link_libraries(TelegramQmlPlugin
-    Qt5::Core
-    Qt5::Qml
     TelegramQt${QT_VERSION_MAJOR}::Qml
 )
 

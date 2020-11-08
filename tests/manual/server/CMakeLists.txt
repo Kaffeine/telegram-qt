@@ -29,9 +29,6 @@ set(server_SOURCES
 
 add_executable(TelegramTestServer ${server_SOURCES})
 target_link_libraries(TelegramTestServer
-    Qt5::Core
-    Qt5::Network
-
     TelegramQt${QT_VERSION_MAJOR}::Server
     TelegramQt${QT_VERSION_MAJOR}::Test
     test_keys_data
@@ -41,11 +38,6 @@ if(TELEGRAMQT_DEVELOPER_BUILD)
     target_compile_definitions(TelegramTestServer PRIVATE
         DEVELOPER_BUILD
         QT_DEPRECATED_WARNINGS
-        USE_DBUS_NOTIFIER
-    )
-
-    target_link_libraries(TelegramTestServer
-        Qt5::DBus
     )
 endif()
 
