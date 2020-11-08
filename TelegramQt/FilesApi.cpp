@@ -11,6 +11,7 @@
 #include "Operations/FileOperation_p.hpp"
 #include "RpcLayers/ClientRpcUploadLayer.hpp"
 
+#include <QIODevice>
 #include <QLoggingCategory>
 #include <QTimer>
 
