@@ -56,7 +56,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT DcConfiguration
     QVector<DcOption> dcOptions;
 };
 
-inline uint qHash(const ConnectionSpec &key, uint seed)
+inline uint qHash(const ConnectionSpec &key, uint seed = 0)
 {
     return ::qHash(static_cast<uint>(key.dcId | (static_cast<quint32>(key.flags) << 20)), seed);
 }

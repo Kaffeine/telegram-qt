@@ -83,7 +83,7 @@ inline constexpr Peer::Peer(quint32 id, Type t)
 {
 }
 
-inline uint qHash(const Peer &key, uint seed)
+inline uint qHash(const Peer &key, uint seed = 0)
 {
     const quint64 k = static_cast<quint64>(key.id()) | (static_cast<quint64>(key.type()) << 32);
     return ::qHash(k, seed);
