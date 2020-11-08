@@ -11,8 +11,8 @@ foreach(test_name
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
     add_executable(${test_name} ${TEST_SOURCES})
     target_link_libraries(${test_name}
-        Qt5::Core
-        Qt5::Test
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Test
         TelegramQt${QT_VERSION_MAJOR}::Core
     )
     add_test(NAME ${test_name} COMMAND ${test_name})

@@ -84,7 +84,7 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     QT_STRICT_ITERATORS
 )
 
-find_package(Qt5 5.5 COMPONENTS Core Gui Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} 5.5 COMPONENTS Core Gui Network REQUIRED)
 
 target_sources(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     ${server_lib_SOURCES}
@@ -99,9 +99,9 @@ target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
-    Qt5::Core
-    Qt5::Network
-    Qt5::Gui
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Gui
     TelegramQt${QT_VERSION_MAJOR}::Core
 )
 
@@ -112,7 +112,7 @@ if(TELEGRAMQT_DEVELOPER_BUILD)
         USE_DBUS_NOTIFIER
     )
     target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
-        Qt5::DBus
+        Qt${QT_VERSION_MAJOR}::DBus
     )
 endif()
 

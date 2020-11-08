@@ -38,8 +38,8 @@ target_compile_definitions(generator PRIVATE
 )
 
 target_link_libraries(generator
-    Qt5::Core
-    Qt5::Network
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
     ZLIB::ZLIB
 )
 

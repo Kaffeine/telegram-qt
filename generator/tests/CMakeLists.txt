@@ -5,8 +5,8 @@ add_executable(tst_generator
 )
 
 target_link_libraries(tst_generator
-    Qt5::Core
-    Qt5::Test
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Test
     ZLIB::ZLIB
 )
 

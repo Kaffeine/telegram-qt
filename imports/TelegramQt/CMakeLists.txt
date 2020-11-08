@@ -53,8 +53,8 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml PUBLIC
-    Qt5::Core
-    Qt5::Qml
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Qml
     TelegramQt${QT_VERSION_MAJOR}::Core
 )
 

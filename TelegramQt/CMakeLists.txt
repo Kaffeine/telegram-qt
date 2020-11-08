@@ -293,8 +293,8 @@ target_include_directories(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
-    Qt5::Core
-    Qt5::Network
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE

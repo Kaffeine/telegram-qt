@@ -7,6 +7,6 @@ add_library(test_keys_data STATIC
 target_include_directories(test_keys_data PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(test_keys_data LINK_PUBLIC
-    Qt5::Core
+    Qt${QT_VERSION_MAJOR}::Core
     ZLIB::ZLIB
 )

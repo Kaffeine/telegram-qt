@@ -19,8 +19,8 @@ foreach(test_name
 )
     add_executable(${test_name} ${test_name}/${test_name}.cpp ${test_extra_META_HEADERS})
     target_link_libraries(${test_name} PRIVATE
-        Qt5::Core
-        Qt5::Test
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Test
         TelegramQt${QT_VERSION_MAJOR}::Core
         TelegramQt${QT_VERSION_MAJOR}::Server
         TelegramQt${QT_VERSION_MAJOR}::Test
