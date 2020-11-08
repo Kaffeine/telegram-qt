@@ -330,6 +330,7 @@ protected:
 class TELEGRAMQT_EXPORT PeerInfo
 {
 public:
+    virtual ~PeerInfo() = default;
     virtual Peer peer() const = 0;
     virtual bool getPeerPicture(FileInfo *file, PeerPictureSize size) const = 0;
     virtual QString displayName() const = 0;
