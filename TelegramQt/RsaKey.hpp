@@ -32,6 +32,7 @@ struct TELEGRAMQT_EXPORT RsaKey
     quint64 fingerprint = 0;
 
     RsaKey() = default;
+    RsaKey(const RsaKey &key) = default;
     RsaKey(const QByteArray &initialModulus, const QByteArray &initialExponent, const quint64 initialFingersprint = 0) :
         modulus(initialModulus), exponent(initialExponent), fingerprint(initialFingersprint)
     {

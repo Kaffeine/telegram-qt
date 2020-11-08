@@ -31,6 +31,10 @@ template <int Size> union TLNumber {
             parts[i] = 0;
         }
     }
+    inline TLNumber(const TLNumber &number)
+    {
+        *this = number;
+    }
 
     Q_DECL_RELAXED_CONSTEXPR TLNumber &operator=(const TLNumber &anotherTLNumber) {
         for (int i = 0; i < Size / 8 / 8; ++i)
