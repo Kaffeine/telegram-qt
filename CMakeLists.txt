@@ -89,7 +89,7 @@ if(TELEGRAMQT_BUILD_SERVER)
     endif()
 endif()
 
-set(QT_MINUMUM_VERSION 5.5.0)
+set(QT_MINUMUM_VERSION 5.6.0)
 
 find_package(Qt5 ${QT_MINUMUM_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
@@ -147,11 +147,7 @@ if(TELEGRAMQT_BUILD_SERVER)
 endif()
 
 if(TELEGRAMQT_BUILD_GENERATOR)
-    if(Qt5_VERSION VERSION_LESS "5.6.0")
-        message(WARNING "Use Qt 5.6.0 or higher to build GeneratorNG")
-    else()
-        add_subdirectory(generator)
-    endif()
+    add_subdirectory(generator)
 endif()
 
 if(TELEGRAMQT_BUILD_DOCUMENTATION)
