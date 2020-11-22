@@ -22,6 +22,7 @@
 #include "RandomGenerator.hpp"
 #include "Utils.hpp"
 
+#include "CompatibilityLayer.hpp"
 #include "ConnectionApi.hpp"
 
 #include <QCryptographicHash>
@@ -65,7 +66,7 @@ Telegram::Peer Peer::fromString(const QString &string)
     switch (string.at(0).toLatin1()) {
     case 'u': // user
         if (string.startsWith(c_userPrefix)) {
-            uint userId = string.midRef(c_userPrefix.size()).toUInt(&ok);
+            uint userId = getStringMidView(string, c_userPrefix.size()).toUInt(&ok);
             if (ok) {
                 return Peer::fromUserId(userId);
             }
@@ -74,14 +75,14 @@ Telegram::Peer Peer::fromString(const QString &string)
     case 'c': // chat or channel
         if (string.at(3).toLatin1() == 't') {
             if (string.startsWith(c_chatPrefix)) {
-                uint chatId = string.midRef(c_chatPrefix.size()).toUInt(&ok);
+                uint chatId = getStringMidView(string, c_chatPrefix.size()).toUInt(&ok);
                 if (ok) {
                     return Peer::fromChatId(chatId);
                 }
             }
         } else {
             if (string.startsWith(c_channelPrefix)) {
-                uint channelId = string.midRef(c_channelPrefix.size()).toUInt(&ok);
+                uint channelId = getStringMidView(string, c_channelPrefix.size()).toUInt(&ok);
                 if (ok) {
                     return Peer::fromChannelId(channelId);
                 }
@@ -570,32 +571,32 @@ Telegram::FileInfo::Private FileInfo::Private::fromFileId(const QString &fileId)
 {
     uint remoteFileType = InvalidLocation;
     bool ok;
-    remoteFileType = fileId.midRef(0, 2).toUInt(&ok, 16);
+    remoteFileType = getStringMidView(fileId, 0, 2).toUInt(&ok, 16);
     if (!ok) {
         return Private();
     }
     Private result;
     result.m_type = static_cast<Type>(remoteFileType);
-    result.m_dcId = fileId.midRef(2, 8).toULong(&ok, 16); // 32 bits
+    result.m_dcId = getStringMidView(fileId, 2, 8).toULong(&ok, 16); // 32 bits
     if (!ok) {
         return Private();
     }
-    result.m_size = fileId.midRef(10, 8).toULong(&ok, 16); // 32 bits
+    result.m_size = getStringMidView(fileId, 10, 8).toULong(&ok, 16); // 32 bits
     if (!ok) {
         return Private();
     }
 
     switch (result.m_type) {
     case Private::FileLocation:
-        result.m_volumeId = fileId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        result.m_volumeId = getStringMidView(fileId, 18, 16).toULongLong(&ok, 16); // 64 bits
         if (!ok) {
             return Private();
         }
-        result.m_secret = fileId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        result.m_secret = getStringMidView(fileId, 34, 16).toULongLong(&ok, 16); // 64 bits
         if (!ok) {
             return Private();
         }
-        result.m_localId = fileId.midRef(50, 8).toULong(&ok, 16); // 32 bits
+        result.m_localId = getStringMidView(fileId, 50, 8).toULong(&ok, 16); // 32 bits
         if (!ok) {
             return Private();
         }
@@ -604,11 +605,11 @@ Telegram::FileInfo::Private FileInfo::Private::fromFileId(const QString &fileId)
     case Private::VideoFileLocation:
     case Private::AudioFileLocation:
     case Private::DocumentFileLocation:
-        result.m_id = fileId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        result.m_id = getStringMidView(fileId, 18, 16).toULongLong(&ok, 16); // 64 bits
         if (!ok) {
             return Private();
         }
-        result.m_accessHash = fileId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        result.m_accessHash = getStringMidView(fileId, 34, 16).toULongLong(&ok, 16); // 64 bits
         if (!ok) {
             return Private();
         }
