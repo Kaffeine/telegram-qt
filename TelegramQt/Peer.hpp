@@ -38,19 +38,19 @@ public:
     Q_ENUM(Type)
 
     constexpr Peer() = default;
-    constexpr Peer(quint32 id, Type t);
+    constexpr Peer(quint32 id, Type t) noexcept;
 
-    constexpr Type type() const { return m_type; }
-    constexpr quint32 id() const { return m_id; }
+    constexpr Type type() const noexcept { return m_type; }
+    constexpr quint32 id() const noexcept { return m_id; }
 
     Q_INVOKABLE constexpr bool isValid() const { return m_id; }
 
-    constexpr bool operator==(const Peer &p) const
+    constexpr bool operator==(const Peer &p) const noexcept
     {
         return (p.m_id == m_id) && (p.m_type == m_type);
     }
 
-    constexpr bool operator!=(const Peer &p) const
+    constexpr bool operator!=(const Peer &p) const noexcept
     {
         return (p.m_id != m_id) || (p.m_type != m_type);
     }
@@ -78,12 +78,12 @@ private:
     quint32 m_id = 0;
 };
 
-inline constexpr Peer::Peer(quint32 id, Type t)
+inline constexpr Peer::Peer(quint32 id, Type t) noexcept
     : m_type(t), m_id(id)
 {
 }
 
-inline uint qHash(const Peer &key, uint seed = 0)
+inline uint qHash(const Peer &key, uint seed = 0) noexcept
 {
     const quint64 k = static_cast<quint64>(key.id()) | (static_cast<quint64>(key.type()) << 32);
     return ::qHash(k, seed);
