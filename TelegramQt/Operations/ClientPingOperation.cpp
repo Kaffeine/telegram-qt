@@ -3,9 +3,9 @@
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
+#include "CompatibilityLayer.hpp"
 #include "MTProto/Stream.hpp"
 #include "MTProto/TLTypes.hpp"
-#include "telegramqt_macros.h"
 
 #include <QDateTime>
 #include <QLoggingCategory>

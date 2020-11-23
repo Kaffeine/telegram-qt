@@ -17,9 +17,9 @@
 
 #include "TLRpcDebug.hpp"
 
+#include "CompatibilityLayer.hpp"
 #include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
-#include "telegramqt_macros.h"
 
 #include "Stream.hpp"
 

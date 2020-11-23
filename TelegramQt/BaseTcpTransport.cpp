@@ -17,10 +17,10 @@
 
 #include "BaseTcpTransport.hpp"
 
+#include "CompatibilityLayer.hpp"
 #include "Crypto/AesCtr.hpp"
 #include "Debug_p.hpp"
 #include "RawStream.hpp"
-#include "telegramqt_macros.h"
 
 #include <QHostAddress>
 #include <QLoggingCategory>

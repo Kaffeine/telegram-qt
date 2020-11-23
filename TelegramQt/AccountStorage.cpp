@@ -1,9 +1,9 @@
 #include "AccountStorage.hpp"
 
+#include "CompatibilityLayer.hpp"
 #include "Debug_p.hpp"
 #include "LegacySecretReader.hpp"
 #include "RawStream.hpp"
-#include "telegramqt_macros.h"
 
 #include <QDir>
 #include <QFile>

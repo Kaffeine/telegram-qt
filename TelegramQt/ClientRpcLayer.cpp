@@ -17,6 +17,7 @@
 
 #include "ClientRpcLayer.hpp"
 #include "ClientRpcUpdatesLayer.hpp"
+#include "CompatibilityLayer.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
 #include "Debug_p.hpp"
@@ -27,8 +28,6 @@
 
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"
-
-#include "telegramqt_macros.h"
 
 #include <QLoggingCategory>
 

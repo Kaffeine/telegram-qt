@@ -4,13 +4,12 @@
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
 #include "BaseTransport.hpp"
+#include "CompatibilityLayer.hpp"
 #include "ConnectionError.hpp"
 #include "LocalServerApi.hpp"
 #include "ServerDhLayer.hpp"
 #include "ServerRpcLayer.hpp"
 #include "TelegramServerUser.hpp"
-
-#include "telegramqt_macros.h"
 
 #include <QDateTime>
 #include <QLoggingCategory>

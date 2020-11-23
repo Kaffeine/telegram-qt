@@ -15,8 +15,8 @@
 
  */
 
-#ifndef TELEGRAMQT_MACROS_H
-#define TELEGRAMQT_MACROS_H
+#ifndef TELEGRAMQT_COMPAT_LAYER_HPP
+#define TELEGRAMQT_COMPAT_LAYER_HPP
 
 #include <QtGlobal>
 
@@ -28,4 +28,4 @@
 #define TELEGRAMQT_ENDL Qt::endl
 #endif
 
-#endif // TELEGRAMQT_MACROS_H
+#endif // TELEGRAMQT_COMPAT_LAYER_HPP

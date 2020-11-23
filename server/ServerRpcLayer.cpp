@@ -1,5 +1,6 @@
 #include "ServerRpcLayer.hpp"
 
+#include "CompatibilityLayer.hpp"
 #include "Debug_p.hpp"
 #include "FunctionStreamOperators.hpp"
 #include "IgnoredMessageNotification.hpp"
@@ -16,7 +17,6 @@
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
 #include "Utils.hpp"
-#include "telegramqt_macros.h"
 
 #ifdef DEVELOPER_BUILD
 #include "MTProto/TLTypesDebug.hpp"

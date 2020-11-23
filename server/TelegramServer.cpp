@@ -2,6 +2,7 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
+#include "CompatibilityLayer.hpp"
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
 #include "MessageService.hpp"
@@ -34,8 +35,6 @@
 #include "UploadOperationFactory.hpp"
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
-
-#include "telegramqt_macros.h"
 
 #include <QLoggingCategory>
 #include <QTcpServer>
