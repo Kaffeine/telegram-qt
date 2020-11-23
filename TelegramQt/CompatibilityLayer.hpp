@@ -18,7 +18,9 @@
 #ifndef TELEGRAMQT_COMPAT_LAYER_HPP
 #define TELEGRAMQT_COMPAT_LAYER_HPP
 
-#include <QtGlobal>
+#include "telegramqt_global.h"
+
+#include <QString>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define TELEGRAMQT_HEX_SHOWBASE hex << showbase
@@ -27,5 +29,21 @@
 #define TELEGRAMQT_HEX_SHOWBASE Qt::hex << Qt::showbase
 #define TELEGRAMQT_ENDL Qt::endl
 #endif
+
+namespace Telegram {
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+inline QStringView getStringMidView(const QString &string, qsizetype pos, qsizetype n = -1)
+{
+    return QStringView(string).mid(pos, n);
+}
+#else
+inline QStringRef getStringMidView(const QString &string, int pos, int n = -1)
+{
+    return string.midRef(pos, n);
+}
+#endif
+
+} // Telegram namespace
 
 #endif // TELEGRAMQT_COMPAT_LAYER_HPP
