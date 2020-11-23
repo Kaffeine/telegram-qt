@@ -10,8 +10,6 @@ set(test_extra_META_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/TestAuthProvider.hpp
 )
 
-QT5_WRAP_CPP(test_extra_MOC_SOURCES ${test_extra_META_HEADERS})
-
 foreach(test_name
     tst_all
     tst_ConnectionApi
@@ -19,7 +17,7 @@ foreach(test_name
     tst_FilesApi
     tst_MessagesApi
 )
-    add_executable(${test_name} ${test_name}/${test_name}.cpp ${test_extra_MOC_SOURCES})
+    add_executable(${test_name} ${test_name}/${test_name}.cpp ${test_extra_META_HEADERS})
     target_link_libraries(${test_name} PRIVATE
         Qt5::Core
         Qt5::Test
