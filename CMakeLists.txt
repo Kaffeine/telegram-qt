@@ -31,8 +31,15 @@ project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 project_option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
+add_feature_info("Export Internal API" TELEGRAMQT_EXPORT_INTERNAL_API
+    "needed for deeper integration (for tests and server)"
+)
+
 if(NOT ${CMAKE_VERSION} VERSION_LESS 3.9)
     project_option(ENABLE_IPO "Enable interprocedural optimizations" FALSE)
+    add_feature_info("Interprocedural optimizations" TELEGRAMQT_ENABLE_IPO
+        "useful to considerably reduce the library size"
+    )
 endif()
 
 if(TELEGRAMQT_ENABLE_IPO)
@@ -91,6 +98,9 @@ endif()
 set(QT_MINUMUM_VERSION 5.6.0)
 find_package(Qt NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 set(QT_VERSION_MAJOR "${Qt_VERSION_MAJOR}")
+set_package_properties(Qt PROPERTIES
+    DESCRIPTION "helper for Qt ${Qt_VERSION} find module"
+)
 
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MINUMUM_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
@@ -154,10 +164,5 @@ endif()
 if(TELEGRAMQT_BUILD_DOCUMENTATION)
     add_subdirectory(doc)
 endif()
-
-message(STATUS "${PROJECT_NAME} configuration:")
-message(STATUS "  Export internal API: ${TELEGRAMQT_EXPORT_INTERNAL_API}")
-message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS "  Qt: ${Qt_VERSION}")
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
