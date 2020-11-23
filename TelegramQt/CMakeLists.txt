@@ -48,8 +48,6 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     BigNumber.hpp
     CAppInformation.cpp
     CAppInformation.hpp
-    ClientTcpTransport.cpp
-    ClientTcpTransport.hpp
     Client.cpp
     Client.hpp
     ClientApi.cpp
@@ -68,6 +66,8 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     ClientRpcLayerExtension_p.hpp
     ClientSettings.cpp
     ClientSettings.hpp
+    ClientTcpTransport.cpp
+    ClientTcpTransport.hpp
     Client_p.hpp
     CompatibilityLayer.hpp
     Connection.cpp

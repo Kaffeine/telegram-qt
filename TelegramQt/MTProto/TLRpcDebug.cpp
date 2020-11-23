@@ -18,8 +18,8 @@
 #include "TLRpcDebug.hpp"
 
 #include "CompatibilityLayer.hpp"
-#include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
+#include "TLTypesDebug.hpp"
 
 #include "Stream.hpp"
 
