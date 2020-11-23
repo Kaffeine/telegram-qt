@@ -91,8 +91,12 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     ${server_json_SOURCES}
 )
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations
+)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
     Qt5::Core
