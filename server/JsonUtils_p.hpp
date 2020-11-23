@@ -68,6 +68,8 @@ inline QJsonArray toJsonArray(const T &container)
     return result;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+// In Qt6 QVector is a using of QList
 template <typename T>
 inline QJsonArray toJsonArray(const QVector<T> &container, QJsonValue (*method)(const T &))
 {
@@ -77,6 +79,7 @@ inline QJsonArray toJsonArray(const QVector<T> &container, QJsonValue (*method)(
     }
     return result;
 }
+#endif
 
 template <typename T>
 inline QJsonArray toJsonArray(const QList<T> &container, QJsonValue (*method)(const T &))
