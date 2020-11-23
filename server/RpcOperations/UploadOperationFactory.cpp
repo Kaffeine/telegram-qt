@@ -33,6 +33,7 @@
 #include "MTProto/StreamExtraOperators.hpp"
 #include "FunctionStreamOperators.hpp"
 
+#include <QIODevice>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_serverUploadRpcCategory, "telegram.server.rpc.upload", QtWarningMsg)
