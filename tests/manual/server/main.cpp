@@ -122,7 +122,7 @@ ExitCode internalMain(int argc, char *argv[])
     a.setOrganizationName(QLatin1String("TelegramQt"));
     a.setApplicationName(QLatin1String("TelegramTestServer"));
     const QString persistentKeyFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation)
-            + QLatin1Literal("/TelegramTestServer.pem");
+            + QLatin1String("/TelegramTestServer.pem");
 
     Telegram::initialize();
     if (!TestKeyData::initKeyFiles()) {
