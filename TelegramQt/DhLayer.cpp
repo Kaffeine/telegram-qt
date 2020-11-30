@@ -26,6 +26,8 @@
 #include <QLoggingCategory>
 
 #ifdef NETWORK_LOGGING
+#include "CompatibilityLayer.hpp"
+
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
@@ -139,7 +141,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
         str << QString(QLatin1String("size: %1|")).arg(payload.length(), 4, 10, QLatin1Char('0'));
         str << formatTLValue(val1) << QLatin1Char('|');
         str << payload.toHex();
-        str << endl;
+        str << TELEGRAMQT_ENDL;
     }
 #endif
 
@@ -160,7 +162,7 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
         str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
         str << QLatin1Char('|');
         str << buffer.toHex();
-        str << endl;
+        str << TELEGRAMQT_ENDL;
     }
 #endif
 
@@ -219,7 +221,7 @@ QFile *BaseDhLayer::getLogFile()
         QDir dir;
         dir.mkdir(QLatin1String("network"));
 
-        m_logFile = new QFile(QLatin1String("network/%1.log").arg(ulong(this), 0, 0x10));
+        m_logFile = new QFile(QStringLiteral("network/%1.log").arg(ulong(this), 0, 0x10));
         m_logFile->open(QIODevice::WriteOnly);
     }
     //qDebug() << CALL_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
