@@ -27,8 +27,10 @@
 
 #include <QCryptographicHash>
 #include <QDateTime>
+#include <QLoggingCategory>
 #include <QMetaType>
-#include <QDebug>
+
+Q_LOGGING_CATEGORY(lcGeneral, "telegram.general", QtWarningMsg)
 
 static const QLatin1String c_userPrefix = QLatin1String("user");
 static const QLatin1String c_chatPrefix = QLatin1String("chat");
@@ -104,10 +106,10 @@ void Namespace::registerTypes()
     registered = true;
 
 #ifdef DEVELOPER_BUILD
-    qInfo() << "TelegramQt Developer build";
+    qCInfo(lcGeneral) << "TelegramQt Developer build";
 #endif
-    qInfo().noquote().nospace() << "Initialize TelegramQt v" << Telegram::version()
-                                << " (build " << Telegram::buildVersion() << ")";
+    qCInfo(lcGeneral).noquote().nospace() << "Initialize TelegramQt v" << Telegram::version()
+                                       << " (build " << Telegram::buildVersion() << ")";
 
     qRegisterMetaType<Namespace::ContactStatus>
             ("Telegram::Namespace::ContactStatus");
