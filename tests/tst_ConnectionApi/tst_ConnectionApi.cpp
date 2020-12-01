@@ -50,7 +50,7 @@
 
 #include <QTest>
 #include <QSignalSpy>
-#include <QDebug>
+#include <QLoggingCategory>
 #include <QRegularExpression>
 
 #include "keys_data.hpp"
@@ -59,6 +59,8 @@
 #include "TestServerUtils.hpp"
 #include "TestUserData.hpp"
 #include "TestUtils.hpp"
+
+Q_LOGGING_CATEGORY(lcTestConnectionApi, "telegram.test.ConnectionApi", QtWarningMsg)
 
 using namespace Telegram;
 
@@ -548,7 +550,8 @@ void tst_ConnectionApi::reconnect()
     QVERIFY(serverSideTransport);
 
     QVERIFY(clientConnectionStatusSpy.isEmpty());
-    // Brutal disconnect from server side
+
+    qCDebug(lcTestConnectionApi) << "Brutal disconnect from server side";
     serverSideTransport->disconnectFromHost();
 
     TRY_VERIFY(!clientConnectionStatusSpy.isEmpty());
@@ -573,7 +576,7 @@ void tst_ConnectionApi::reconnect()
     constexpr int c_minReconnectSignals = 4;
     TRY_VERIFY(clientConnectionStatusSpy.count() >= c_minReconnectSignals);
     {
-        qDebug() << clientConnectionStatusSpy.mid(clientConnectionStatusSpy.count() - c_minReconnectSignals);
+        qCDebug(lcTestConnectionApi) << clientConnectionStatusSpy.mid(clientConnectionStatusSpy.count() - c_minReconnectSignals);
 
         QVariantList firstSignal = clientConnectionStatusSpy.takeFirst();
         QCOMPARE(firstSignal.first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
@@ -618,7 +621,7 @@ void tst_ConnectionApi::reconnectNow()
 
     connect(connectionApi, &Client::ConnectionApi::statusChanged,
             this, [&remainingTimeList, &connectionStatusList, connectionApi] (Client::ConnectionApi::Status status) {
-        qWarning() << "status on changed:" << status << "rem time:" << connectionApi->remainingTimeToConnect();
+        qCDebug(lcTestConnectionApi) << "status on changed:" << status << "rem time:" << connectionApi->remainingTimeToConnect();
         connectionStatusList << status;
         remainingTimeList << connectionApi->remainingTimeToConnect();
     });
@@ -637,7 +640,7 @@ void tst_ConnectionApi::reconnectNow()
 
     int remainingAttempts = 5;
     while (true) {
-        qWarning() << "remainingAttempts:" << remainingAttempts;
+        qCDebug(lcTestConnectionApi) << "remainingAttempts:" << remainingAttempts;
         TRY_VERIFY(!connectionStatusList.isEmpty());
         QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusWaitForConnection);
         int timeAtTheMomentOfSignal = remainingTimeList.takeFirst();
@@ -651,7 +654,7 @@ void tst_ConnectionApi::reconnectNow()
                 break;
             }
         }
-        qWarning() << "Take connecting";
+        qCDebug(lcTestConnectionApi) << "Take connecting";
         TRY_VERIFY(!connectionStatusList.isEmpty());
         QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusConnecting);
         QCOMPARE(remainingTimeList.takeFirst(), -1);
