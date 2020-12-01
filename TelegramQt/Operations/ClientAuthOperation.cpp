@@ -142,7 +142,9 @@ void AuthOperationPrivate::requestAuthCode()
     }
 
     if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
-        qCWarning(lcClientAuthOperation) << CALL_INFO << "Connection doesn't wait for authentication";
+        qCDebug(lcClientAuthOperation) << CALL_INFO << "Unable to request auth code: inappropriate"
+                                                       " connection status"
+                                       << m_backend->connectionApi()->status();
         return;
     }
 
