@@ -34,9 +34,11 @@ public:
     void init() override;
 
     bool processRequestPQ(const QByteArray &data);
-    bool sendResultPQ(DhSession *session);
+    bool sendResultPQ(const DhSession *session);
     bool processRequestDHParams(const QByteArray &data);
-    bool acceptDhParams(DhSession *session, const TLNumber256 &newNonce);
+    static bool processPqInnerData(const QByteArray &innerData, const DhSession *session, TLNumber256 *newNonce);
+    static void prepareDhParams(DhSession *session, const TLNumber256 &newNonce);
+    bool acceptDhParams(const DhSession *session);
     bool declineDhParams();
     bool processSetClientDHParams(const QByteArray &data);
 
