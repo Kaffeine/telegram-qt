@@ -214,7 +214,7 @@ void FilesApiPrivate::onGetFileResult(FileOperation *operation, UploadRpcLayer::
     qCDebug(lcFilesApi) << __func__ << operation;
     TLUploadFile result;
     if (rpcOperation->isFailed()) {
-        qCWarning(lcFilesApi) << __func__ << "failed" << rpcOperation->errorDetails();
+        qCDebug(lcFilesApi) << __func__ << "failed" << rpcOperation->errorDetails();
         if (rpcOperation->errorDetails().contains(Connection::c_statusKey())) {
             // The operation failed due to connection lost
             // Schedule full retry
