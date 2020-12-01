@@ -140,6 +140,11 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
 
     qCDebug(c_clientDhLayerCategory) << "PQ:" << session->pq;
 
+    if (session->pq == 0) {
+        qCWarning(c_clientDhLayerCategory) << "Error: Invalid (zero) PQ value.";
+        return false;
+    }
+
     quint64 div1 = Utils::findDivider(session->pq);
 
     if (div1 == 1) {
