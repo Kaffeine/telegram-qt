@@ -4,6 +4,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(lcServerAuth, "telegram.server.auth", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Server {
@@ -66,7 +68,7 @@ Code DefaultProvider::generateCode(Session *session, const QString &identifier)
     code.hash = RandomGenerator::instance()->generate(8).toHex();
     code.code = generateAuthCode();
     code.type = Code::Type::Default;
-    qInfo() << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;
+    qCInfo(lcServerAuth) << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;
     return code;
 }
 
