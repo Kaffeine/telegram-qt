@@ -15,6 +15,26 @@ namespace Telegram {
 class TELEGRAMQT_INTERNAL_EXPORT BaseDhSession
 {
 public:
+    enum class State {
+        // Both
+        //      Client
+        //              Server
+        Initial,
+                PqRequested,                 // #1 Client sends ReqPq (or ReqPqMulti)
+                        PqReplied,           // #2 Server sends ResPq
+                PqAccepted,                  // #3 Client processes ResPQ
+                DhRequested,                 // #4 Client sends ReqDHParams with PQInnerData (or PQInnerDataDc)
+                        DhRepliedOK,         // #5a Server sends ServerDHParamsOk with ServerDHInnerData
+                        DhRepliedFail,       // #5b Server sends ServerDHParamsFail
+                DhGenerationResultRequested, // #6 Client sends SetClientDHParams with ClientDHInnerData)
+                                             // #7, #8 The possible auth key and the key id is known to server and client
+                        DhGenOk,             // #9a Server sends DhGenOk
+                        DhGenRetry,          // #9b Server sends DhGenRetry
+                        DhGenFail,           // #9c Server sends DhGenFail
+        Failed,
+        HasKey,
+    };
+
     TLNumber128 clientNonce;
     TLNumber128 serverNonce;
     TLNumber256 newNonce;
@@ -22,11 +42,16 @@ public:
     quint32 p = 0;
     quint32 q = 0;
 
+    // quint32 expiresIn = 0;
     quint32 g = 0;
     QByteArray dhPrime;
     QByteArray gA;
 
+    // void generateKey();
+    // bool isTemporary() const { return expiresIn; }
+
     Crypto::AesKey tmpAesKey;
+    State state = State::Initial;
 };
 
 } // Telegram namespace
