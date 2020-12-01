@@ -2,7 +2,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(lcAccountApi, "telegram.client.api.account", QtInfoMsg)
+Q_LOGGING_CATEGORY(lcAccountApi, "telegram.client.api.account", QtWarningMsg)
 
 namespace Telegram {
 

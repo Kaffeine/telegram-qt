@@ -40,10 +40,10 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
+Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtWarningMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
-Q_LOGGING_CATEGORY(lcServerUpdates, "telegram.server.updates", QtInfoMsg)
-Q_LOGGING_CATEGORY(lcServerCrossUpdates, "telegram.server.cross.updates", QtInfoMsg)
+Q_LOGGING_CATEGORY(lcServerUpdates, "telegram.server.updates", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcServerCrossUpdates, "telegram.server.cross.updates", QtWarningMsg)
 
 namespace Telegram {
 

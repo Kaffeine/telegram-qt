@@ -28,7 +28,7 @@
 #include <QLoggingCategory>
 #include <QtEndian>
 
-Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtInfoMsg)
+Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtWarningMsg)
 
 static const QByteArray c_hardcodedDhPrime =
         QByteArray::fromHex(QByteArrayLiteral(
