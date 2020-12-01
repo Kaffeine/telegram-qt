@@ -203,6 +203,11 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
     return true;
 }
 
+bool BaseDhLayer::hasKey() const
+{
+    return m_state == State::HasKey;
+}
+
 void BaseDhLayer::setState(BaseDhLayer::State state)
 {
 #ifdef DEVELOPER_BUILD

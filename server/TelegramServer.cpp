@@ -459,7 +459,7 @@ bool Server::bindClientConnectionSession(RemoteClientConnection *connection, qui
         session = addSession(sessionId);
         session->ip = connection->transport()->remoteAddress();
 
-        if (connection->dhLayer()->state() == DhLayer::State::HasKey) {
+        if (connection->dhLayer()->hasKey()) {
             session->setInitialServerSalt(connection->dhLayer()->serverSalt());
         } else {
             session->generateInitialServerSalt();

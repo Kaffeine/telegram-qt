@@ -176,8 +176,8 @@ void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
 
 void BaseConnection::onDhStateChanged()
 {
-    qCDebug(c_baseConnectionCategory) << CALL_INFO << m_dhLayer->state();
-    if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
+    qCDebug(c_baseConnectionCategory) << CALL_INFO << "hasKey:" << m_dhLayer->hasKey();
+    if (m_dhLayer->hasKey()) {
         setStatus(Status::HasDhKey, StatusReason::Remote);
     }
 }

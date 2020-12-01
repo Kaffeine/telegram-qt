@@ -116,8 +116,8 @@ void Connection::connectToDc()
 void Connection::onClientDhStateChanged()
 {
     qCDebug(c_clientConnectionCategory) << CALL_INFO
-                                        << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
-    if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
+                                        << m_dcOption.id << m_dcOption.address << "DH has key:" << m_dhLayer->hasKey();
+    if (m_dhLayer->hasKey()) {
         if (!m_rpcLayer->sessionId()) {
             rpcLayer()->startNewSession();
         }

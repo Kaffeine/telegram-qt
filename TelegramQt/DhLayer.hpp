@@ -82,6 +82,7 @@ public:
     quint64 serverSalt() const { return m_serverSalt; }
     void setServerSalt(const quint64 salt) { m_serverSalt = salt; }
 
+    bool hasKey() const;
     State state() { return m_state; }
 
     template <typename T>
