@@ -80,7 +80,7 @@ bool BaseRpcLayer::processPacket(const QByteArray &package)
 #endif
 
     if (!processMessageHeader(messageHeader)) {
-        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO << "Unable to process message header";
+        qCDebug(c_baseRpcLayerCategoryIn) << CALL_INFO << "Unable to process message header";
         return false;
     }
 
