@@ -360,14 +360,16 @@ void tst_ConnectionApi::testClientConnection()
     if (!userData.password.isEmpty()) {
         QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
         QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::AuthOperation::passwordCheckFailed);
-        TRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
-                                                 "but there are no passwordRequired signals on the client side");
+        TRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, but the "
+                                                 "AuthOperation::passwordRequired() signal not "
+                                                "received from the client side");
         QCOMPARE(authPasswordSpy.count(), 1);
         QVERIFY(passwordCheckFailedSpy.isEmpty());
 
         signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
         TRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
-                                                        "but there are not signals on the client side");
+                                                       "but AuthOperation::passwordCheckFailed() "
+                                                       "signal not received from the client side");
         QVERIFY(!signInOperation->isFinished());
         QCOMPARE(passwordCheckFailedSpy.count(), 1);
 
@@ -517,14 +519,16 @@ void tst_ConnectionApi::reconnect()
     if (!userData.password.isEmpty()) {
         QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
         QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::AuthOperation::passwordCheckFailed);
-        TRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
-                                                 "but there are no passwordRequired signals on the client side");
+        TRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, but the "
+                                                 "AuthOperation::passwordRequired() signal not "
+                                                "received from the client side");
         QCOMPARE(authPasswordSpy.count(), 1);
         QVERIFY(passwordCheckFailedSpy.isEmpty());
 
         signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
         TRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
-                                                        "but there are not signals on the client side");
+                                                       "but AuthOperation::passwordCheckFailed() "
+                                                       "signal not received from the client side");
         QVERIFY(!signInOperation->isFinished());
         QCOMPARE(passwordCheckFailedSpy.count(), 1);
 
