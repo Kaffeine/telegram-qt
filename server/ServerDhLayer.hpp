@@ -44,6 +44,7 @@ public:
 
 protected:
     void processReceivedPacket(const QByteArray &payload) override;
+    DhSession *createSession(const TLNumber128 &clientNonce);
     DhSession *getSession();
 };
 

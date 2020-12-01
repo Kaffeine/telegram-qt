@@ -55,10 +55,6 @@ public:
 DhLayer::DhLayer(QObject *parent) :
     BaseDhLayer(parent)
 {
-    m_session = new DhSession;
-    getSession()->p = 1244159563ul;
-    getSession()->q = 1558201013ul;
-    getSession()->pq = static_cast<quint64>(getSession()->p) * static_cast<quint64>(getSession()->q);
 }
 
 void DhLayer::init()
@@ -68,15 +64,25 @@ void DhLayer::init()
 
 bool DhLayer::processRequestPQ(const QByteArray &data)
 {
-    DhSession *session = getSession();
     MTProto::Stream inputStream(data);
     TLValue value;
+    TLNumber128 clientNonce;
     inputStream >> value;
-    inputStream >> session->clientNonce;
-    if (value != TLValue::ReqPq) {
+    inputStream >> clientNonce;
+
+    switch (value) {
+    case TLValue::ReqPq:
+        break;
+    default:
         return false;
     }
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Client nonce:" << getSession()->clientNonce;
+
+    DhSession *session = createSession(clientNonce);
+    if (!session) {
+        return false;
+    }
+
+    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Client nonce:" << session->clientNonce;
     return true;
 }
 
@@ -392,6 +398,18 @@ void DhLayer::processReceivedPacket(const QByteArray &payload)
     default:
         break;
     }
+}
+
+DhSession *DhLayer::createSession(const TLNumber128 &clientNonce)
+{
+    DhSession *session = new DhSession;
+    session->p = 1244159563ul;
+    session->q = 1558201013ul;
+    session->pq = static_cast<quint64>(session->p) * static_cast<quint64>(session->q);
+    session->clientNonce = clientNonce;
+
+    m_session = session;
+    return session;
 }
 
 DhSession *DhLayer::getSession()
