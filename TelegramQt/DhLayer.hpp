@@ -72,7 +72,7 @@ public:
     void setServerRsaKey(const RsaKey &key);
 
     // AES
-    Crypto::AesKey generateTmpAesKey() const;
+    static Crypto::AesKey generateTmpAesKey(const BaseDhSession *session);
 
     // Helpers
     bool checkClientServerNonse(MTProto::Stream &stream) const;

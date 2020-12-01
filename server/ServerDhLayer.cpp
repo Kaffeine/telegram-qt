@@ -277,7 +277,7 @@ bool DhLayer::acceptDhParams(DhSession *session, const TLNumber256 &newNonce)
         stream << serverTime;
         return data;
     }();
-    session->tmpAesKey = generateTmpAesKey();
+    session->tmpAesKey = generateTmpAesKey(session);
     const QByteArray sha = Utils::sha1(innerData);
     QByteArray randomPadding;
     int packageLength = sha.length() + innerData.length();

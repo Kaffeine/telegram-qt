@@ -299,7 +299,7 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "encryptedAnswer.size():" << encryptedAnswer.size();
     DhSession *session = getSession();
-    session->tmpAesKey = generateTmpAesKey();
+    session->tmpAesKey = generateTmpAesKey(session);
 
     const QByteArray answerWithHash = Crypto::aesDecrypt(encryptedAnswer, session->tmpAesKey);
     const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);

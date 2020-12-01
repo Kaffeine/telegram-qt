@@ -63,26 +63,26 @@ void BaseDhLayer::setServerRsaKey(const RsaKey &key)
     m_rsaKey = key;
 }
 
-Crypto::AesKey BaseDhLayer::generateTmpAesKey() const
+Crypto::AesKey BaseDhLayer::generateTmpAesKey(const BaseDhSession *session)
 {
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << m_session->serverNonce << m_session->newNonce;
+    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << session->serverNonce << session->newNonce;
     QByteArray newNonceAndServerNonce;
-    newNonceAndServerNonce.append(m_session->newNonce.data, m_session->newNonce.size());
-    newNonceAndServerNonce.append(m_session->serverNonce.data, m_session->serverNonce.size());
+    newNonceAndServerNonce.append(session->newNonce.data, session->newNonce.size());
+    newNonceAndServerNonce.append(session->serverNonce.data, session->serverNonce.size());
     QByteArray serverNonceAndNewNonce;
-    serverNonceAndNewNonce.append(m_session->serverNonce.data, m_session->serverNonce.size());
-    serverNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
+    serverNonceAndNewNonce.append(session->serverNonce.data, session->serverNonce.size());
+    serverNonceAndNewNonce.append(session->newNonce.data, session->newNonce.size());
     QByteArray newNonceAndNewNonce;
-    newNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
-    newNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
+    newNonceAndNewNonce.append(session->newNonce.data, session->newNonce.size());
+    newNonceAndNewNonce.append(session->newNonce.data, session->newNonce.size());
 
     const QByteArray key = Utils::sha1(newNonceAndServerNonce)
             + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
     const QByteArray iv  = Utils::sha1(serverNonceAndNewNonce).mid(12, 8)
             + Utils::sha1(newNonceAndNewNonce)
-            + QByteArray(m_session->newNonce.data, 4);
+            + QByteArray(session->newNonce.data, 4);
 
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
+    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
 
     return Crypto::AesKey(key, iv);
 }
