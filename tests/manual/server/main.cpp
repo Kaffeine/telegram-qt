@@ -40,6 +40,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QImage>
+#include <QLoggingCategory>
 #include <QStandardPaths>
 #include <QTimer>
 
@@ -124,6 +125,7 @@ ExitCode internalMain(int argc, char *argv[])
     const QString persistentKeyFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation)
             + QLatin1String("/TelegramTestServer.pem");
 
+    QLoggingCategory::setFilterRules("telegram.*.info=true");
     Telegram::initialize();
     if (!TestKeyData::initKeyFiles()) {
         qCritical() << "Unable to init RSA key files.";
