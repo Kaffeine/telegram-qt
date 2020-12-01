@@ -21,6 +21,7 @@
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
 #include "Debug_p.hpp"
+#include "DhSession.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>
@@ -64,22 +65,22 @@ void BaseDhLayer::setServerRsaKey(const RsaKey &key)
 
 Crypto::AesKey BaseDhLayer::generateTmpAesKey() const
 {
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << m_serverNonce << m_newNonce;
+    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << m_session->serverNonce << m_session->newNonce;
     QByteArray newNonceAndServerNonce;
-    newNonceAndServerNonce.append(m_newNonce.data, m_newNonce.size());
-    newNonceAndServerNonce.append(m_serverNonce.data, m_serverNonce.size());
+    newNonceAndServerNonce.append(m_session->newNonce.data, m_session->newNonce.size());
+    newNonceAndServerNonce.append(m_session->serverNonce.data, m_session->serverNonce.size());
     QByteArray serverNonceAndNewNonce;
-    serverNonceAndNewNonce.append(m_serverNonce.data, m_serverNonce.size());
-    serverNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
+    serverNonceAndNewNonce.append(m_session->serverNonce.data, m_session->serverNonce.size());
+    serverNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
     QByteArray newNonceAndNewNonce;
-    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
-    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
+    newNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
+    newNonceAndNewNonce.append(m_session->newNonce.data, m_session->newNonce.size());
 
     const QByteArray key = Utils::sha1(newNonceAndServerNonce)
             + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
     const QByteArray iv  = Utils::sha1(serverNonceAndNewNonce).mid(12, 8)
             + Utils::sha1(newNonceAndNewNonce)
-            + QByteArray(m_newNonce.data, 4);
+            + QByteArray(m_session->newNonce.data, 4);
 
     qCDebug(c_baseDhLayerCategory) << CALL_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
 
@@ -90,7 +91,7 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
 {
     TLNumber128 nonce;
     stream >> nonce;
-    if (nonce != m_clientNonce) {
+    if (nonce != m_session->clientNonce) {
         qCDebug(c_baseDhLayerCategory) << CALL_INFO
                                        << "Error: Client nonce in the incoming package"
                                           " is different from the local one.";
@@ -98,7 +99,7 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
     }
 
     stream >> nonce;
-    if (nonce != m_serverNonce) {
+    if (nonce != m_session->serverNonce) {
         qCDebug(c_baseDhLayerCategory) << CALL_INFO
                                        << "Error: Server nonce in the incoming package"
                                           " is different from the local one.";

@@ -24,6 +24,8 @@ namespace Telegram {
 
 namespace Server {
 
+class DhSession;
+
 class DhLayer : public Telegram::BaseDhLayer
 {
     Q_OBJECT
@@ -42,8 +44,7 @@ public:
 
 protected:
     void processReceivedPacket(const QByteArray &payload) override;
-
-    QByteArray m_a;
+    DhSession *getSession();
 };
 
 } // Server namespace

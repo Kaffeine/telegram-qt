@@ -96,6 +96,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Debug_p.hpp
     DhLayer.cpp
     DhLayer.hpp
+    DhSession.hpp
     DialogList.cpp
     DialogList.hpp
     FileRequestDescriptor.cpp

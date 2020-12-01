@@ -38,6 +38,7 @@ class Stream;
 } // MTProto namespace
 
 class BaseMTProtoSendHelper;
+class BaseDhSession;
 enum class SendMode : quint8;
 
 class TELEGRAMQT_INTERNAL_EXPORT BaseDhLayer : public QObject
@@ -78,10 +79,6 @@ public:
     quint64 sendPlainPackage(const QByteArray &payload, SendMode mode);
     bool processPlainPackage(const QByteArray &buffer);
 
-    // Extra
-    TLNumber128 clientNonce() const { return m_clientNonce; }
-    TLNumber128 serverNonce() const { return m_serverNonce; }
-
     quint64 serverSalt() const { return m_serverSalt; }
     void setServerSalt(const quint64 salt) { m_serverSalt = salt; }
 
@@ -103,23 +100,9 @@ protected:
     void setState(State state);
 
     BaseMTProtoSendHelper *m_sendHelper = nullptr;
-
-    TLNumber128 m_clientNonce;
-    TLNumber128 m_serverNonce;
-    TLNumber256 m_newNonce;
-
-    quint64 m_pq = 0;
-    quint32 m_p = 0;
-    quint32 m_q = 0;
+    BaseDhSession *m_session = nullptr;
 
     RsaKey m_rsaKey;
-    Crypto::AesKey m_tmpAesKey;
-
-    quint32 m_g = 0;
-    QByteArray m_dhPrime;
-    QByteArray m_gA;
-    QByteArray m_a; // Server side
-    QByteArray m_b; // Client side
 
     State m_state = State::Idle;
 

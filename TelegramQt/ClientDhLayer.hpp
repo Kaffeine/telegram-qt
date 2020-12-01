@@ -24,6 +24,7 @@ namespace Telegram {
 
 namespace Client {
 
+class DhSession;
 class PendingRpcOperation;
 
 class DhLayer : public Telegram::BaseDhLayer
@@ -48,11 +49,11 @@ public:
 
 protected:
     PendingRpcOperation *sendPlainPackage(const QByteArray &payload);
+    DhSession *getSession();
 
     void processReceivedPacket(const QByteArray &payload) override;
 
     PendingRpcOperation *m_plainOperation = nullptr;
-    QByteArray m_b; // Client side
 };
 
 } // Client namespace
