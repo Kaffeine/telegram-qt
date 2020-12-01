@@ -34,9 +34,9 @@ public:
     void init() override;
 
     bool processRequestPQ(const QByteArray &data);
-    bool sendResultPQ();
+    bool sendResultPQ(DhSession *session);
     bool processRequestDHParams(const QByteArray &data);
-    bool acceptDhParams();
+    bool acceptDhParams(DhSession *session, const TLNumber256 &newNonce);
     bool declineDhParams();
     bool processSetClientDHParams(const QByteArray &data);
 
@@ -44,8 +44,9 @@ public:
 
 protected:
     void processReceivedPacket(const QByteArray &payload) override;
+
     DhSession *createSession(const TLNumber128 &clientNonce);
-    DhSession *getSession();
+    DhSession *getSession(const TLNumber128 &clientNonce);
 };
 
 } // Server namespace

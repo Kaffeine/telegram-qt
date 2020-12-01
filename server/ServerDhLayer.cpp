@@ -83,29 +83,33 @@ bool DhLayer::processRequestPQ(const QByteArray &data)
     }
 
     qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Client nonce:" << session->clientNonce;
-    return true;
+
+    return sendResultPQ(session);
 }
 
-bool DhLayer::sendResultPQ()
+bool DhLayer::sendResultPQ(DhSession *session)
 {
-    DhSession *session = getSession();
     RandomGenerator::instance()->generate(session->serverNonce.data, session->serverNonce.size());
     const QVector<quint64> fingerprints = { m_rsaKey.fingerprint };
-    QByteArray output;
-    MTProto::Stream outputStream(&output, /* write */ true);
-//    qCDebug(c_serverDhLayerCategory) << "Write data:" << session()->clientNonce << session()->serverNonce << pqAsByteArray.toHex() << "fp:" << fingerprints << "(pq:" << session()->pq << ")";
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+//    qCDebug(c_serverDhLayerCategory) << "Write data:" << session->clientNonce << session->serverNonce << pqAsByteArray.toHex() << "fp:" << fingerprints << "(pq:" << session->pq << ")";
     outputStream << TLValue::ResPQ;
     outputStream << session->clientNonce;
     outputStream << session->serverNonce;
     outputStream << intToBytes(session->pq);
     outputStream << fingerprints;
 //    qCDebug(c_serverDhLayerCategory) << "Wrote data:" << output.toHex();
-    return sendReplyPackage(output);
+    if (!sendReplyPackage(outputStream.getData())) {
+        return false;
+    }
+
+    setState(State::PqReplied);
+    return true;
 }
 
 bool DhLayer::processRequestDHParams(const QByteArray &data)
 {
-    DhSession *session = getSession();
+    DhSession *session = nullptr;
     QByteArray encryptedPackage;
     {
         MTProto::Stream inputStream(data);
@@ -115,7 +119,19 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
             qCWarning(c_serverDhLayerCategory) << Q_FUNC_INFO << "Invalid request data" << value.toString();
             return false;
         }
-        if (!checkClientServerNonse(inputStream)) {
+
+        TLNumber128 clientNonce;
+        inputStream >> clientNonce;
+
+        session = getSession(clientNonce);
+        if (!session) {
+            return false;
+        }
+
+        TLNumber128 serverNonce;
+        inputStream >> serverNonce;
+
+        if (session->serverNonce != serverNonce) {
             return false;
         }
         QByteArray bigEndianNumber1;
@@ -159,6 +175,7 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
     const QByteArray innerData = decryptedPackage.mid(20);
     QByteArray randomPadding;
 
+    TLNumber256 newNonce;
     {
         QByteArray bigEndianNumber;
 //        QByteArray innerData;
@@ -191,7 +208,6 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
 
         TLNumber128 clientNonce;
         TLNumber128 serverNonce;
-        TLNumber256 newNonce;
 
         encryptedStream >> clientNonce;
         if (clientNonce != session->clientNonce) {
@@ -204,15 +220,16 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
             return false;
         }
         encryptedStream >> newNonce;
-        session->newNonce = newNonce;
     }
-    return true;
+
+    return acceptDhParams(session, newNonce);
 }
 
-bool DhLayer::acceptDhParams()
+bool DhLayer::acceptDhParams(DhSession *session, const TLNumber256 &newNonce)
 {
-    DhSession *session = getSession();
-    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO;
+    qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "accepting DH params...";
+    session->newNonce = newNonce;
+
     session->g = 7;
     session->dhPrime.resize(256);
     RandomGenerator::instance()->generate(&session->dhPrime);
@@ -279,7 +296,13 @@ bool DhLayer::acceptDhParams()
     outputStream << session->clientNonce;
     outputStream << session->serverNonce;
     outputStream << encryptedAnswer;
-    return sendReplyPackage(output);
+
+    if (!sendReplyPackage(output)) {
+        return false;
+    }
+
+    setState(State::DhRepliedOK);
+    return true;
 }
 
 bool DhLayer::declineDhParams()
@@ -289,7 +312,6 @@ bool DhLayer::declineDhParams()
 
 bool DhLayer::processSetClientDHParams(const QByteArray &data)
 {
-    DhSession *session = getSession();
     MTProto::Stream stream(data);
 
     TLValue value;
@@ -300,7 +322,18 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         return false;
     }
 
-    if (!checkClientServerNonse(stream)) {
+    TLNumber128 clientNonce;
+    stream >> clientNonce;
+
+    DhSession *session = getSession(clientNonce);
+    if (!session) {
+        return false;
+    }
+
+    TLNumber128 serverNonce;
+    stream >> serverNonce;
+
+    if (session->serverNonce != serverNonce) {
         return false;
     }
 
@@ -359,6 +392,8 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
     }
     m_sendHelper->setAuthKey(newAuthKey);
     setServerSalt(session->serverNonce.parts[0] ^ session->newNonce.parts[0]);
+
+    setState(State::HasKey);
     return true;
 }
 
@@ -375,25 +410,17 @@ void DhLayer::processReceivedPacket(const QByteArray &payload)
     case TLValue::ReqPq:
         if (!processRequestPQ(payload)) {
             setState(State::Failed);
-            return;
         }
-        sendResultPQ();
-        setState(State::PqReplied);
         break;
     case TLValue::ReqDHParams:
         if (!processRequestDHParams(payload)) {
             setState(State::Failed);
-            return;
         }
-        acceptDhParams();
-        setState(State::DhRepliedOK);
         break;
     case TLValue::SetClientDHParams:
         if (!processSetClientDHParams(payload)) {
             setState(State::Failed);
-            return;
         }
-        setState(State::HasKey);
         break;
     default:
         break;
@@ -412,9 +439,13 @@ DhSession *DhLayer::createSession(const TLNumber128 &clientNonce)
     return session;
 }
 
-DhSession *DhLayer::getSession()
+DhSession *DhLayer::getSession(const TLNumber128 &clientNonce)
 {
-    return static_cast<DhSession *>(m_session);
+    if (m_session->clientNonce == clientNonce) {
+        return static_cast<DhSession *>(m_session);
+    }
+
+    return nullptr;
 }
 
 } // Server namespace
