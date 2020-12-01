@@ -23,7 +23,7 @@
 
 #include "Utils.hpp"
 #include <QCoreApplication>
-#include <QDebug>
+#include <QLoggingCategory>
 #include <QStandardPaths>
 #include <QCommandLineParser>
 
@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     a.setOrganizationName(QStringLiteral("TelegramQt"));
     a.setApplicationName(QStringLiteral("TelegramQt Server"));
+
+    QLoggingCategory::setFilterRules("telegram.*.info=true");
 
     Telegram::initialize();
 
