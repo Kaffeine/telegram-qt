@@ -339,11 +339,13 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
 
 void AuthOperationPrivate::onAuthenticationRpcError(const RpcError *error)
 {
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << error->message();
+
     Q_Q(AuthOperation);
     switch (error->reason()) {
     case RpcError::SessionPasswordNeeded:
         getPassword();
-        return;
+        break;
     case RpcError::FirstnameInvalid:
         emit q->errorOccurred(Namespace::AuthenticationErrorFirstNameInvalid, error->message());
         break;
@@ -356,17 +358,14 @@ void AuthOperationPrivate::onAuthenticationRpcError(const RpcError *error)
         break;
     case RpcError::PhoneCodeInvalid:
         emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeInvalid, error->message());
-        return;
+        break;
     case RpcError::PhoneCodeExpired:
         emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeExpired, error->message());
-        return;
+        break;
     default:
         qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message();
-        return;
+        break;
     }
-    // The errors with 'break' usually means bad request from the client
-    // side and can be prevented by local requests validation.
-    qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message();
 }
 
 void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
