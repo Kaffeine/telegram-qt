@@ -360,7 +360,7 @@ void tst_MessagesApi::getDialogs()
 
     // Check client 1 history
     {
-        Telegram::Client::PendingMessages *historyOperation = client1.messagingApi()->getHistory(client2AsClient1Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        Telegram::Client::PendingMessages *historyOperation = client1.messagingApi()->getHistory(client2AsClient1Peer, Telegram::Client::MessagingApi::FetchOptions::useLimit(5));
         TRY_VERIFY(historyOperation->isFinished());
         QVERIFY(historyOperation->isSucceeded());
         QCOMPARE(historyOperation->messages().count(), 2);
@@ -371,7 +371,7 @@ void tst_MessagesApi::getDialogs()
 
     // Check client 2 history
     {
-        Telegram::Client::PendingMessages *historyOperation = client2.messagingApi()->getHistory(client1AsClient2Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        Telegram::Client::PendingMessages *historyOperation = client2.messagingApi()->getHistory(client1AsClient2Peer, Telegram::Client::MessagingApi::FetchOptions::useLimit(5));
         TRY_VERIFY(historyOperation->isFinished());
         QVERIFY(historyOperation->isSucceeded());
         QCOMPARE(historyOperation->messages().count(), 2);
@@ -992,7 +992,7 @@ void tst_MessagesApi::sendMessage()
 
 void tst_MessagesApi::getHistory_data()
 {
-    QTest::addColumn<Telegram::Client::MessageFetchOptions>("fetchOptions");
+    QTest::addColumn<Telegram::Client::MessagingApi::FetchOptions>("fetchOptions");
     QTest::addColumn<Telegram::MessageIdList>("messageIds");
     QTest::addColumn<int>("messagesCount");
     QTest::addColumn<quint32>("baseDate");
@@ -1001,7 +1001,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         int messagesCount = 50;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 10;
         MessageIdList list;
         for (quint32 i = 0; i < fetchOptions.limit; ++i) {
@@ -1016,7 +1016,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         int messagesCount = 50;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 5;
         fetchOptions.offsetId = messagesCount - 4;
         MessageIdList list;
@@ -1033,7 +1033,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         int messagesCount = 50;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 5;
         fetchOptions.offsetId = messagesCount - 4;
         fetchOptions.addOffset = 15;
@@ -1051,7 +1051,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         constexpr int messagesCount = 50;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 5;
         fetchOptions.offsetId = messagesCount - 4; // 46
         fetchOptions.addOffset = 10; // from 31
@@ -1075,7 +1075,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         constexpr int messagesCount = 50;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 5;
         fetchOptions.offsetId = messagesCount - 4; // 46
         fetchOptions.addOffset = 3; // from 31
@@ -1095,7 +1095,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         constexpr int messagesCount = 30;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.offsetDate = baseDate; // id 12
         MessageIdList list = {1};
 
@@ -1108,7 +1108,7 @@ void tst_MessagesApi::getHistory_data()
 
     {
         constexpr int messagesCount = 30;
-        Client::MessageFetchOptions fetchOptions;
+        Client::MessagingApi::FetchOptions fetchOptions;
         fetchOptions.limit = 4;
         fetchOptions.offsetDate = baseDate + 12; // id 13
         fetchOptions.addOffset = 3;
@@ -1124,7 +1124,7 @@ void tst_MessagesApi::getHistory_data()
 
 void tst_MessagesApi::getHistory()
 {
-    QFETCH(Telegram::Client::MessageFetchOptions, fetchOptions);
+    QFETCH(Telegram::Client::MessagingApi::FetchOptions, fetchOptions);
     QFETCH(Telegram::MessageIdList, messageIds);
     QFETCH(int, messagesCount);
     QFETCH(quint32, baseDate);
