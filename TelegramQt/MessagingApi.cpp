@@ -267,7 +267,7 @@ PendingOperation *MessagingApiPrivate::getDialogs()
     return operation;
 }
 
-PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessageFetchOptions &options)
+PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessagingApi::FetchOptions &options)
 {
     if (!peer.isValid()) {
         return PendingOperation::failOperation<PendingMessages>(QLatin1String("Invalid peer for getHistory()"), this);
@@ -490,7 +490,7 @@ Namespace::ChatType MessagingApi::getChatType(const Peer &peer) const
 /*!
     Returns PendingMessages with messages sorted from newer (higher message id) to older (lower message id)
 */
-PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const MessageFetchOptions &options)
+PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const FetchOptions &options)
 {
     Q_D(MessagingApi);
     return d->getHistory(peer, options);
@@ -678,7 +678,7 @@ void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector
 
 void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, const DialogState *state)
 {
-    MessageFetchOptions options;
+    MessagingApi::FetchOptions options;
     if (!state->pendingIds.isEmpty()) {
         options.offsetId = state->pendingIds.last();
     }

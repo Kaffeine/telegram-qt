@@ -42,7 +42,7 @@ public:
     static PendingMessagesPrivate *get(PendingMessages *parent);
 
     Peer m_peer;
-    MessageFetchOptions m_fetchOptions;
+    MessagingApi::FetchOptions m_fetchOptions;
     QVector<quint32> m_messages;
 };
 

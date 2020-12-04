@@ -32,25 +32,6 @@ class PendingMessages;
 
 class MessagingApiPrivate;
 
-struct TELEGRAMQT_EXPORT MessageFetchOptions
-{
-    quint32 offsetId = 0; // Fetch messages newer that this one (omit this id)
-    quint32 offsetDate = 0; // Fetch messages from this exact date/time and older
-    quint32 addOffset = 0; // Skip this number of messages
-    quint32 limit = 0; // Fetch up to N messages (including omitted via maxId!)
-
-    quint32 maxId = 0; // Exclude messages with id >= maxId. The excluded messages still counted in limit!
-    quint32 minId = 0; // Exclude messages with id <= minId
-    quint32 hash = 0;
-
-    static MessageFetchOptions useLimit(quint32 limit)
-    {
-        MessageFetchOptions result;
-        result.limit = limit;
-        return result;
-    }
-};
-
 class NewChatRequest
 {
 };
@@ -63,6 +44,25 @@ public:
 
     static quint32 messageActionValidPeriod();
     static quint32 messageActionRepeatInterval();
+
+    struct TELEGRAMQT_EXPORT FetchOptions
+    {
+        quint32 offsetId = 0; // Fetch messages newer that this one (omit this id)
+        quint32 offsetDate = 0; // Fetch messages from this exact date/time and older
+        quint32 addOffset = 0; // Skip this number of messages
+        quint32 limit = 0; // Fetch up to N messages (including omitted via maxId!)
+
+        quint32 maxId = 0; // Exclude messages with id >= maxId. The excluded messages still counted in limit!
+        quint32 minId = 0; // Exclude messages with id <= minId
+        quint32 hash = 0;
+
+        static FetchOptions useLimit(quint32 limit)
+        {
+            FetchOptions result;
+            result.limit = limit;
+            return result;
+        }
+    };
 
     struct TELEGRAMQT_EXPORT SendOptions {
         SendOptions();
@@ -106,7 +106,7 @@ public:
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
     Namespace::ChatType getChatType(const Peer &peer) const;
 
-    PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
+    PendingMessages *getHistory(const Telegram::Peer peer, const FetchOptions &options);
     PendingOperation *createChat(const QString &title, const QVector<quint32> &contacts);
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
@@ -143,10 +143,13 @@ public:
     static const char *messageActionIntervalEnvironmentVariableName();
 };
 
+// Deprecated:
+using MessageFetchOptions = MessagingApi::FetchOptions;
+
 } // Client namespace
 
 } // Telegram namespace
 
-Q_DECLARE_METATYPE(Telegram::Client::MessageFetchOptions)
+Q_DECLARE_METATYPE(Telegram::Client::MessagingApi::FetchOptions)
 
 #endif // TELEGRAMQT_CLIENT_MESSAGING_API_HPP

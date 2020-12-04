@@ -537,7 +537,7 @@ void MessagesModel::fetchPrevious()
     DialogInfo info;
     messagingApi()->getDialogInfo(&info, m_peer);
 
-    MessageFetchOptions fetchOptions;
+    MessagingApi::FetchOptions fetchOptions;
     fetchOptions.limit = 10;
     fetchOptions.offsetId = m_oldestMessageId;
 
