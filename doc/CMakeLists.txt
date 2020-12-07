@@ -1,10 +1,10 @@
-find_package(Qt5 5.6.0 REQUIRED COMPONENTS Core Help)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Help)
 
 # Documentation
 
 # from https://github.com/fastogt/cmake/blob/master/integrate-qt.cmake
 function(QUERY_QMAKE RESULT VAR)
-  get_target_property(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  get_target_property(QMAKE_EXECUTABLE Qt${QT_VERSION_MAJOR}::qmake LOCATION)
   exec_program(${QMAKE_EXECUTABLE} ARGS "-query ${VAR}" RETURN_VALUE return_code OUTPUT_VARIABLE output)
   if(NOT return_code)
     file(TO_CMAKE_PATH "${output}" output)
