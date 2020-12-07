@@ -8,9 +8,8 @@ version                 = $PROJECT_VERSION
 outputdir = html
 depends = qtcore qtnetwork
 
-headerdirs  += ../TelegramQt
-sourcedirs  += ../TelegramQt
-sourcedirs  += ../TelegramQt/doc
+headerdirs  += $TelegramQt_SOURCE_DIR$ $TelegramQt_SOURCE_DIR/TelegramQt$
+sourcedirs  += $TelegramQt_SOURCE_DIR$ $TelegramQt_SOURCE_DIR/TelegramQt$
 
 sources.fileextensions += "*.cpp *.qdoc"
 headers.fileextensions += "*.hpp *.h"
@@ -21,6 +20,10 @@ qhp.TelegramQt.indexTitle    = TelegramQt
 qhp.TelegramQt.namespace     = org.telegramqt
 qhp.TelegramQt.virtualFolder = doc
 qhp.TelegramQt.extraFiles    = style/docstyle.css
+
+qhp.TelegramQt.subprojects         = classes
+qhp.TelegramQt.subprojects.classes.title = C++ Classes
+qhp.TelegramQt.subprojects.classes.indexTitle = TelegramQt C++ Classes
 
 # Doxygen compatibility commands
 macro.see                       = "\\sa"
