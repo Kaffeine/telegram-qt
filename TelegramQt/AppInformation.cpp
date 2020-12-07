@@ -15,7 +15,7 @@
 
  */
 
-#include "CAppInformation.hpp"
+#include "AppInformation.hpp"
 
 namespace Telegram {
 

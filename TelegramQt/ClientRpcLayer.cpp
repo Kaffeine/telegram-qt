@@ -21,7 +21,7 @@
 #include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
 #include "Debug_p.hpp"
-#include "CAppInformation.hpp"
+#include "AppInformation.hpp"
 #include "PendingRpcOperation.hpp"
 #include "RandomGenerator.hpp"
 #include "UpdatesLayer.hpp"

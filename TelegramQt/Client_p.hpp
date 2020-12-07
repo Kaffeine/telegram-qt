@@ -3,7 +3,7 @@
 
 #include "Client.hpp"
 
-#include "CAppInformation.hpp"
+#include "AppInformation.hpp"
 #include "ClientBackend.hpp"
 
 namespace Telegram {

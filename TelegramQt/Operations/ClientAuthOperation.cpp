@@ -1,7 +1,7 @@
 #include "ClientAuthOperation_p.hpp"
 
 #include "AccountStorage.hpp"
-#include "CAppInformation.hpp"
+#include "AppInformation.hpp"
 #include "ConnectionApi_p.hpp"
 #include "ClientBackend.hpp"
 #include "ClientConnection.hpp"

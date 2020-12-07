@@ -29,7 +29,6 @@
 #include "DataStorage.hpp"
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
-#include "CAppInformation.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
 
