@@ -15,12 +15,11 @@
 
  */
 
-#ifndef CAPPINFORMATION_HPP
-#define CAPPINFORMATION_HPP
+#ifndef TELEGRAMQT_CLIENT_APP_INFORMATION_HPP
+#define TELEGRAMQT_CLIENT_APP_INFORMATION_HPP
 
 #include "telegramqt_global.h"
 
-#include <QString>
 #include <QObject>
 
 namespace Telegram {
@@ -37,8 +36,8 @@ class TELEGRAMQT_EXPORT AppInformation : public QObject
     Q_PROPERTY(QString osInfo READ osInfo WRITE setOsInfo)
     Q_PROPERTY(QString languageCode READ languageCode WRITE setLanguageCode)
 public:
-    AppInformation(QObject *parent = nullptr);
-    AppInformation(const AppInformation *anotherInfo, QObject *parent = nullptr);
+    explicit AppInformation(QObject *parent = nullptr);
+    explicit AppInformation(const AppInformation *anotherInfo, QObject *parent = nullptr);
 
     bool isValid() const;
 
@@ -59,7 +58,7 @@ public:
     bool setLanguageCode(const QString &newLanguageCode);
 
 private:
-    quint32 m_appId;
+    quint32 m_appId = 0;
     QString m_appHash;
     QString m_appVersion;
 
@@ -68,47 +67,8 @@ private:
     QString m_langCode;
 };
 
-inline bool AppInformation::isValid() const
-{
-    return m_appId && !m_appHash.isEmpty()
-            && !m_appVersion.isEmpty() && !m_deviceInfo.isEmpty()
-            && !m_osInfo.isEmpty() && !m_langCode.isEmpty();
-}
-
-inline quint32 AppInformation::appId() const
-{
-    return m_appId;
-}
-
-inline QString AppInformation::appHash() const
-{
-    return m_appHash;
-}
-
-inline QString AppInformation::appVersion() const
-{
-    return m_appVersion;
-}
-
-inline QString AppInformation::deviceInfo() const
-{
-    return m_deviceInfo;
-}
-
-inline QString AppInformation::osInfo() const
-{
-    return m_osInfo;
-}
-
-inline QString AppInformation::languageCode() const
-{
-    return m_langCode;
-}
-
 } // Client namespace
 
 } // Telegram namespace
 
-using CAppInformation = Telegram::Client::AppInformation;
-
-#endif // CAPPINFORMATION_HPP
+#endif // TELEGRAMQT_CLIENT_APP_INFORMATION_HPP

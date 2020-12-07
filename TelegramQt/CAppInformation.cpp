@@ -25,12 +25,12 @@ namespace Client {
     \class Telegram::Client::AppInformation
     \inmodule TelegramQt
     \ingroup Client
-    \brief The AppInformation class provides methods for setup the application-specific Telegram ids.
+    \brief The AppInformation class provides a set of properties identifying the client application.
+    \inheaderfile TelegramQt/AppInformation
 */
 
 AppInformation::AppInformation(QObject *parent) :
     QObject(parent),
-    m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
     m_langCode(QLatin1String("en"))
 {
@@ -48,9 +48,21 @@ AppInformation::AppInformation(const AppInformation *anotherInfo, QObject *paren
     m_langCode = anotherInfo->m_langCode;
 }
 
+bool AppInformation::isValid() const
+{
+    return m_appId && !m_appHash.isEmpty()
+            && !m_appVersion.isEmpty() && !m_deviceInfo.isEmpty()
+            && !m_osInfo.isEmpty() && !m_langCode.isEmpty();
+}
+
+quint32 AppInformation::appId() const
+{
+    return m_appId;
+}
+
 /*!
     \property AppInformation::appId
-    \brief the application identifier as registered in the Telegram network.
+    \brief The application identifier as registered in the Telegram network.
     \sa appHash
 */
 bool AppInformation::setAppId(quint32 newId)
@@ -63,6 +75,16 @@ bool AppInformation::setAppId(quint32 newId)
     return true;
 }
 
+/*!
+    \property AppInformation::appHash
+    \brief The application hash identifier as registered in the Telegram network.
+    \sa appId
+*/
+QString AppInformation::appHash() const
+{
+    return m_appHash;
+}
+
 bool AppInformation::setAppHash(const QString &newHash)
 {
     if (newHash.length() != 32) {
@@ -71,6 +93,15 @@ bool AppInformation::setAppHash(const QString &newHash)
 
     m_appHash = newHash;
     return true;
+}
+
+/*!
+    \property AppInformation::appVersion
+    \brief The application version (e.g. for the client Session Management info).
+*/
+QString AppInformation::appVersion() const
+{
+    return m_appVersion;
 }
 
 bool AppInformation::setAppVersion(const QString &newVersion)
@@ -83,6 +114,15 @@ bool AppInformation::setAppVersion(const QString &newVersion)
     return true;
 }
 
+/*!
+    \property AppInformation::deviceInfo
+    \brief The application deviceInfo string (for the client Session Management info).
+*/
+QString AppInformation::deviceInfo() const
+{
+    return m_deviceInfo;
+}
+
 bool AppInformation::setDeviceInfo(const QString &newDeviceInfo)
 {
     if (newDeviceInfo.isEmpty()) {
@@ -93,6 +133,15 @@ bool AppInformation::setDeviceInfo(const QString &newDeviceInfo)
     return true;
 }
 
+/*!
+    \property AppInformation::osInfo
+    \brief The application osInfo string (for the client Session Management info).
+*/
+QString AppInformation::osInfo() const
+{
+    return m_osInfo;
+}
+
 bool AppInformation::setOsInfo(const QString &newOsInfo)
 {
     if (newOsInfo.isEmpty()) {
@@ -101,6 +150,15 @@ bool AppInformation::setOsInfo(const QString &newOsInfo)
 
     m_osInfo = newOsInfo;
     return true;
+}
+
+/*!
+    \property AppInformation::languageCode
+    \brief The application language code.
+*/
+QString AppInformation::languageCode() const
+{
+    return m_langCode;
 }
 
 bool AppInformation::setLanguageCode(const QString &newLanguageCode)
