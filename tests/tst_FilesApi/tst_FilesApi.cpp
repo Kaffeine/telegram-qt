@@ -17,7 +17,6 @@
 
 // Client
 #include "AccountStorage.hpp"
-#include "CAppInformation.hpp"
 #include "BaseTransport.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"

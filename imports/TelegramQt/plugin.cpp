@@ -7,8 +7,8 @@
 
 #include "AccountApi.hpp"
 #include "AccountStorage.hpp"
+#include "AppInformation.hpp"
 #include "Client.hpp"
-#include "CAppInformation.hpp"
 #include "ConnectionApi.hpp"
 #include "DataStorage.hpp"
 #include "MessagingApi.hpp"

@@ -8,7 +8,7 @@
 #include "test_server_data.hpp"
 
 #include "AccountStorage.hpp"
-#include "CAppInformation.hpp"
+#include "AppInformation.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"
