@@ -95,8 +95,6 @@ RpcLayer *Connection::rpcLayer()
 }
 
 /*!
-  \fn void Connection::connectToDc()
-
   This method establish Transport (TCP/UDP/HTTP) level connection.
 
   \sa BaseTransport::connectToHost()

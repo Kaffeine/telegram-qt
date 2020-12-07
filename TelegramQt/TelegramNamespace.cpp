@@ -40,7 +40,8 @@ namespace Telegram {
 
 /*!
     \class Telegram::Peer
-    \brief Holds an ID of a contact or a group
+    \brief Holds an ID of a contact or a group.
+    \inheaderfile TelegramQt/Peer
 
     \inmodule TelegramQt
  */

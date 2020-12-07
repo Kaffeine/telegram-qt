@@ -9,6 +9,7 @@ namespace Client {
     \brief The main class for Client implementation.
     \inmodule TelegramQt
     \ingroup Client
+    \inheaderfile TelegramQt/Client
 */
 Client::Client(QObject *parent) :
     QObject(parent),
