@@ -62,4 +62,8 @@
 #  define TELEGRAMQT_INTERNAL_EXPORT Q_DECL_HIDDEN
 #endif
 
+#if defined(DOXYGEN_SHOULD_SKIP_THIS) || defined(Q_QDOC)
+#define DOC_RUN 1
+#endif
+
 #endif // TELEGRAMQT_GLOBAL_H
