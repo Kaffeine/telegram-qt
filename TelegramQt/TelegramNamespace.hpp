@@ -238,7 +238,7 @@ struct TELEGRAMQT_EXPORT Message
     struct Private;
 
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 class TELEGRAMQT_EXPORT MessageMediaInfo
@@ -295,7 +295,7 @@ public:
     struct Private;
 
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 class TELEGRAMQT_EXPORT FileInfo
@@ -324,7 +324,7 @@ public:
 
     struct Private;
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 class TELEGRAMQT_EXPORT PeerInfo
@@ -356,7 +356,7 @@ public:
 
     struct Private;
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 class TELEGRAMQT_EXPORT UserInfo : public PeerInfo
@@ -392,7 +392,7 @@ public:
 
     struct Private;
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 class TELEGRAMQT_EXPORT ChatInfo : public PeerInfo
@@ -417,7 +417,7 @@ public:
 
     struct Private;
 protected:
-    Private *d;
+    TELEGRAMQT_DECLARE_PRIVATE(d)
 };
 
 namespace Utils

@@ -66,4 +66,8 @@
 #define DOC_RUN 1
 #endif
 
+#ifndef DOC_RUN
+#define TELEGRAMQT_DECLARE_PRIVATE(member) Private *member = nullptr;
+#endif // DOC_RUN
+
 #endif // TELEGRAMQT_GLOBAL_H
