@@ -311,9 +311,10 @@ PendingOperation *MessagingApiPrivate::createChat(const QString &title, const QV
 
 /*!
     \class Telegram::Client::MessagingApi
-    \brief Provides an API to work with messages
+    \brief Provides an API to work with messages.
     \inmodule TelegramQt
     \ingroup Client
+    \inheaderfile TelegramQt/MessagingApi
 
     \section1 Message synchronization
 

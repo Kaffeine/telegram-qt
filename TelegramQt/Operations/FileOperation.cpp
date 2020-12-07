@@ -10,6 +10,7 @@ namespace Client {
     \class Telegram::Client::FileOperation
     \inmodule TelegramQt
     \ingroup Client
+    \brief Represents a file upload or download operation.
  */
 FileOperation::FileOperation(QObject *parent) :
     PendingOperation(new FileOperationPrivate(this), parent)
