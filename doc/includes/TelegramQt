@@ -1,0 +1,15 @@
+#ifndef TELEGRAMQT_CORE_MODULE_H
+#define TELEGRAMQT_CORE_MODULE_H
+
+#include "TelegramQt/AccountApi"
+#include "TelegramQt/Client"
+#include "TelegramQt/ConnectionApi"
+#include "TelegramQt/ContactList"
+#include "TelegramQt/DataStorage"
+#include "TelegramQt/DialogList"
+#include "TelegramQt/FilesApi"
+#include "TelegramQt/MessagingApi"
+#include "TelegramQt/Peer"
+#include "TelegramQt/TelegramNamespace"
+
+#endif // TELEGRAMQT_CORE_MODULE_H
