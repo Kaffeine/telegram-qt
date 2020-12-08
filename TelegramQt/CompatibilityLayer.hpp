@@ -25,9 +25,11 @@
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define TELEGRAMQT_HEX_SHOWBASE hex << showbase
 #define TELEGRAMQT_ENDL endl
+#define TELEGRAMQT_FLUSH flush
 #else
 #define TELEGRAMQT_HEX_SHOWBASE Qt::hex << Qt::showbase
 #define TELEGRAMQT_ENDL Qt::endl
+#define TELEGRAMQT_FLUSH Qt::flush
 #endif
 
 namespace Telegram {
