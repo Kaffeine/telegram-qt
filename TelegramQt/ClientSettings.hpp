@@ -44,7 +44,7 @@ public:
     Q_INVOKABLE static QVector<DcOption> defaultServerConfiguration();
     Q_INVOKABLE static QVector<DcOption> testServerConfiguration();
 
-    QVector<DcOption> serverConfiguration();
+    QVector<DcOption> serverConfiguration() const;
 
     RsaKey serverRsaKey() const;
     bool setServerRsaKey(const RsaKey &key);

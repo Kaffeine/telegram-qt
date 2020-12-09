@@ -63,7 +63,7 @@ QVector<DcOption> Settings::testServerConfiguration()
     return s_builtInTestDcs;
 }
 
-QVector<DcOption> Settings::serverConfiguration()
+QVector<DcOption> Settings::serverConfiguration() const
 {
     return m_serverConfiguration;
 }
