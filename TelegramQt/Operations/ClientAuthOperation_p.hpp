@@ -62,8 +62,11 @@ public:
     void checkAuthorization();
     void requestAuthCode();
 
-    PendingOperation *submitAuthCode(const QString &code);
-    PendingOperation *submitPassword(const QString &password);
+    void submitAuthCode(const QString &code);
+    void submitPassword(const QString &password);
+    bool submitName(const QString &firstName, const QString &lastName);
+
+    void trySubmitAuthCode();
 
     Backend *m_backend = nullptr;
 
@@ -73,6 +76,7 @@ public:
     QString m_lastName;
     QString m_passwordHint;
     QString m_authCodeHash;
+    QString m_authCode;
     QByteArray m_passwordCurrentSalt;
     bool m_hasRecovery;
     bool m_registered = false;
@@ -83,9 +87,8 @@ protected slots:
     PendingOperation *getPassword();
 
     void onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation);
-    void onAuthenticationRpcError(const RpcError *error);
-    void onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
-    void onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
+    void onSignInRpcFinished(PendingRpcOperation *rpcOperation);
+    void onSignUpRpcFinished(PendingRpcOperation *rpcOperation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);
     void onCheckPasswordFinished(PendingRpcOperation *operation);
     void onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization);
@@ -99,6 +102,8 @@ protected:
     void setPasswordCurrentSalt(const QByteArray &salt);
     void setPasswordHint(const QString &hint);
     void setRegistered(bool registered);
+
+    void sendError(const QVariantHash &details);
 };
 
 } // Client namespace

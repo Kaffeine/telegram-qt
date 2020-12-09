@@ -72,7 +72,7 @@ void DeclarativeAuthOperation::startAuthentication()
     setPendingOperation(m_authOperation);
 
     // Signals propagation
-    connect(m_authOperation, &AuthOperation::errorOccurred, this, &DeclarativeAuthOperation::errorOccurred);
+//    connect(m_authOperation, &AuthOperation::errorOccurred, this, &DeclarativeAuthOperation::errorOccurred);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
     connect(m_authOperation, &AuthOperation::registeredChanged, this, &DeclarativeAuthOperation::registeredChanged);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
