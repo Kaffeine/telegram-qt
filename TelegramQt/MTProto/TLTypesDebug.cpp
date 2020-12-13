@@ -24,6 +24,11 @@
 namespace Telegram {
 
 namespace Debug {
+
+#if defined(MTPROTO_TYPES_DEBUG)
+template <typename Type>
+QString flagsToString(const Type &instance);
+
 // Generated TLTypes flagsToString
 template<>
 QString flagsToString(const TLAuthSentCode &instance)
@@ -884,12 +889,15 @@ QString flagsToString(const TLUpdatesChannelDifference &instance)
 }
 // End of generated TLTypes flagsToString
 
+#endif
+
 } // Debug namespace
 
 } // Telegram namespace
 
 using namespace Telegram::Debug;
 
+#if defined(MTPROTO_TYPES_DEBUG)
 // Generated TLTypes debug operators
 QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 {
@@ -7761,3 +7769,241 @@ QDebug operator<<(QDebug d, const TLChannelsAdminLogResults &type)
     return d;
 }
 // End of generated TLTypes debug operators
+#else // MTPROTO_TYPES_DEBUG
+
+static QDebug printType(QDebug d, const TLValue &v)
+{
+    d << "TLType(" << v << ") { ... }";
+    return d;
+}
+
+// Generated TLTypes simple debug operators
+QDebug operator<<(QDebug d, const TLAccountDaysTTL &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountPassword &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountTmpPassword &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthCodeType &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthSentCodeType &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthorization &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLBadMsgNotification &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLBotCommand &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLBotInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLCdnFileHash &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLCdnPublicKey &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChatParticipant &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChatParticipants &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLClientDHInnerData &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContact &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactBlocked &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactLink &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDataJSON &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDestroyAuthKeyRes &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDestroySessionRes &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDisabledFeature &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLEncryptedChat &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLEncryptedFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLEncryptedMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLError &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLExportedChatInvite &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLExportedMessageLink &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLFileLocation &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLFutureSalt &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLFutureSalts &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLGeoPoint &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpAppUpdate &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpInviteText &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpTermsOfService &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHighScore &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHttpWait &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLImportedContact &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInlineBotSwitchPM &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputAppEvent &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputBotInlineMessageID &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputChannel &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputContact &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputDocument &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputEncryptedChat &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputEncryptedFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputFileLocation &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputGeoPoint &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPhoneCall &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPrivacyKey &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputStickerSet &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputStickeredMedia &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputUser &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputWebFileLocation &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLIpPort &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLLabeledPrice &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLLangPackLanguage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLLangPackString &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMaskCoords &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessageEntity &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessageFwdHeader &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessageRange &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesDhConfig &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgDetailedInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgResendReq &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgsAck &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgsAllInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgsStateInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMsgsStateReq &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLNearestDc &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLNewSession &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPQInnerData &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentCharge &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentSavedCredentials &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhoneCallDiscardReason &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhoneConnection &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhotoSize &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPong &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPopularContact &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPostAddress &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPrivacyKey &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPrivacyRule &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLReportReason &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLResPQ &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLRichText &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLRpcDropAnswer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLRpcError &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLSendMessageAction &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLServerDHInnerData &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLServerDHParams &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLSetClientDHParamsAnswer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLShippingOption &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLStickerPack &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLStorageFileType &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLTopPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLTopPeerCategory &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLTopPeerCategoryPeers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUpdatesState &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUploadCdnFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUploadFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUploadWebFile &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUserProfilePhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUserStatus &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLWallPaper &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountAuthorizations &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthSentCode &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLCdnConfig &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelAdminLogEventsFilter &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelAdminRights &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelBannedRights &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelParticipant &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChatPhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactStatus &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDcOption &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDocumentAttribute &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDraftMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpConfigSimple &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputChatPhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputGame &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputNotifyPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPaymentCredentials &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputPrivacyRule &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputStickerSetItem &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputWebDocument &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInvoice &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLKeyboardButton &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLLangPackDifference &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesBotCallbackAnswer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesFilter &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesMessageEditData &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLNotifyPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentRequestedInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentsSavedInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentsValidatedRequestedInfo &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPeerNotifySettings &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPeerSettings &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhoneCallProtocol &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLReplyMarkup &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLStickerSet &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUser &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLWebDocument &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLAuthAuthorization &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLBotInlineMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChat &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChatFull &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChatInvite &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLConfig &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsBlocked &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsContacts &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsFound &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsImportedContacts &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsLink &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLContactsTopPeers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDialog &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLDocument &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLFoundGif &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLGame &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpSupport &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputBotInlineResult &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLInputMedia &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessageAction &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesAllStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesChatFull &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesChats &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesFavedStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesHighScores &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesRecentStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesStickerSet &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPageBlock &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentsPaymentForm &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentsPaymentReceipt &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhoneCall &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhonePhoneCall &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhotosPhoto &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPhotosPhotos &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLStickerSetCovered &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUserFull &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLWebPage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLBotInlineResult &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessageMedia &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesArchivedStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesBotResults &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesFeaturedStickers &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLRecentMeUrl &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessage &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesDialogs &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesMessages &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLMessagesPeerDialogs &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUpdate &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUpdates &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLUpdatesDifference &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelAdminLogEventAction &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLPaymentsPaymentResult &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelAdminLogEvent &type) { return printType(d, type.tlType); }
+QDebug operator<<(QDebug d, const TLChannelsAdminLogResults &type) { return printType(d, type.tlType); }
+// End of generated TLTypes simple debug operators
+
+#endif // MTPROTO_TYPES_DEBUG

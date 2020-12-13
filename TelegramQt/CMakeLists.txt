@@ -146,15 +146,17 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MTProto/MessageHeader.cpp
     MTProto/MessageHeader.hpp
-    MTProto/Stream.cpp # 1.0 Mb
+    MTProto/Stream.cpp
     MTProto/Stream.hpp
-    MTProto/StreamExtraOperators.cpp # 0.2 Mb
+    MTProto/StreamExtraOperators.cpp
     MTProto/StreamExtraOperators.hpp
     MTProto/Stream_p.hpp
     MTProto/TLFunctions.hpp
     MTProto/TLNumbers.hpp
     MTProto/TLTypes.cpp
     MTProto/TLTypes.hpp
+    MTProto/TLTypesDebug.cpp
+    MTProto/TLTypesDebug.hpp
     MTProto/TLValues.cpp
     MTProto/TLValues.hpp
 )
@@ -250,9 +252,9 @@ set(telegram_qt_public_HEADERS
     telegramqt_global.h
 )
 
-# TODO: Use TypesDebug only in Developer or Debug build
-target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
-target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.hpp)
+if(TELEGRAMQT_DEVELOPER_BUILD OR TELEGRAMQT_EXPORT_INTERNAL_API)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTPROTO_TYPES_DEBUG)
+endif()
 
 if(TELEGRAMQT_DEVELOPER_BUILD)
     target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLRpcDebug.cpp)

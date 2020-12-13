@@ -25,9 +25,6 @@ namespace Telegram {
 
 namespace Debug {
 
-template <typename Type>
-QString flagsToString(const Type &instance);
-
 } // Debug namespace
 
 } // Telegram namespace
