@@ -49,7 +49,6 @@ Q_SIGNALS:
 
     // Error message description: https://core.telegram.org/api/errors
     void errorOccurred(Telegram::Namespace::AuthenticationError errorCode, const QByteArray &errorMessage);
-    void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
 
 protected:
     void startImplementation() override;

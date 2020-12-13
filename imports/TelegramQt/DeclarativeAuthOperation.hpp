@@ -88,7 +88,6 @@ Q_SIGNALS:
 
     // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void errorOccurred(Telegram::Namespace::AuthenticationError errorCode, const QByteArray &errorMessage);
-    void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QString &errorMessage);
 
 protected:
     bool hasOperation(const char *caller);
