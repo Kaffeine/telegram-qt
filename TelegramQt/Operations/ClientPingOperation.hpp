@@ -1,7 +1,8 @@
 #ifndef TELEGRAMQT_CLIENT_PING_OPERATION
 #define TELEGRAMQT_CLIENT_PING_OPERATION
 
-#include "../PendingRpcOperation.hpp"
+#include "CompatibilityLayer.hpp"
+#include "PendingRpcOperation.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
@@ -28,7 +29,7 @@ public:
 Q_SIGNALS:
     void pingFailed(const QVariantHash &details);
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onTimeToKeepAlive();
     void onPingRpcFinished();
 

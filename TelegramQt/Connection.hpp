@@ -3,6 +3,7 @@
 
 #include "telegramqt_global.h"
 
+#include "CompatibilityLayer.hpp"
 #include "RsaKey.hpp"
 
 #include <QObject>
@@ -62,7 +63,7 @@ signals:
     void statusChanged(Status status, StatusReason reason);
     void errorOccured(const QByteArray &errorBytes);
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onTransportStateChanged();
     void onTransportPacketReceived(const QByteArray &payload);
     void onDhStateChanged();

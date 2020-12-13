@@ -20,6 +20,8 @@
 
 #include "telegramqt_global.h"
 
+#include "CompatibilityLayer.hpp"
+
 #include <QObject>
 
 #include <QByteArray>
@@ -53,7 +55,7 @@ signals:
 public slots:
     void sendPacket(const QByteArray &payload);
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void setError(QAbstractSocket::SocketError error, const QString &text);
     virtual void setState(QAbstractSocket::SocketState state);
 

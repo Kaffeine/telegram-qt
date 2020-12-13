@@ -20,6 +20,7 @@
 
 #include "PendingOperation_p.hpp"
 #include "ClientAuthOperation.hpp"
+#include "CompatibilityLayer.hpp"
 
 #include <QVector>
 
@@ -87,7 +88,7 @@ public:
     PendingOperation *m_submitCodeOperation = nullptr;
     Connection *m_authenticatedConnection = nullptr;
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     // Implementation:
     PendingOperation *getPassword();
     void trySubmitAuthCode();

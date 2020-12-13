@@ -19,6 +19,7 @@
 #define TELEGRAMQT_CLIENT_CONNECTION_API_PRIVATE_HPP
 
 #include "ClientApi_p.hpp"
+#include "CompatibilityLayer.hpp"
 #include "Connection.hpp"
 #include "ConnectionApi.hpp"
 
@@ -80,7 +81,7 @@ public:
     void setMainConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
     void setInitialConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void connectToNextServer();
     void queueConnectToNextServer();
 

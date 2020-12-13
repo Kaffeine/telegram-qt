@@ -1,6 +1,7 @@
 #ifndef TELEGRAM_CLIENT_CONNECTION_HPP
 #define TELEGRAM_CLIENT_CONNECTION_HPP
 
+#include "CompatibilityLayer.hpp"
 #include "Connection.hpp"
 #include "TelegramNamespace.hpp"
 
@@ -31,7 +32,7 @@ public slots:
     void connectToDc();
 //    void disconnectFromDc();
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onClientDhStateChanged();
 
 protected:

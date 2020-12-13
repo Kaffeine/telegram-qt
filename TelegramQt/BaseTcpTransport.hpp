@@ -56,7 +56,7 @@ public:
 
     SessionType sessionType() const;
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void setState(QAbstractSocket::SocketState newState) override;
     void onReadyRead();
 

@@ -19,6 +19,7 @@
 #define TELEGRAMQT_CLIENT_MESSAGING_API_PRIVATE_HPP
 
 #include "ClientApi_p.hpp"
+#include "CompatibilityLayer.hpp"
 #include "MessagingApi.hpp"
 
 #include "RpcLayers/ClientRpcChannelsLayer.hpp"
@@ -111,7 +112,7 @@ public:
     MessagesRpcLayer *messagesLayer();
     ChannelsRpcLayer *channelsLayer();
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
     void onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
     void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);

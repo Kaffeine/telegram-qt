@@ -19,6 +19,7 @@
 #define TELEGRAMQT_CLIENT_CONTACTS_API_PRIVATE_HPP
 
 #include "ClientApi_p.hpp"
+#include "CompatibilityLayer.hpp"
 #include "ContactsApi.hpp"
 
 #include "RpcLayers/ClientRpcContactsLayer.hpp"
@@ -53,11 +54,11 @@ public:
     DataInternalApi *dataInternalApi();
     ContactsRpcLayer *contactsLayer();
 
-public slots:
+TELEGRAMQT_PUBLIC_SLOTS:
     void onUserStatusChanged(quint32 userId, const TLUserStatus &status);
     void onUserPhotoChanged(quint32 userId, const TLUserProfilePhoto &photo);
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);
     void onGetContactsResult(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsContacts *rpcOperation);
     void onSelfUserResult(PendingOperation *operation, UsersRpcLayer::PendingUserVector *rpcOperation);

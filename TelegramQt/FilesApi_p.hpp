@@ -21,6 +21,7 @@
 #include <QQueue>
 
 #include "ClientApi_p.hpp"
+#include "CompatibilityLayer.hpp"
 
 #include "FilesApi.hpp"
 #include "FileRequestDescriptor.hpp"
@@ -57,7 +58,7 @@ public:
 
     UploadRpcLayer *uploadLayer() { return m_uploadLayer; }
 
-protected slots:
+TELEGRAMQT_PROTECTED_SLOTS:
     void onGetFileResult(FileOperation *operation, UploadRpcLayer::PendingUploadFile *rpcOperation);
 
     void onOperationCanceled(PendingOperation *operation);
