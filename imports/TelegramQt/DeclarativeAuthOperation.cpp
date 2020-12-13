@@ -76,6 +76,7 @@ void DeclarativeAuthOperation::startAuthentication()
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
     connect(m_authOperation, &AuthOperation::registeredChanged, this, &DeclarativeAuthOperation::registeredChanged);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
+    connect(m_authOperation, &AuthOperation::nameRequired, this, &DeclarativeAuthOperation::nameRequired);
     connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
     connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::onPasswordCheckFailed);
 

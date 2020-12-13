@@ -174,10 +174,10 @@ void AuthOperationPrivate::requestAuthCode()
 PendingOperation *AuthOperation::submitAuthCode(const QString &code)
 {
     Q_D(AuthOperation);
-    return d->submitAuthCode(code);
+    return d->setAuthCode(code);
 }
 
-PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
+PendingOperation *AuthOperationPrivate::setAuthCode(const QString &code)
 {
     if (m_authCodeHash.isEmpty()) {
         const QString text = QLatin1String("Unable to submit auth code without a code hash");
@@ -191,21 +191,54 @@ PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
         return PendingOperation::failOperation(text);
     }
 
-    QObject *parent = this;
-    PendingOperation *submitOperation = new PendingOperation(parent);
-    submitOperation->setOperationName("AuthOperationPrivate::submitAuthCode");
-    PendingRpcOperation *sendCodeOperation = nullptr;
-    if (m_registered) {
-        sendCodeOperation = authLayer()->signIn(m_phoneNumber, m_authCodeHash, code);
-        sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignInRpcFinished,
-                                             sendCodeOperation, submitOperation);
-    } else {
-        sendCodeOperation = authLayer()->signUp(m_phoneNumber, m_authCodeHash, code, m_firstName, m_lastName);
-        sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignUpRpcFinished,
-                                             sendCodeOperation, submitOperation);
-    }
+    m_authCode = code;
 
-    return sendCodeOperation;
+    QObject *parent = this; // Needed to resolve ambigous call from a Private subclass
+    m_submitCodeOperation = new PendingOperation(parent);
+    m_submitCodeOperation->setOperationName("AuthOperationPrivate::submitAuthCode");
+
+    asyncSubmitAuthCode();
+
+    return m_submitCodeOperation;
+}
+
+void AuthOperationPrivate::asyncSubmitAuthCode()
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+    QMetaObject::invokeMethod(this, "trySubmitAuthCode", Qt::QueuedConnection);
+#else
+    QMetaObject::invokeMethod(this, [this]() { trySubmitAuthCode(); }, Qt::QueuedConnection);
+#endif
+}
+
+void AuthOperationPrivate::trySubmitAuthCode()
+{
+    Q_Q(AuthOperation);
+    if (m_registered) {
+        signIn();
+    } else {
+        if (!theNamesLookSane()) {
+            emit q->nameRequired();
+            return;
+        }
+        signUp();
+    }
+}
+
+void AuthOperationPrivate::signIn()
+{
+    PendingRpcOperation *sendCodeOperation = nullptr;
+    sendCodeOperation = authLayer()->signIn(m_phoneNumber, m_authCodeHash, m_authCode);
+    sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignInRpcFinished,
+                                         sendCodeOperation, m_submitCodeOperation);
+}
+
+void AuthOperationPrivate::signUp()
+{
+    PendingRpcOperation *sendCodeOperation = nullptr;
+    sendCodeOperation = authLayer()->signUp(m_phoneNumber, m_authCodeHash, m_authCode, m_firstName, m_lastName);
+    sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignUpRpcFinished,
+                                         sendCodeOperation, m_submitCodeOperation);
 }
 
 PendingOperation *AuthOperationPrivate::getPassword()
@@ -248,9 +281,27 @@ void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
 bool AuthOperation::submitName(const QString &firstName, const QString &lastName)
 {
     Q_D(AuthOperation);
-    d->m_firstName = firstName;
-    d->m_lastName = lastName;
-    return !firstName.isEmpty() && !lastName.isEmpty();
+    return d->submitName(firstName, lastName);
+}
+
+bool AuthOperationPrivate::submitName(const QString &firstName, const QString &lastName)
+{
+    m_firstName = firstName;
+    m_lastName = lastName;
+
+    if (!theNamesLookSane()) {
+        return false;
+    }
+
+    if (!m_authCode.isEmpty()) {
+        asyncSubmitAuthCode();
+    }
+    return true;
+}
+
+bool AuthOperationPrivate::theNamesLookSane() const
+{
+    return !m_firstName.isEmpty() && !m_lastName.isEmpty();
 }
 
 void AuthOperation::requestCall()

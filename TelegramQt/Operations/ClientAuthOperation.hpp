@@ -38,6 +38,7 @@ public slots:
 Q_SIGNALS:
     void phoneNumberRequired();
     void authCodeRequired();
+    void nameRequired();
     void passwordRequired();
     void passwordCheckFailed();
 //    void callAvailable();

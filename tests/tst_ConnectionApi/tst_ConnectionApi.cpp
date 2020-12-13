@@ -415,6 +415,7 @@ void tst_ConnectionApi::registrationAuthError()
     // --- Sign Up ---
     Client::AuthOperation *signUpOperation = connectionApi->startAuthentication();
     QSignalSpy authPhoneSpy(signUpOperation, &Client::AuthOperation::phoneNumberRequired);
+    QSignalSpy nameRequiredSpy(signUpOperation, &Client::AuthOperation::nameRequired);
     QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);
     QSignalSpy authErrorSpy(signUpOperation, &Client::AuthOperation::errorOccurred);
     signUpOperation->submitPhoneNumber(QLatin1String("12345678"));
@@ -428,22 +429,16 @@ void tst_ConnectionApi::registrationAuthError()
     QCOMPARE(authCodeSentArguments.count(), 2);
     const QString authCode = authCodeSentArguments.at(1).toString();
 
-    // Submit invalid code with unset username
+    QCOMPARE(nameRequiredSpy.count(), 0);
+    // Submit invalid code with unset the user (display) names
     signUpOperation->submitAuthCode(authCode + QLatin1String("321"));
 
     {
-        TRY_VERIFY(!authErrorSpy.isEmpty());
-        QCOMPARE(authErrorSpy.count(), 1);
-        Namespace::AuthenticationError error =
-                authErrorSpy.takeFirst().constFirst().value<Telegram::Namespace::AuthenticationError>();
-        QVERIFY2(QVector<Namespace::AuthenticationError>({
-                            Namespace::AuthenticationErrorFirstNameInvalid,
-                            Namespace::AuthenticationErrorLastNameInvalid,
-                        }).contains(error), "The error must be one of the two (first or last name invalid)");
+        TRY_VERIFY(!nameRequiredSpy.isEmpty());
+        QCOMPARE(nameRequiredSpy.count(), 1);
     }
 
     signUpOperation->submitName(QLatin1String("first"), QLatin1String("last"));
-    signUpOperation->submitAuthCode(authCode + QLatin1String("321"));
 
     {
         TRY_VERIFY(!authErrorSpy.isEmpty());

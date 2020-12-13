@@ -75,6 +75,7 @@ Q_SIGNALS:
 
     void phoneNumberRequired();
     void authCodeRequired();
+    void nameRequired();
     void authCodeCheckFailed();
     void passwordRequired();
     void passwordCheckFailed();

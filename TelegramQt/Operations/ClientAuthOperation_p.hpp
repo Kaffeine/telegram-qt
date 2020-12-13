@@ -62,8 +62,15 @@ public:
     void checkAuthorization();
     void requestAuthCode();
 
-    PendingOperation *submitAuthCode(const QString &code);
+    PendingOperation *setAuthCode(const QString &code);
     PendingOperation *submitPassword(const QString &password);
+    bool submitName(const QString &firstName, const QString &lastName);
+
+    bool theNamesLookSane() const;
+
+    void asyncSubmitAuthCode();
+    void signIn();
+    void signUp();
 
     Backend *m_backend = nullptr;
 
@@ -73,14 +80,17 @@ public:
     QString m_lastName;
     QString m_passwordHint;
     QString m_authCodeHash;
+    QString m_authCode;
     QByteArray m_passwordCurrentSalt;
     bool m_hasRecovery;
     bool m_registered = false;
+    PendingOperation *m_submitCodeOperation = nullptr;
     Connection *m_authenticatedConnection = nullptr;
 
 protected slots:
     // Implementation:
     PendingOperation *getPassword();
+    void trySubmitAuthCode();
 
     void onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation);
     void onAuthenticationRpcError(const RpcError *error);
