@@ -22,8 +22,17 @@
 
 #include <QString>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #define TELEGRAMQT_PUBLIC_SLOTS public Q_SLOTS
+#else
+#define TELEGRAMQT_PUBLIC_SLOTS public
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #define TELEGRAMQT_PROTECTED_SLOTS protected Q_SLOTS
+#else
+#define TELEGRAMQT_PROTECTED_SLOTS protected
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #define TELEGRAMQT_HEX_SHOWBASE hex << showbase
