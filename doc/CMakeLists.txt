@@ -74,7 +74,7 @@ add_custom_target(qch_docs ALL
 )
 
 install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${QCHFILE}
+    FILES ${QCHFILE}
     DESTINATION ${CMAKE_INSTALL_DOCDIR}
     COMPONENT Data
 )

@@ -224,7 +224,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
 set(telegram_qt_public_HEADERS
     AccountApi.hpp
     AccountStorage.hpp
-    CAppInformation.hpp
+    AppInformation.hpp
     Client.hpp
     ClientApi.hpp
     ClientSettings.hpp
