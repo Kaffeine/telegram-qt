@@ -1178,6 +1178,17 @@ QString Generator::generateDebugWriteOperatorDefinition(const TLType *type)
     //    }
 }
 
+QString Generator::generateDebugWriteOperatorSimpleDefinition(const TLType *type)
+{
+    // Expected output:
+    // QDebug operator<<(QDebug d, const TLUpdates &type) { return printType(d, type.tlType); }
+
+    return QStringLiteral("QDebug operator<<(QDebug d, const %1 &type) {"
+                          " return printType(d, type.tlType);"
+                          " }\n")
+            .arg(type->getName());
+}
+
 QString Generator::generateConnectionMethodDeclaration(const TLMethod &method)
 {
     return spacing + QString("quint64 %1(%2);\n").arg(method.getName(), formatMethodParams(method));
@@ -2083,6 +2094,7 @@ void Generator::generate()
     codeRpcProcessSwitchUpdatesCases.clear();
     codeDebugWriteDeclarations.clear();
     codeDebugWriteDefinitions.clear();
+    codeDebugWriteSimpleDefinitions.clear();
     codeDebugRpcParse.clear();
 
     QStringList typesUsedForWrite;
@@ -2211,6 +2223,7 @@ void Generator::generate()
 
         codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(&type));
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(&type));
+        codeDebugWriteSimpleDefinitions .append(generateDebugWriteOperatorSimpleDefinition(&type));
     }
 }
 

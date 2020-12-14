@@ -600,6 +600,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         OutputFile fileTypesDebugSource("MTProto/TLTypesDebug.cpp");
         fileTypesDebugHeader.replace("TLTypes debug operators", generator.codeDebugWriteDeclarations);
         fileTypesDebugSource.replace("TLTypes debug operators", generator.codeDebugWriteDefinitions);
+        fileTypesDebugSource.replace("TLTypes simple debug operators", generator.codeDebugWriteSimpleDefinitions);
 
         const QStringList flagsToStringCodeBlocks = generator.generateTypeFlagsToString();
         const QString flagsToStringCode = flagsToStringCodeBlocks.join(QLatin1Char('\n'));

@@ -280,6 +280,7 @@ public:
     static QString debugOperatorImplementationEnd(const QString &argName);
     static QString debugOperatorPerTypeImplementation(const TypedEntity *type, const TLSubType &subType);
     static QString generateDebugWriteOperatorDefinition(const TLType *type);
+    static QString generateDebugWriteOperatorSimpleDefinition(const TLType *type);
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
     static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);
@@ -331,6 +332,7 @@ public:
     QString existsStreamWriteTemplateInstancing;
     QString codeDebugWriteDeclarations;
     QString codeDebugWriteDefinitions;
+    QString codeDebugWriteSimpleDefinitions;
     QString codeDebugRpcParse;
 
 private:
