@@ -30,11 +30,22 @@
 template <typename TL>
 using TLPtr = Telegram::UniqueLazyPointer<TL>;
 
-struct TLBool
+struct TLType
+{
+    constexpr TLType() = default;
+    constexpr TLType(TLValue::Value v)
+        : tlType(v)
+    {
+    }
+
+    TLValue tlType = TLValue::Invalid;
+};
+
+struct TLBool : public TLType
 {
     constexpr TLBool() = default;
     constexpr TLBool(bool b) :
-        tlType(b ? TLValue::BoolTrue : TLValue::BoolFalse)
+        TLType(b ? TLValue::BoolTrue : TLValue::BoolFalse)
     {
     }
 
