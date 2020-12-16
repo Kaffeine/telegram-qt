@@ -44,6 +44,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLValue {
 public:
     static constexpr quint32 CurrentLayer = TELEGRAMQT_LAYER;
     enum Value : quint32 {
+        Invalid = 0,
         // Generated TLValues
         // Types
         ResPQ = 0x05162463,
