@@ -487,7 +487,9 @@ QString Generator::generateTLValuesDefinition(const Predicate *predicate)
 QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
 {
     QString code;
-    code.append(QString("struct %1 %2 {\n").arg(c_internalExportMacro, type.getName()));
+    QTextStream stream(&code, QIODevice::WriteOnly);
+    stream << QStringLiteral("struct %1 %2 : public TLType").arg(c_internalExportMacro, type.getName()) << GENERATOR_ENDL;
+    stream << "{" << GENERATOR_ENDL;
 
     bool constExprType = true;
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
@@ -532,37 +534,39 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         }
     }
 
+    const QString constExprSpace = constExprType ? QStringLiteral("constexpr ") : QString();
+    const QString defaultTlValue = type.subTypes.first().getName();
 
-    const QString constructor = QStringLiteral("%1() = default;\n\n").arg(type.getName());
-    const QString constExprSpace = QStringLiteral("constexpr ");
-    if (constExprType) {
-        code.append(spacing + constExprSpace + constructor);
-    } else {
-        code.append(spacing + constructor);
-    }
+    stream << spacing << constExprSpace << type.getName() << "() :" << GENERATOR_ENDL;
+    stream << doubleSpacing << "TLType(" << tlValueName << "::" << defaultTlValue << ")" << GENERATOR_ENDL;
+    stream << spacing << "{" << GENERATOR_ENDL;
+    stream << spacing << "}" << GENERATOR_ENDL;
+    stream << GENERATOR_ENDL;
     if (addSpecSources) {
-        code.append(specSource);
+        stream << specSource;
     }
 
-    code.append(spacing + QStringLiteral("bool isValid() const { return hasType(tlType); }\n"));
-    code.append(spacing + QStringLiteral("static bool hasType(const quint32 value);\n"));
-    code.append(spacing + QStringLiteral("bool operator==(const %1 &v) const;\n").arg(type.getName()));
+    stream << spacing << QStringLiteral("bool isValid() const { return hasType(tlType); }") << GENERATOR_ENDL;
+    stream << spacing << QStringLiteral("static bool hasType(const quint32 value);") << GENERATOR_ENDL;
+    stream << spacing << QStringLiteral("bool operator==(const %1 &v) const;").arg(type.getName()) << GENERATOR_ENDL;
 
     const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing, QStringLiteral("\n"));
     if (!memberFlags.isEmpty()) {
-        code.append(spacing + "enum Flags {\n");
-        code.append(memberFlags);
-        code.append(spacing + "};\n");
+        stream << spacing + "enum Flags {" << GENERATOR_ENDL;
+        stream << memberFlags;
+        stream << spacing + "};"<< GENERATOR_ENDL;
     }
     if (constExprType) {
-        code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing + constExprSpace, QStringLiteral("\n")));
+        stream << joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing + constExprSpace, QStringLiteral("\n"));
     } else {
-        code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing, QStringLiteral("\n")));
+        stream << joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing, QStringLiteral("\n"));
     }
-    code.append(QLatin1Char('\n'));
+    stream << GENERATOR_ENDL;
     const QString members = joinLinesWithPrepend(generateTLTypeMembers(type), spacing, QStringLiteral("\n"));
-    code.append(members);
-    code.append(QString("};\n\n"));
+
+    stream << members;
+    stream << "};" << GENERATOR_ENDL;
+    stream << GENERATOR_ENDL;
 
     return code;
 }
@@ -777,7 +781,6 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
             }
         }
     }
-    membersCode.append(QStringLiteral("%1 %2 = %1::%3;").arg(tlValueName, tlTypeMember, type.subTypes.first().getName()));
     return membersCode;
 }
 
