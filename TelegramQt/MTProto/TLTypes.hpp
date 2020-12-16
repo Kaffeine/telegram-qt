@@ -85,19 +85,26 @@ struct TLPageBlock;
 using TLRichTextPtr = TLPtr<TLRichText>;
 using TLPageBlockPtr = TLPtr<TLPageBlock>;
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountDaysTTL {
-    constexpr TLAccountDaysTTL() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountDaysTTL : public TLType
+{
+    constexpr TLAccountDaysTTL() :
+        TLType(TLValue::AccountDaysTTL)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAccountDaysTTL &v) const;
 
     quint32 days = 0;
-    TLValue tlType = TLValue::AccountDaysTTL;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword {
-    TLAccountPassword() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword : public TLType
+{
+    TLAccountPassword() :
+        TLType(TLValue::AccountNoPassword)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -108,11 +115,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword {
     QByteArray currentSalt;
     QString hint;
     bool hasRecovery = false;
-    TLValue tlType = TLValue::AccountNoPassword;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPasswordInputSettings {
-    TLAccountPasswordInputSettings() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPasswordInputSettings : public TLType
+{
+    TLAccountPasswordInputSettings() :
+        TLType(TLValue::AccountPasswordInputSettings)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -129,22 +139,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPasswordInputSettings {
     QByteArray newPasswordHash;
     QString hint;
     QString email;
-    TLValue tlType = TLValue::AccountPasswordInputSettings;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPasswordSettings {
-    TLAccountPasswordSettings() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPasswordSettings : public TLType
+{
+    TLAccountPasswordSettings() :
+        TLType(TLValue::AccountPasswordSettings)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAccountPasswordSettings &v) const;
 
     QString email;
-    TLValue tlType = TLValue::AccountPasswordSettings;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountTmpPassword {
-    TLAccountTmpPassword() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountTmpPassword : public TLType
+{
+    TLAccountTmpPassword() :
+        TLType(TLValue::AccountTmpPassword)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -152,32 +168,41 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAccountTmpPassword {
 
     QByteArray tmpPassword;
     quint32 validUntil = 0;
-    TLValue tlType = TLValue::AccountTmpPassword;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthCheckedPhone {
-    constexpr TLAuthCheckedPhone() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthCheckedPhone : public TLType
+{
+    constexpr TLAuthCheckedPhone() :
+        TLType(TLValue::AuthCheckedPhone)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAuthCheckedPhone &v) const;
 
     bool phoneRegistered = false;
-    TLValue tlType = TLValue::AuthCheckedPhone;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthCodeType {
-    constexpr TLAuthCodeType() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthCodeType : public TLType
+{
+    constexpr TLAuthCodeType() :
+        TLType(TLValue::AuthCodeTypeSms)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAuthCodeType &v) const;
 
-    TLValue tlType = TLValue::AuthCodeTypeSms;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthExportedAuthorization {
-    TLAuthExportedAuthorization() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthExportedAuthorization : public TLType
+{
+    TLAuthExportedAuthorization() :
+        TLType(TLValue::AuthExportedAuthorization)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -185,22 +210,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthExportedAuthorization {
 
     quint32 id = 0;
     QByteArray bytes;
-    TLValue tlType = TLValue::AuthExportedAuthorization;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthPasswordRecovery {
-    TLAuthPasswordRecovery() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthPasswordRecovery : public TLType
+{
+    TLAuthPasswordRecovery() :
+        TLType(TLValue::AuthPasswordRecovery)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAuthPasswordRecovery &v) const;
 
     QString emailPattern;
-    TLValue tlType = TLValue::AuthPasswordRecovery;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCodeType {
-    TLAuthSentCodeType() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCodeType : public TLType
+{
+    TLAuthSentCodeType() :
+        TLType(TLValue::AuthSentCodeTypeApp)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -208,11 +239,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCodeType {
 
     quint32 length = 0;
     QString pattern;
-    TLValue tlType = TLValue::AuthSentCodeTypeApp;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthorization {
-    TLAuthorization() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthorization : public TLType
+{
+    TLAuthorization() :
+        TLType(TLValue::Authorization)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -231,11 +265,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthorization {
     QString ip;
     QString country;
     QString region;
-    TLValue tlType = TLValue::Authorization;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLBadMsgNotification {
-    constexpr TLBadMsgNotification() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLBadMsgNotification : public TLType
+{
+    constexpr TLBadMsgNotification() :
+        TLType(TLValue::BadMsgNotification)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -245,11 +282,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBadMsgNotification {
     quint32 badMsgSeqno = 0;
     quint32 errorCode = 0;
     quint64 newServerSalt = 0;
-    TLValue tlType = TLValue::BadMsgNotification;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLBotCommand {
-    TLBotCommand() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLBotCommand : public TLType
+{
+    TLBotCommand() :
+        TLType(TLValue::BotCommand)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -257,11 +297,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotCommand {
 
     QString command;
     QString description;
-    TLValue tlType = TLValue::BotCommand;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLBotInfo {
-    TLBotInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLBotInfo : public TLType
+{
+    TLBotInfo() :
+        TLType(TLValue::BotInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -270,11 +313,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInfo {
     quint32 userId = 0;
     QString description;
     QVector<TLBotCommand> commands;
-    TLValue tlType = TLValue::BotInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLCdnFileHash {
-    TLCdnFileHash() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLCdnFileHash : public TLType
+{
+    TLCdnFileHash() :
+        TLType(TLValue::CdnFileHash)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -283,11 +329,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLCdnFileHash {
     quint32 offset = 0;
     quint32 limit = 0;
     QByteArray hash;
-    TLValue tlType = TLValue::CdnFileHash;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLCdnPublicKey {
-    TLCdnPublicKey() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLCdnPublicKey : public TLType
+{
+    TLCdnPublicKey() :
+        TLType(TLValue::CdnPublicKey)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -295,22 +344,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLCdnPublicKey {
 
     quint32 dcId = 0;
     QString publicKey;
-    TLValue tlType = TLValue::CdnPublicKey;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipantsFilter {
-    TLChannelParticipantsFilter() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipantsFilter : public TLType
+{
+    TLChannelParticipantsFilter() :
+        TLType(TLValue::ChannelParticipantsRecent)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLChannelParticipantsFilter &v) const;
 
     QString q;
-    TLValue tlType = TLValue::ChannelParticipantsRecent;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipant {
-    constexpr TLChatParticipant() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipant : public TLType
+{
+    constexpr TLChatParticipant() :
+        TLType(TLValue::ChatParticipant)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -319,11 +374,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipant {
     quint32 userId = 0;
     quint32 inviterId = 0;
     quint32 date = 0;
-    TLValue tlType = TLValue::ChatParticipant;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipants {
-    TLChatParticipants() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipants : public TLType
+{
+    TLChatParticipants() :
+        TLType(TLValue::ChatParticipantsForbidden)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -337,11 +395,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatParticipants {
     TLChatParticipant selfParticipant;
     QVector<TLChatParticipant> participants;
     quint32 version = 0;
-    TLValue tlType = TLValue::ChatParticipantsForbidden;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLClientDHInnerData {
-    TLClientDHInnerData() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLClientDHInnerData : public TLType
+{
+    TLClientDHInnerData() :
+        TLType(TLValue::ClientDHInnerData)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -351,11 +412,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLClientDHInnerData {
     TLNumber128 serverNonce;
     quint64 retryId = 0;
     QString gB;
-    TLValue tlType = TLValue::ClientDHInnerData;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContact {
-    constexpr TLContact() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContact : public TLType
+{
+    constexpr TLContact() :
+        TLType(TLValue::Contact)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -363,11 +427,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContact {
 
     quint32 userId = 0;
     bool mutual = false;
-    TLValue tlType = TLValue::Contact;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactBlocked {
-    constexpr TLContactBlocked() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactBlocked : public TLType
+{
+    constexpr TLContactBlocked() :
+        TLType(TLValue::ContactBlocked)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -375,53 +442,68 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactBlocked {
 
     quint32 userId = 0;
     quint32 date = 0;
-    TLValue tlType = TLValue::ContactBlocked;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactLink {
-    constexpr TLContactLink() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactLink : public TLType
+{
+    constexpr TLContactLink() :
+        TLType(TLValue::ContactLinkUnknown)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLContactLink &v) const;
 
-    TLValue tlType = TLValue::ContactLinkUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDataJSON {
-    TLDataJSON() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDataJSON : public TLType
+{
+    TLDataJSON() :
+        TLType(TLValue::DataJSON)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLDataJSON &v) const;
 
     QString data;
-    TLValue tlType = TLValue::DataJSON;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDestroyAuthKeyRes {
-    constexpr TLDestroyAuthKeyRes() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDestroyAuthKeyRes : public TLType
+{
+    constexpr TLDestroyAuthKeyRes() :
+        TLType(TLValue::DestroyAuthKeyOk)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLDestroyAuthKeyRes &v) const;
 
-    TLValue tlType = TLValue::DestroyAuthKeyOk;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDestroySessionRes {
-    constexpr TLDestroySessionRes() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDestroySessionRes : public TLType
+{
+    constexpr TLDestroySessionRes() :
+        TLType(TLValue::DestroySessionOk)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLDestroySessionRes &v) const;
 
     quint64 sessionId = 0;
-    TLValue tlType = TLValue::DestroySessionOk;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDisabledFeature {
-    TLDisabledFeature() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDisabledFeature : public TLType
+{
+    TLDisabledFeature() :
+        TLType(TLValue::DisabledFeature)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -429,11 +511,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDisabledFeature {
 
     QString feature;
     QString description;
-    TLValue tlType = TLValue::DisabledFeature;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedChat {
-    TLEncryptedChat() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedChat : public TLType
+{
+    TLEncryptedChat() :
+        TLType(TLValue::EncryptedChatEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -447,11 +532,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedChat {
     QByteArray gA;
     QByteArray gAOrB;
     quint64 keyFingerprint = 0;
-    TLValue tlType = TLValue::EncryptedChatEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedFile {
-    constexpr TLEncryptedFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedFile : public TLType
+{
+    constexpr TLEncryptedFile() :
+        TLType(TLValue::EncryptedFileEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -462,11 +550,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedFile {
     quint32 size = 0;
     quint32 dcId = 0;
     quint32 keyFingerprint = 0;
-    TLValue tlType = TLValue::EncryptedFileEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedMessage {
-    TLEncryptedMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedMessage : public TLType
+{
+    TLEncryptedMessage() :
+        TLType(TLValue::EncryptedMessage)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -477,11 +568,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLEncryptedMessage {
     quint32 date = 0;
     QByteArray bytes;
     TLEncryptedFile file;
-    TLValue tlType = TLValue::EncryptedMessage;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLError {
-    TLError() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLError : public TLType
+{
+    TLError() :
+        TLType(TLValue::Error)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -489,33 +583,42 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLError {
 
     quint32 code = 0;
     QString text;
-    TLValue tlType = TLValue::Error;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLExportedChatInvite {
-    TLExportedChatInvite() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLExportedChatInvite : public TLType
+{
+    TLExportedChatInvite() :
+        TLType(TLValue::ChatInviteEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLExportedChatInvite &v) const;
 
     QString link;
-    TLValue tlType = TLValue::ChatInviteEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLExportedMessageLink {
-    TLExportedMessageLink() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLExportedMessageLink : public TLType
+{
+    TLExportedMessageLink() :
+        TLType(TLValue::ExportedMessageLink)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLExportedMessageLink &v) const;
 
     QString link;
-    TLValue tlType = TLValue::ExportedMessageLink;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLFileLocation {
-    constexpr TLFileLocation() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLFileLocation : public TLType
+{
+    constexpr TLFileLocation() :
+        TLType(TLValue::FileLocationUnavailable)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -525,11 +628,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLFileLocation {
     quint32 localId = 0;
     quint64 secret = 0;
     quint32 dcId = 0;
-    TLValue tlType = TLValue::FileLocationUnavailable;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalt {
-    constexpr TLFutureSalt() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalt : public TLType
+{
+    constexpr TLFutureSalt() :
+        TLType(TLValue::FutureSalt)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -538,11 +644,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalt {
     quint32 validSince = 0;
     quint32 validUntil = 0;
     quint64 salt = 0;
-    TLValue tlType = TLValue::FutureSalt;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalts {
-    TLFutureSalts() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalts : public TLType
+{
+    TLFutureSalts() :
+        TLType(TLValue::FutureSalts)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -551,11 +660,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLFutureSalts {
     quint64 reqMsgId = 0;
     quint32 now = 0;
     QVector<TLFutureSalt> salts;
-    TLValue tlType = TLValue::FutureSalts;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLGeoPoint {
-    constexpr TLGeoPoint() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLGeoPoint : public TLType
+{
+    constexpr TLGeoPoint() :
+        TLType(TLValue::GeoPointEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -563,11 +675,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLGeoPoint {
 
     double longitude = 0;
     double latitude = 0;
-    TLValue tlType = TLValue::GeoPointEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpAppUpdate {
-    TLHelpAppUpdate() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpAppUpdate : public TLType
+{
+    TLHelpAppUpdate() :
+        TLType(TLValue::HelpAppUpdate)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -577,33 +692,42 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpAppUpdate {
     bool critical = false;
     QString url;
     QString text;
-    TLValue tlType = TLValue::HelpAppUpdate;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpInviteText {
-    TLHelpInviteText() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpInviteText : public TLType
+{
+    TLHelpInviteText() :
+        TLType(TLValue::HelpInviteText)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLHelpInviteText &v) const;
 
     QString message;
-    TLValue tlType = TLValue::HelpInviteText;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpTermsOfService {
-    TLHelpTermsOfService() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpTermsOfService : public TLType
+{
+    TLHelpTermsOfService() :
+        TLType(TLValue::HelpTermsOfService)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLHelpTermsOfService &v) const;
 
     QString text;
-    TLValue tlType = TLValue::HelpTermsOfService;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHighScore {
-    constexpr TLHighScore() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHighScore : public TLType
+{
+    constexpr TLHighScore() :
+        TLType(TLValue::HighScore)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -612,11 +736,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHighScore {
     quint32 pos = 0;
     quint32 userId = 0;
     quint32 score = 0;
-    TLValue tlType = TLValue::HighScore;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHttpWait {
-    constexpr TLHttpWait() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHttpWait : public TLType
+{
+    constexpr TLHttpWait() :
+        TLType(TLValue::HttpWait)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -625,11 +752,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHttpWait {
     quint32 maxDelay = 0;
     quint32 waitAfter = 0;
     quint32 maxWait = 0;
-    TLValue tlType = TLValue::HttpWait;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLImportedContact {
-    constexpr TLImportedContact() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLImportedContact : public TLType
+{
+    constexpr TLImportedContact() :
+        TLType(TLValue::ImportedContact)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -637,11 +767,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLImportedContact {
 
     quint32 userId = 0;
     quint64 clientId = 0;
-    TLValue tlType = TLValue::ImportedContact;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInlineBotSwitchPM {
-    TLInlineBotSwitchPM() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInlineBotSwitchPM : public TLType
+{
+    TLInlineBotSwitchPM() :
+        TLType(TLValue::InlineBotSwitchPM)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -649,11 +782,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInlineBotSwitchPM {
 
     QString text;
     QString startParam;
-    TLValue tlType = TLValue::InlineBotSwitchPM;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputAppEvent {
-    TLInputAppEvent() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputAppEvent : public TLType
+{
+    TLInputAppEvent() :
+        TLType(TLValue::InputAppEvent)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -663,11 +799,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputAppEvent {
     QString type;
     quint64 peer = 0;
     QString data;
-    TLValue tlType = TLValue::InputAppEvent;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessageID {
-    constexpr TLInputBotInlineMessageID() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessageID : public TLType
+{
+    constexpr TLInputBotInlineMessageID() :
+        TLType(TLValue::InputBotInlineMessageID)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -676,11 +815,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessageID {
     quint32 dcId = 0;
     quint64 id = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputBotInlineMessageID;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputChannel {
-    constexpr TLInputChannel() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputChannel : public TLType
+{
+    constexpr TLInputChannel() :
+        TLType(TLValue::InputChannelEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -688,11 +830,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputChannel {
 
     quint32 channelId = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputChannelEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputContact {
-    TLInputContact() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputContact : public TLType
+{
+    TLInputContact() :
+        TLType(TLValue::InputPhoneContact)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -702,11 +847,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputContact {
     QString phone;
     QString firstName;
     QString lastName;
-    TLValue tlType = TLValue::InputPhoneContact;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputDocument {
-    constexpr TLInputDocument() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputDocument : public TLType
+{
+    constexpr TLInputDocument() :
+        TLType(TLValue::InputDocumentEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -714,11 +862,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputDocument {
 
     quint64 id = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputDocumentEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedChat {
-    constexpr TLInputEncryptedChat() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedChat : public TLType
+{
+    constexpr TLInputEncryptedChat() :
+        TLType(TLValue::InputEncryptedChat)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -726,11 +877,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedChat {
 
     quint32 chatId = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputEncryptedChat;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedFile {
-    TLInputEncryptedFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedFile : public TLType
+{
+    TLInputEncryptedFile() :
+        TLType(TLValue::InputEncryptedFileEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -741,11 +895,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputEncryptedFile {
     QString md5Checksum;
     quint32 keyFingerprint = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputEncryptedFileEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputFile {
-    TLInputFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputFile : public TLType
+{
+    TLInputFile() :
+        TLType(TLValue::InputFile)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -755,11 +912,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputFile {
     quint32 parts = 0;
     QString name;
     QString md5Checksum;
-    TLValue tlType = TLValue::InputFile;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputFileLocation {
-    constexpr TLInputFileLocation() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputFileLocation : public TLType
+{
+    constexpr TLInputFileLocation() :
+        TLType(TLValue::InputFileLocation)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -771,11 +931,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputFileLocation {
     quint64 id = 0;
     quint64 accessHash = 0;
     quint32 version = 0;
-    TLValue tlType = TLValue::InputFileLocation;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputGeoPoint {
-    constexpr TLInputGeoPoint() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputGeoPoint : public TLType
+{
+    constexpr TLInputGeoPoint() :
+        TLType(TLValue::InputGeoPointEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -783,11 +946,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputGeoPoint {
 
     double latitude = 0;
     double longitude = 0;
-    TLValue tlType = TLValue::InputGeoPointEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeer {
-    constexpr TLInputPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeer : public TLType
+{
+    constexpr TLInputPeer() :
+        TLType(TLValue::InputPeerEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -797,21 +963,27 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeer {
     quint32 userId = 0;
     quint64 accessHash = 0;
     quint32 channelId = 0;
-    TLValue tlType = TLValue::InputPeerEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeerNotifyEvents {
-    constexpr TLInputPeerNotifyEvents() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeerNotifyEvents : public TLType
+{
+    constexpr TLInputPeerNotifyEvents() :
+        TLType(TLValue::InputPeerNotifyEventsEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputPeerNotifyEvents &v) const;
 
-    TLValue tlType = TLValue::InputPeerNotifyEventsEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoneCall {
-    constexpr TLInputPhoneCall() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoneCall : public TLType
+{
+    constexpr TLInputPhoneCall() :
+        TLType(TLValue::InputPhoneCall)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -819,11 +991,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoneCall {
 
     quint64 id = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputPhoneCall;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoto {
-    constexpr TLInputPhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoto : public TLType
+{
+    constexpr TLInputPhoto() :
+        TLType(TLValue::InputPhotoEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -831,21 +1006,27 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputPhoto {
 
     quint64 id = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputPhotoEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPrivacyKey {
-    constexpr TLInputPrivacyKey() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPrivacyKey : public TLType
+{
+    constexpr TLInputPrivacyKey() :
+        TLType(TLValue::InputPrivacyKeyStatusTimestamp)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputPrivacyKey &v) const;
 
-    TLValue tlType = TLValue::InputPrivacyKeyStatusTimestamp;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSet {
-    TLInputStickerSet() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSet : public TLType
+{
+    TLInputStickerSet() :
+        TLType(TLValue::InputStickerSetEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -854,11 +1035,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSet {
     quint64 id = 0;
     quint64 accessHash = 0;
     QString shortName;
-    TLValue tlType = TLValue::InputStickerSetEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickeredMedia {
-    TLInputStickeredMedia() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickeredMedia : public TLType
+{
+    TLInputStickeredMedia() :
+        TLType(TLValue::InputStickeredMediaPhoto)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -866,11 +1050,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickeredMedia {
 
     TLInputPhoto inputPhotoId;
     TLInputDocument inputDocumentId;
-    TLValue tlType = TLValue::InputStickeredMediaPhoto;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputUser {
-    constexpr TLInputUser() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputUser : public TLType
+{
+    constexpr TLInputUser() :
+        TLType(TLValue::InputUserEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -878,11 +1065,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputUser {
 
     quint32 userId = 0;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputUserEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebFileLocation {
-    TLInputWebFileLocation() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebFileLocation : public TLType
+{
+    TLInputWebFileLocation() :
+        TLType(TLValue::InputWebFileLocation)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -890,11 +1080,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebFileLocation {
 
     QString url;
     quint64 accessHash = 0;
-    TLValue tlType = TLValue::InputWebFileLocation;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLIpPort {
-    constexpr TLIpPort() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLIpPort : public TLType
+{
+    constexpr TLIpPort() :
+        TLType(TLValue::IpPort)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -902,11 +1095,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLIpPort {
 
     quint32 ipv4 = 0;
     quint32 port = 0;
-    TLValue tlType = TLValue::IpPort;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLLabeledPrice {
-    TLLabeledPrice() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLLabeledPrice : public TLType
+{
+    TLLabeledPrice() :
+        TLType(TLValue::LabeledPrice)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -914,11 +1110,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLLabeledPrice {
 
     QString label;
     quint64 amount = 0;
-    TLValue tlType = TLValue::LabeledPrice;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackLanguage {
-    TLLangPackLanguage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackLanguage : public TLType
+{
+    TLLangPackLanguage() :
+        TLType(TLValue::LangPackLanguage)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -927,11 +1126,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackLanguage {
     QString name;
     QString nativeName;
     QString langCode;
-    TLValue tlType = TLValue::LangPackLanguage;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackString {
-    TLLangPackString() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackString : public TLType
+{
+    TLLangPackString() :
+        TLType(TLValue::LangPackString)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -953,11 +1155,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackString {
     QString fewValue;
     QString manyValue;
     QString otherValue;
-    TLValue tlType = TLValue::LangPackString;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMaskCoords {
-    constexpr TLMaskCoords() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMaskCoords : public TLType
+{
+    constexpr TLMaskCoords() :
+        TLType(TLValue::MaskCoords)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -967,11 +1172,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMaskCoords {
     double x = 0;
     double y = 0;
     double zoom = 0;
-    TLValue tlType = TLValue::MaskCoords;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageEntity {
-    TLMessageEntity() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageEntity : public TLType
+{
+    TLMessageEntity() :
+        TLType(TLValue::MessageEntityUnknown)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -983,11 +1191,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageEntity {
     QString url;
     quint32 userId = 0;
     TLInputUser inputUserUserId;
-    TLValue tlType = TLValue::MessageEntityUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageFwdHeader {
-    TLMessageFwdHeader() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageFwdHeader : public TLType
+{
+    TLMessageFwdHeader() :
+        TLType(TLValue::MessageFwdHeader)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1005,11 +1216,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageFwdHeader {
     quint32 channelId = 0;
     quint32 channelPost = 0;
     QString postAuthor;
-    TLValue tlType = TLValue::MessageFwdHeader;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageRange {
-    constexpr TLMessageRange() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageRange : public TLType
+{
+    constexpr TLMessageRange() :
+        TLType(TLValue::MessageRange)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1017,11 +1231,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageRange {
 
     quint32 minId = 0;
     quint32 maxId = 0;
-    TLValue tlType = TLValue::MessageRange;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedHistory {
-    constexpr TLMessagesAffectedHistory() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedHistory : public TLType
+{
+    constexpr TLMessagesAffectedHistory() :
+        TLType(TLValue::MessagesAffectedHistory)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1030,11 +1247,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedHistory {
     quint32 pts = 0;
     quint32 ptsCount = 0;
     quint32 offset = 0;
-    TLValue tlType = TLValue::MessagesAffectedHistory;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedMessages {
-    constexpr TLMessagesAffectedMessages() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedMessages : public TLType
+{
+    constexpr TLMessagesAffectedMessages() :
+        TLType(TLValue::MessagesAffectedMessages)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1042,11 +1262,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAffectedMessages {
 
     quint32 pts = 0;
     quint32 ptsCount = 0;
-    TLValue tlType = TLValue::MessagesAffectedMessages;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDhConfig {
-    TLMessagesDhConfig() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDhConfig : public TLType
+{
+    TLMessagesDhConfig() :
+        TLType(TLValue::MessagesDhConfigNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1056,11 +1279,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDhConfig {
     quint32 g = 0;
     QByteArray p;
     quint32 version = 0;
-    TLValue tlType = TLValue::MessagesDhConfigNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSentEncryptedMessage {
-    TLMessagesSentEncryptedMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSentEncryptedMessage : public TLType
+{
+    TLMessagesSentEncryptedMessage() :
+        TLType(TLValue::MessagesSentEncryptedMessage)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1068,11 +1294,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSentEncryptedMessage {
 
     quint32 date = 0;
     TLEncryptedFile file;
-    TLValue tlType = TLValue::MessagesSentEncryptedMessage;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgDetailedInfo {
-    constexpr TLMsgDetailedInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgDetailedInfo : public TLType
+{
+    constexpr TLMsgDetailedInfo() :
+        TLType(TLValue::MsgDetailedInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1082,33 +1311,42 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMsgDetailedInfo {
     quint64 answerMsgId = 0;
     quint32 bytes = 0;
     quint32 status = 0;
-    TLValue tlType = TLValue::MsgDetailedInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgResendReq {
-    TLMsgResendReq() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgResendReq : public TLType
+{
+    TLMsgResendReq() :
+        TLType(TLValue::MsgResendReq)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLMsgResendReq &v) const;
 
     QVector<quint64> msgIds;
-    TLValue tlType = TLValue::MsgResendReq;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsAck {
-    TLMsgsAck() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsAck : public TLType
+{
+    TLMsgsAck() :
+        TLType(TLValue::MsgsAck)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLMsgsAck &v) const;
 
     QVector<quint64> msgIds;
-    TLValue tlType = TLValue::MsgsAck;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsAllInfo {
-    TLMsgsAllInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsAllInfo : public TLType
+{
+    TLMsgsAllInfo() :
+        TLType(TLValue::MsgsAllInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1116,11 +1354,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsAllInfo {
 
     QVector<quint64> msgIds;
     QString info;
-    TLValue tlType = TLValue::MsgsAllInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsStateInfo {
-    TLMsgsStateInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsStateInfo : public TLType
+{
+    TLMsgsStateInfo() :
+        TLType(TLValue::MsgsStateInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1128,22 +1369,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsStateInfo {
 
     quint64 reqMsgId = 0;
     QString info;
-    TLValue tlType = TLValue::MsgsStateInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsStateReq {
-    TLMsgsStateReq() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMsgsStateReq : public TLType
+{
+    TLMsgsStateReq() :
+        TLType(TLValue::MsgsStateReq)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLMsgsStateReq &v) const;
 
     QVector<quint64> msgIds;
-    TLValue tlType = TLValue::MsgsStateReq;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLNearestDc {
-    TLNearestDc() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLNearestDc : public TLType
+{
+    TLNearestDc() :
+        TLType(TLValue::NearestDc)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1152,11 +1399,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLNearestDc {
     QString country;
     quint32 thisDc = 0;
     quint32 nearestDc = 0;
-    TLValue tlType = TLValue::NearestDc;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLNewSession {
-    constexpr TLNewSession() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLNewSession : public TLType
+{
+    constexpr TLNewSession() :
+        TLType(TLValue::NewSessionCreated)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1165,11 +1415,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLNewSession {
     quint64 firstMsgId = 0;
     quint64 uniqueId = 0;
     quint64 serverSalt = 0;
-    TLValue tlType = TLValue::NewSessionCreated;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPQInnerData {
-    TLPQInnerData() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPQInnerData : public TLType
+{
+    TLPQInnerData() :
+        TLType(TLValue::PQInnerData)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1181,11 +1434,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPQInnerData {
     TLNumber128 nonce;
     TLNumber128 serverNonce;
     TLNumber256 newNonce;
-    TLValue tlType = TLValue::PQInnerData;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentCharge {
-    TLPaymentCharge() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentCharge : public TLType
+{
+    TLPaymentCharge() :
+        TLType(TLValue::PaymentCharge)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1193,11 +1449,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentCharge {
 
     QString id;
     QString providerChargeId;
-    TLValue tlType = TLValue::PaymentCharge;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentSavedCredentials {
-    TLPaymentSavedCredentials() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentSavedCredentials : public TLType
+{
+    TLPaymentSavedCredentials() :
+        TLType(TLValue::PaymentSavedCredentialsCard)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1205,11 +1464,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentSavedCredentials {
 
     QString id;
     QString title;
-    TLValue tlType = TLValue::PaymentSavedCredentialsCard;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPeer {
-    constexpr TLPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPeer : public TLType
+{
+    constexpr TLPeer() :
+        TLType(TLValue::PeerUser)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1218,31 +1480,40 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPeer {
     quint32 userId = 0;
     quint32 chatId = 0;
     quint32 channelId = 0;
-    TLValue tlType = TLValue::PeerUser;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPeerNotifyEvents {
-    constexpr TLPeerNotifyEvents() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPeerNotifyEvents : public TLType
+{
+    constexpr TLPeerNotifyEvents() :
+        TLType(TLValue::PeerNotifyEventsEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLPeerNotifyEvents &v) const;
 
-    TLValue tlType = TLValue::PeerNotifyEventsEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCallDiscardReason {
-    constexpr TLPhoneCallDiscardReason() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCallDiscardReason : public TLType
+{
+    constexpr TLPhoneCallDiscardReason() :
+        TLType(TLValue::PhoneCallDiscardReasonMissed)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLPhoneCallDiscardReason &v) const;
 
-    TLValue tlType = TLValue::PhoneCallDiscardReasonMissed;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneConnection {
-    TLPhoneConnection() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneConnection : public TLType
+{
+    TLPhoneConnection() :
+        TLType(TLValue::PhoneConnection)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1253,11 +1524,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneConnection {
     QString ipv6;
     quint32 port = 0;
     QByteArray peerTag;
-    TLValue tlType = TLValue::PhoneConnection;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhotoSize {
-    TLPhotoSize() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhotoSize : public TLType
+{
+    TLPhotoSize() :
+        TLType(TLValue::PhotoSizeEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1269,11 +1543,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhotoSize {
     quint32 h = 0;
     quint32 size = 0;
     QByteArray bytes;
-    TLValue tlType = TLValue::PhotoSizeEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPong {
-    constexpr TLPong() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPong : public TLType
+{
+    constexpr TLPong() :
+        TLType(TLValue::Pong)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1281,11 +1558,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPong {
 
     quint64 msgId = 0;
     quint64 pingId = 0;
-    TLValue tlType = TLValue::Pong;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPopularContact {
-    constexpr TLPopularContact() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPopularContact : public TLType
+{
+    constexpr TLPopularContact() :
+        TLType(TLValue::PopularContact)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1293,11 +1573,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPopularContact {
 
     quint64 clientId = 0;
     quint32 importers = 0;
-    TLValue tlType = TLValue::PopularContact;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPostAddress {
-    TLPostAddress() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPostAddress : public TLType
+{
+    TLPostAddress() :
+        TLType(TLValue::PostAddress)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1309,32 +1592,41 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPostAddress {
     QString state;
     QString countryIso2;
     QString postCode;
-    TLValue tlType = TLValue::PostAddress;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPrivacyKey {
-    constexpr TLPrivacyKey() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPrivacyKey : public TLType
+{
+    constexpr TLPrivacyKey() :
+        TLType(TLValue::PrivacyKeyStatusTimestamp)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLPrivacyKey &v) const;
 
-    TLValue tlType = TLValue::PrivacyKeyStatusTimestamp;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPrivacyRule {
-    TLPrivacyRule() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPrivacyRule : public TLType
+{
+    TLPrivacyRule() :
+        TLType(TLValue::PrivacyValueAllowContacts)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLPrivacyRule &v) const;
 
     QVector<quint32> users;
-    TLValue tlType = TLValue::PrivacyValueAllowContacts;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLReceivedNotifyMessage {
-    constexpr TLReceivedNotifyMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLReceivedNotifyMessage : public TLType
+{
+    constexpr TLReceivedNotifyMessage() :
+        TLType(TLValue::ReceivedNotifyMessage)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1342,22 +1634,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLReceivedNotifyMessage {
 
     quint32 id = 0;
     quint32 flags = 0;
-    TLValue tlType = TLValue::ReceivedNotifyMessage;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLReportReason {
-    TLReportReason() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLReportReason : public TLType
+{
+    TLReportReason() :
+        TLType(TLValue::InputReportReasonSpam)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLReportReason &v) const;
 
     QString text;
-    TLValue tlType = TLValue::InputReportReasonSpam;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLResPQ {
-    TLResPQ() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLResPQ : public TLType
+{
+    TLResPQ() :
+        TLType(TLValue::ResPQ)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1367,11 +1665,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLResPQ {
     TLNumber128 serverNonce;
     QString pq;
     QVector<quint64> serverPublicKeyFingerprints;
-    TLValue tlType = TLValue::ResPQ;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLRichText {
-    TLRichText() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLRichText : public TLType
+{
+    TLRichText() :
+        TLType(TLValue::TextEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1383,11 +1684,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRichText {
     quint64 webpageId = 0;
     QString email;
     QVector<TLRichText*> texts;
-    TLValue tlType = TLValue::TextEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLRpcDropAnswer {
-    constexpr TLRpcDropAnswer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLRpcDropAnswer : public TLType
+{
+    constexpr TLRpcDropAnswer() :
+        TLType(TLValue::RpcAnswerUnknown)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1396,11 +1700,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRpcDropAnswer {
     quint64 msgId = 0;
     quint32 seqNo = 0;
     quint32 bytes = 0;
-    TLValue tlType = TLValue::RpcAnswerUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLRpcError {
-    TLRpcError() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLRpcError : public TLType
+{
+    TLRpcError() :
+        TLType(TLValue::RpcError)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1408,22 +1715,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRpcError {
 
     quint32 errorCode = 0;
     QString errorMessage;
-    TLValue tlType = TLValue::RpcError;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLSendMessageAction {
-    constexpr TLSendMessageAction() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLSendMessageAction : public TLType
+{
+    constexpr TLSendMessageAction() :
+        TLType(TLValue::SendMessageTypingAction)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLSendMessageAction &v) const;
 
     quint32 progress = 0;
-    TLValue tlType = TLValue::SendMessageTypingAction;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHInnerData {
-    TLServerDHInnerData() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHInnerData : public TLType
+{
+    TLServerDHInnerData() :
+        TLType(TLValue::ServerDHInnerData)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1435,11 +1748,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHInnerData {
     QString dhPrime;
     QString gA;
     quint32 serverTime = 0;
-    TLValue tlType = TLValue::ServerDHInnerData;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHParams {
-    TLServerDHParams() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHParams : public TLType
+{
+    TLServerDHParams() :
+        TLType(TLValue::ServerDHParamsFail)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1449,11 +1765,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLServerDHParams {
     TLNumber128 serverNonce;
     TLNumber128 newNonceHash;
     QString encryptedAnswer;
-    TLValue tlType = TLValue::ServerDHParamsFail;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLSetClientDHParamsAnswer {
-    TLSetClientDHParamsAnswer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLSetClientDHParamsAnswer : public TLType
+{
+    TLSetClientDHParamsAnswer() :
+        TLType(TLValue::DhGenOk)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1464,11 +1783,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLSetClientDHParamsAnswer {
     TLNumber128 newNonceHash1;
     TLNumber128 newNonceHash2;
     TLNumber128 newNonceHash3;
-    TLValue tlType = TLValue::DhGenOk;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLShippingOption {
-    TLShippingOption() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLShippingOption : public TLType
+{
+    TLShippingOption() :
+        TLType(TLValue::ShippingOption)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1477,11 +1799,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLShippingOption {
     QString id;
     QString title;
     QVector<TLLabeledPrice> prices;
-    TLValue tlType = TLValue::ShippingOption;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLStickerPack {
-    TLStickerPack() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLStickerPack : public TLType
+{
+    TLStickerPack() :
+        TLType(TLValue::StickerPack)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1489,21 +1814,27 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLStickerPack {
 
     QString emoticon;
     QVector<quint64> documents;
-    TLValue tlType = TLValue::StickerPack;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLStorageFileType {
-    constexpr TLStorageFileType() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLStorageFileType : public TLType
+{
+    constexpr TLStorageFileType() :
+        TLType(TLValue::StorageFileUnknown)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLStorageFileType &v) const;
 
-    TLValue tlType = TLValue::StorageFileUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeer {
-    TLTopPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeer : public TLType
+{
+    TLTopPeer() :
+        TLType(TLValue::TopPeer)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1511,21 +1842,27 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeer {
 
     TLPeer peer;
     double rating = 0;
-    TLValue tlType = TLValue::TopPeer;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeerCategory {
-    constexpr TLTopPeerCategory() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeerCategory : public TLType
+{
+    constexpr TLTopPeerCategory() :
+        TLType(TLValue::TopPeerCategoryBotsPM)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLTopPeerCategory &v) const;
 
-    TLValue tlType = TLValue::TopPeerCategoryBotsPM;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeerCategoryPeers {
-    TLTopPeerCategoryPeers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeerCategoryPeers : public TLType
+{
+    TLTopPeerCategoryPeers() :
+        TLType(TLValue::TopPeerCategoryPeers)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1534,11 +1871,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLTopPeerCategoryPeers {
     TLTopPeerCategory category;
     quint32 count = 0;
     QVector<TLTopPeer> peers;
-    TLValue tlType = TLValue::TopPeerCategoryPeers;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesState {
-    constexpr TLUpdatesState() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesState : public TLType
+{
+    constexpr TLUpdatesState() :
+        TLType(TLValue::UpdatesState)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1549,11 +1889,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesState {
     quint32 date = 0;
     quint32 seq = 0;
     quint32 unreadCount = 0;
-    TLValue tlType = TLValue::UpdatesState;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUploadCdnFile {
-    TLUploadCdnFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUploadCdnFile : public TLType
+{
+    TLUploadCdnFile() :
+        TLType(TLValue::UploadCdnFileReuploadNeeded)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1561,11 +1904,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUploadCdnFile {
 
     QByteArray requestToken;
     QByteArray bytes;
-    TLValue tlType = TLValue::UploadCdnFileReuploadNeeded;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUploadFile {
-    TLUploadFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUploadFile : public TLType
+{
+    TLUploadFile() :
+        TLType(TLValue::UploadFile)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1579,11 +1925,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUploadFile {
     QByteArray encryptionKey;
     QByteArray encryptionIv;
     QVector<TLCdnFileHash> cdnFileHashes;
-    TLValue tlType = TLValue::UploadFile;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUploadWebFile {
-    TLUploadWebFile() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUploadWebFile : public TLType
+{
+    TLUploadWebFile() :
+        TLType(TLValue::UploadWebFile)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1594,11 +1943,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUploadWebFile {
     TLStorageFileType fileType;
     quint32 mtime = 0;
     QByteArray bytes;
-    TLValue tlType = TLValue::UploadWebFile;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUserProfilePhoto {
-    TLUserProfilePhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUserProfilePhoto : public TLType
+{
+    TLUserProfilePhoto() :
+        TLType(TLValue::UserProfilePhotoEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1607,11 +1959,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUserProfilePhoto {
     quint64 photoId = 0;
     TLFileLocation photoSmall;
     TLFileLocation photoBig;
-    TLValue tlType = TLValue::UserProfilePhotoEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUserStatus {
-    constexpr TLUserStatus() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUserStatus : public TLType
+{
+    constexpr TLUserStatus() :
+        TLType(TLValue::UserStatusEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1619,11 +1974,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUserStatus {
 
     quint32 expires = 0;
     quint32 wasOnline = 0;
-    TLValue tlType = TLValue::UserStatusEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLWallPaper {
-    TLWallPaper() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLWallPaper : public TLType
+{
+    TLWallPaper() :
+        TLType(TLValue::WallPaper)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1634,22 +1992,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLWallPaper {
     QVector<TLPhotoSize> sizes;
     quint32 color = 0;
     quint32 bgColor = 0;
-    TLValue tlType = TLValue::WallPaper;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountAuthorizations {
-    TLAccountAuthorizations() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountAuthorizations : public TLType
+{
+    TLAccountAuthorizations() :
+        TLType(TLValue::AccountAuthorizations)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLAccountAuthorizations &v) const;
 
     QVector<TLAuthorization> authorizations;
-    TLValue tlType = TLValue::AccountAuthorizations;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCode {
-    TLAuthSentCode() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCode : public TLType
+{
+    TLAuthSentCode() :
+        TLType(TLValue::AuthSentCode)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1666,22 +2030,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthSentCode {
     QString phoneCodeHash;
     TLAuthCodeType nextType;
     quint32 timeout = 0;
-    TLValue tlType = TLValue::AuthSentCode;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLCdnConfig {
-    TLCdnConfig() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLCdnConfig : public TLType
+{
+    TLCdnConfig() :
+        TLType(TLValue::CdnConfig)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLCdnConfig &v) const;
 
     QVector<TLCdnPublicKey> publicKeys;
-    TLValue tlType = TLValue::CdnConfig;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventsFilter {
-    TLChannelAdminLogEventsFilter() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventsFilter : public TLType
+{
+    TLChannelAdminLogEventsFilter() :
+        TLType(TLValue::ChannelAdminLogEventsFilter)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1718,11 +2088,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventsFilter {
     bool deleted() const { return flags & Deleted; }
 
     quint32 flags = 0;
-    TLValue tlType = TLValue::ChannelAdminLogEventsFilter;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminRights {
-    TLChannelAdminRights() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminRights : public TLType
+{
+    TLChannelAdminRights() :
+        TLType(TLValue::ChannelAdminRights)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1749,11 +2122,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminRights {
     bool addAdmins() const { return flags & AddAdmins; }
 
     quint32 flags = 0;
-    TLValue tlType = TLValue::ChannelAdminRights;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelBannedRights {
-    TLChannelBannedRights() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelBannedRights : public TLType
+{
+    TLChannelBannedRights() :
+        TLType(TLValue::ChannelBannedRights)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1779,11 +2155,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelBannedRights {
 
     quint32 flags = 0;
     quint32 untilDate = 0;
-    TLValue tlType = TLValue::ChannelBannedRights;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelMessagesFilter {
-    TLChannelMessagesFilter() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelMessagesFilter : public TLType
+{
+    TLChannelMessagesFilter() :
+        TLType(TLValue::ChannelMessagesFilterEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1795,11 +2174,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelMessagesFilter {
 
     quint32 flags = 0;
     QVector<TLMessageRange> ranges;
-    TLValue tlType = TLValue::ChannelMessagesFilterEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipant {
-    TLChannelParticipant() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipant : public TLType
+{
+    TLChannelParticipant() :
+        TLType(TLValue::ChannelParticipant)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1819,11 +2201,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelParticipant {
     TLChannelAdminRights adminRights;
     quint32 kickedBy = 0;
     TLChannelBannedRights bannedRights;
-    TLValue tlType = TLValue::ChannelParticipant;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChatPhoto {
-    TLChatPhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChatPhoto : public TLType
+{
+    TLChatPhoto() :
+        TLType(TLValue::ChatPhotoEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1831,11 +2216,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatPhoto {
 
     TLFileLocation photoSmall;
     TLFileLocation photoBig;
-    TLValue tlType = TLValue::ChatPhotoEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactStatus {
-    TLContactStatus() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactStatus : public TLType
+{
+    TLContactStatus() :
+        TLType(TLValue::ContactStatus)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1843,11 +2231,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactStatus {
 
     quint32 userId = 0;
     TLUserStatus status;
-    TLValue tlType = TLValue::ContactStatus;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDcOption {
-    TLDcOption() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDcOption : public TLType
+{
+    TLDcOption() :
+        TLType(TLValue::DcOption)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1869,11 +2260,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDcOption {
     quint32 id = 0;
     QString ipAddress;
     quint32 port = 0;
-    TLValue tlType = TLValue::DcOption;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDocumentAttribute {
-    TLDocumentAttribute() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDocumentAttribute : public TLType
+{
+    TLDocumentAttribute() :
+        TLType(TLValue::DocumentAttributeImageSize)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1902,11 +2296,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDocumentAttribute {
     QString performer;
     QByteArray waveform;
     QString fileName;
-    TLValue tlType = TLValue::DocumentAttributeImageSize;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDraftMessage {
-    TLDraftMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDraftMessage : public TLType
+{
+    TLDraftMessage() :
+        TLType(TLValue::DraftMessageEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1923,11 +2320,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDraftMessage {
     QString message;
     QVector<TLMessageEntity> entities;
     quint32 date = 0;
-    TLValue tlType = TLValue::DraftMessageEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpConfigSimple {
-    TLHelpConfigSimple() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpConfigSimple : public TLType
+{
+    TLHelpConfigSimple() :
+        TLType(TLValue::HelpConfigSimple)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1937,11 +2337,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpConfigSimple {
     quint32 expires = 0;
     quint32 dcId = 0;
     QVector<TLIpPort> ipPortList;
-    TLValue tlType = TLValue::HelpConfigSimple;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputChatPhoto {
-    TLInputChatPhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputChatPhoto : public TLType
+{
+    TLInputChatPhoto() :
+        TLType(TLValue::InputChatPhotoEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1949,11 +2352,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputChatPhoto {
 
     TLInputFile file;
     TLInputPhoto id;
-    TLValue tlType = TLValue::InputChatPhotoEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputGame {
-    TLInputGame() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputGame : public TLType
+{
+    TLInputGame() :
+        TLType(TLValue::InputGameID)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1963,22 +2369,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputGame {
     quint64 accessHash = 0;
     TLInputUser botId;
     QString shortName;
-    TLValue tlType = TLValue::InputGameID;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputNotifyPeer {
-    TLInputNotifyPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputNotifyPeer : public TLType
+{
+    TLInputNotifyPeer() :
+        TLType(TLValue::InputNotifyPeer)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputNotifyPeer &v) const;
 
     TLInputPeer peer;
-    TLValue tlType = TLValue::InputNotifyPeer;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPaymentCredentials {
-    TLInputPaymentCredentials() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPaymentCredentials : public TLType
+{
+    TLInputPaymentCredentials() :
+        TLType(TLValue::InputPaymentCredentialsSaved)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -1994,11 +2406,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputPaymentCredentials {
     TLDataJSON data;
     TLDataJSON paymentData;
     TLDataJSON paymentToken;
-    TLValue tlType = TLValue::InputPaymentCredentialsSaved;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeerNotifySettings {
-    TLInputPeerNotifySettings() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeerNotifySettings : public TLType
+{
+    TLInputPeerNotifySettings() :
+        TLType(TLValue::InputPeerNotifySettings)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2013,22 +2428,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputPeerNotifySettings {
     quint32 flags = 0;
     quint32 muteUntil = 0;
     QString sound;
-    TLValue tlType = TLValue::InputPeerNotifySettings;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputPrivacyRule {
-    TLInputPrivacyRule() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputPrivacyRule : public TLType
+{
+    TLInputPrivacyRule() :
+        TLType(TLValue::InputPrivacyValueAllowContacts)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLInputPrivacyRule &v) const;
 
     QVector<TLInputUser> users;
-    TLValue tlType = TLValue::InputPrivacyValueAllowContacts;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSetItem {
-    TLInputStickerSetItem() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSetItem : public TLType
+{
+    TLInputStickerSetItem() :
+        TLType(TLValue::InputStickerSetItem)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2041,11 +2462,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputStickerSetItem {
     TLInputDocument document;
     QString emoji;
     TLMaskCoords maskCoords;
-    TLValue tlType = TLValue::InputStickerSetItem;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebDocument {
-    TLInputWebDocument() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebDocument : public TLType
+{
+    TLInputWebDocument() :
+        TLType(TLValue::InputWebDocument)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2055,11 +2479,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputWebDocument {
     quint32 size = 0;
     QString mimeType;
     QVector<TLDocumentAttribute> attributes;
-    TLValue tlType = TLValue::InputWebDocument;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInvoice {
-    TLInvoice() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInvoice : public TLType
+{
+    TLInvoice() :
+        TLType(TLValue::Invoice)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2082,11 +2509,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInvoice {
     quint32 flags = 0;
     QString currency;
     QVector<TLLabeledPrice> prices;
-    TLValue tlType = TLValue::Invoice;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLKeyboardButton {
-    TLKeyboardButton() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLKeyboardButton : public TLType
+{
+    TLKeyboardButton() :
+        TLType(TLValue::KeyboardButton)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2101,22 +2531,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLKeyboardButton {
     QByteArray data;
     quint32 flags = 0;
     QString query;
-    TLValue tlType = TLValue::KeyboardButton;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLKeyboardButtonRow {
-    TLKeyboardButtonRow() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLKeyboardButtonRow : public TLType
+{
+    TLKeyboardButtonRow() :
+        TLType(TLValue::KeyboardButtonRow)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLKeyboardButtonRow &v) const;
 
     QVector<TLKeyboardButton> buttons;
-    TLValue tlType = TLValue::KeyboardButtonRow;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackDifference {
-    TLLangPackDifference() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackDifference : public TLType
+{
+    TLLangPackDifference() :
+        TLType(TLValue::LangPackDifference)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2126,11 +2562,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLLangPackDifference {
     quint32 fromVersion = 0;
     quint32 version = 0;
     QVector<TLLangPackString> strings;
-    TLValue tlType = TLValue::LangPackDifference;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotCallbackAnswer {
-    TLMessagesBotCallbackAnswer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotCallbackAnswer : public TLType
+{
+    TLMessagesBotCallbackAnswer() :
+        TLType(TLValue::MessagesBotCallbackAnswer)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2150,11 +2589,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotCallbackAnswer {
     QString message;
     QString url;
     quint32 cacheTime = 0;
-    TLValue tlType = TLValue::MessagesBotCallbackAnswer;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFilter {
-    TLMessagesFilter() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFilter : public TLType
+{
+    TLMessagesFilter() :
+        TLType(TLValue::InputMessagesFilterEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2165,11 +2607,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFilter {
     bool missed() const { return flags & Missed; }
 
     quint32 flags = 0;
-    TLValue tlType = TLValue::InputMessagesFilterEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessageEditData {
-    TLMessagesMessageEditData() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessageEditData : public TLType
+{
+    TLMessagesMessageEditData() :
+        TLType(TLValue::MessagesMessageEditData)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2180,22 +2625,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessageEditData {
     bool caption() const { return flags & Caption; }
 
     quint32 flags = 0;
-    TLValue tlType = TLValue::MessagesMessageEditData;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLNotifyPeer {
-    TLNotifyPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLNotifyPeer : public TLType
+{
+    TLNotifyPeer() :
+        TLType(TLValue::NotifyPeer)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLNotifyPeer &v) const;
 
     TLPeer peer;
-    TLValue tlType = TLValue::NotifyPeer;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentRequestedInfo {
-    TLPaymentRequestedInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentRequestedInfo : public TLType
+{
+    TLPaymentRequestedInfo() :
+        TLType(TLValue::PaymentRequestedInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2212,11 +2663,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentRequestedInfo {
     QString phone;
     QString email;
     TLPostAddress shippingAddress;
-    TLValue tlType = TLValue::PaymentRequestedInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsSavedInfo {
-    TLPaymentsSavedInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsSavedInfo : public TLType
+{
+    TLPaymentsSavedInfo() :
+        TLType(TLValue::PaymentsSavedInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2229,11 +2683,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsSavedInfo {
 
     quint32 flags = 0;
     TLPaymentRequestedInfo savedInfo;
-    TLValue tlType = TLValue::PaymentsSavedInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsValidatedRequestedInfo {
-    TLPaymentsValidatedRequestedInfo() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsValidatedRequestedInfo : public TLType
+{
+    TLPaymentsValidatedRequestedInfo() :
+        TLType(TLValue::PaymentsValidatedRequestedInfo)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2246,11 +2703,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsValidatedRequestedInfo {
     quint32 flags = 0;
     QString id;
     QVector<TLShippingOption> shippingOptions;
-    TLValue tlType = TLValue::PaymentsValidatedRequestedInfo;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPeerNotifySettings {
-    TLPeerNotifySettings() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPeerNotifySettings : public TLType
+{
+    TLPeerNotifySettings() :
+        TLType(TLValue::PeerNotifySettingsEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2265,11 +2725,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPeerNotifySettings {
     quint32 flags = 0;
     quint32 muteUntil = 0;
     QString sound;
-    TLValue tlType = TLValue::PeerNotifySettingsEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPeerSettings {
-    TLPeerSettings() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPeerSettings : public TLType
+{
+    TLPeerSettings() :
+        TLType(TLValue::PeerSettings)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2280,11 +2743,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPeerSettings {
     bool reportSpam() const { return flags & ReportSpam; }
 
     quint32 flags = 0;
-    TLValue tlType = TLValue::PeerSettings;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCallProtocol {
-    TLPhoneCallProtocol() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCallProtocol : public TLType
+{
+    TLPhoneCallProtocol() :
+        TLType(TLValue::PhoneCallProtocol)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2299,11 +2765,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCallProtocol {
     quint32 flags = 0;
     quint32 minLayer = 0;
     quint32 maxLayer = 0;
-    TLValue tlType = TLValue::PhoneCallProtocol;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhoto {
-    TLPhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhoto : public TLType
+{
+    TLPhoto() :
+        TLType(TLValue::PhotoEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2318,11 +2787,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhoto {
     quint64 accessHash = 0;
     quint32 date = 0;
     QVector<TLPhotoSize> sizes;
-    TLValue tlType = TLValue::PhotoEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLReplyMarkup {
-    TLReplyMarkup() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLReplyMarkup : public TLType
+{
+    TLReplyMarkup() :
+        TLType(TLValue::ReplyKeyboardHide)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2338,11 +2810,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLReplyMarkup {
 
     quint32 flags = 0;
     QVector<TLKeyboardButtonRow> rows;
-    TLValue tlType = TLValue::ReplyKeyboardHide;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSet {
-    TLStickerSet() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSet : public TLType
+{
+    TLStickerSet() :
+        TLType(TLValue::StickerSet)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2365,11 +2840,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSet {
     QString shortName;
     quint32 count = 0;
     quint32 hash = 0;
-    TLValue tlType = TLValue::StickerSet;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUser {
-    TLUser() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUser : public TLType
+{
+    TLUser() :
+        TLType(TLValue::UserEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2423,11 +2901,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUser {
     QString restrictionReason;
     QString botInlinePlaceholder;
     QString langCode;
-    TLValue tlType = TLValue::UserEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLWebDocument {
-    TLWebDocument() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLWebDocument : public TLType
+{
+    TLWebDocument() :
+        TLType(TLValue::WebDocument)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2439,11 +2920,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLWebDocument {
     QString mimeType;
     QVector<TLDocumentAttribute> attributes;
     quint32 dcId = 0;
-    TLValue tlType = TLValue::WebDocument;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPrivacyRules {
-    TLAccountPrivacyRules() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPrivacyRules : public TLType
+{
+    TLAccountPrivacyRules() :
+        TLType(TLValue::AccountPrivacyRules)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2451,11 +2935,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPrivacyRules {
 
     QVector<TLPrivacyRule> rules;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::AccountPrivacyRules;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLAuthAuthorization {
-    TLAuthAuthorization() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLAuthAuthorization : public TLType
+{
+    TLAuthAuthorization() :
+        TLType(TLValue::AuthAuthorization)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2467,11 +2954,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLAuthAuthorization {
     quint32 flags = 0;
     quint32 tmpSessions = 0;
     TLUser user;
-    TLValue tlType = TLValue::AuthAuthorization;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineMessage {
-    TLBotInlineMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineMessage : public TLType
+{
+    TLBotInlineMessage() :
+        TLType(TLValue::BotInlineMessageMediaAuto)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2497,11 +2987,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineMessage {
     QString phoneNumber;
     QString firstName;
     QString lastName;
-    TLValue tlType = TLValue::BotInlineMessageMediaAuto;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipant {
-    TLChannelsChannelParticipant() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipant : public TLType
+{
+    TLChannelsChannelParticipant() :
+        TLType(TLValue::ChannelsChannelParticipant)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2509,11 +3002,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipant {
 
     TLChannelParticipant participant;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ChannelsChannelParticipant;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipants {
-    TLChannelsChannelParticipants() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipants : public TLType
+{
+    TLChannelsChannelParticipants() :
+        TLType(TLValue::ChannelsChannelParticipants)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2522,11 +3018,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsChannelParticipants {
     quint32 count = 0;
     QVector<TLChannelParticipant> participants;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ChannelsChannelParticipants;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChat {
-    TLChat() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChat : public TLType
+{
+    TLChat() :
+        TLType(TLValue::ChatEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2583,11 +3082,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChat {
     TLChannelAdminRights adminRights;
     TLChannelBannedRights bannedRights;
     quint32 untilDate = 0;
-    TLValue tlType = TLValue::ChatEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChatFull {
-    TLChatFull() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChatFull : public TLType
+{
+    TLChatFull() :
+        TLType(TLValue::ChatFull)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2632,11 +3134,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatFull {
     quint32 pinnedMsgId = 0;
     TLStickerSet stickerset;
     quint32 availableMinId = 0;
-    TLValue tlType = TLValue::ChatFull;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChatInvite {
-    TLChatInvite() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChatInvite : public TLType
+{
+    TLChatInvite() :
+        TLType(TLValue::ChatInviteAlready)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2659,11 +3164,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChatInvite {
     TLChatPhoto photo;
     quint32 participantsCount = 0;
     QVector<TLUser> participants;
-    TLValue tlType = TLValue::ChatInviteAlready;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLConfig {
-    TLConfig() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLConfig : public TLType
+{
+    TLConfig() :
+        TLType(TLValue::Config)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2710,11 +3218,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLConfig {
     QString suggestedLangCode;
     quint32 langPackVersion = 0;
     QVector<TLDisabledFeature> disabledFeatures;
-    TLValue tlType = TLValue::Config;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsBlocked {
-    TLContactsBlocked() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsBlocked : public TLType
+{
+    TLContactsBlocked() :
+        TLType(TLValue::ContactsBlocked)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2723,11 +3234,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsBlocked {
     QVector<TLContactBlocked> blocked;
     QVector<TLUser> users;
     quint32 count = 0;
-    TLValue tlType = TLValue::ContactsBlocked;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsContacts {
-    TLContactsContacts() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsContacts : public TLType
+{
+    TLContactsContacts() :
+        TLType(TLValue::ContactsContactsNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2736,11 +3250,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsContacts {
     QVector<TLContact> contacts;
     quint32 savedCount = 0;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ContactsContactsNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsFound {
-    TLContactsFound() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsFound : public TLType
+{
+    TLContactsFound() :
+        TLType(TLValue::ContactsFound)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2749,11 +3266,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsFound {
     QVector<TLPeer> results;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ContactsFound;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsImportedContacts {
-    TLContactsImportedContacts() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsImportedContacts : public TLType
+{
+    TLContactsImportedContacts() :
+        TLType(TLValue::ContactsImportedContacts)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2763,11 +3283,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsImportedContacts {
     QVector<TLPopularContact> popularInvites;
     QVector<quint64> retryContacts;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ContactsImportedContacts;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsLink {
-    TLContactsLink() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsLink : public TLType
+{
+    TLContactsLink() :
+        TLType(TLValue::ContactsLink)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2776,11 +3299,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsLink {
     TLContactLink myLink;
     TLContactLink foreignLink;
     TLUser user;
-    TLValue tlType = TLValue::ContactsLink;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsResolvedPeer {
-    TLContactsResolvedPeer() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsResolvedPeer : public TLType
+{
+    TLContactsResolvedPeer() :
+        TLType(TLValue::ContactsResolvedPeer)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2789,11 +3315,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsResolvedPeer {
     TLPeer peer;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ContactsResolvedPeer;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLContactsTopPeers {
-    TLContactsTopPeers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLContactsTopPeers : public TLType
+{
+    TLContactsTopPeers() :
+        TLType(TLValue::ContactsTopPeersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2802,11 +3331,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLContactsTopPeers {
     QVector<TLTopPeerCategoryPeers> categories;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ContactsTopPeersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDialog {
-    TLDialog() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDialog : public TLType
+{
+    TLDialog() :
+        TLType(TLValue::Dialog)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2828,11 +3360,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDialog {
     TLPeerNotifySettings notifySettings;
     quint32 pts = 0;
     TLDraftMessage draft;
-    TLValue tlType = TLValue::Dialog;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLDocument {
-    TLDocument() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLDocument : public TLType
+{
+    TLDocument() :
+        TLType(TLValue::DocumentEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2847,11 +3382,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLDocument {
     quint32 dcId = 0;
     quint32 version = 0;
     QVector<TLDocumentAttribute> attributes;
-    TLValue tlType = TLValue::DocumentEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLFoundGif {
-    TLFoundGif() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLFoundGif : public TLType
+{
+    TLFoundGif() :
+        TLType(TLValue::FoundGif)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2865,11 +3403,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLFoundGif {
     quint32 h = 0;
     TLPhoto photo;
     TLDocument document;
-    TLValue tlType = TLValue::FoundGif;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLGame {
-    TLGame() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLGame : public TLType
+{
+    TLGame() :
+        TLType(TLValue::Game)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2886,11 +3427,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLGame {
     QString description;
     TLPhoto photo;
     TLDocument document;
-    TLValue tlType = TLValue::Game;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpSupport {
-    TLHelpSupport() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpSupport : public TLType
+{
+    TLHelpSupport() :
+        TLType(TLValue::HelpSupport)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2898,11 +3442,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpSupport {
 
     QString phoneNumber;
     TLUser user;
-    TLValue tlType = TLValue::HelpSupport;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessage {
-    TLInputBotInlineMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessage : public TLType
+{
+    TLInputBotInlineMessage() :
+        TLType(TLValue::InputBotInlineMessageMediaAuto)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2928,11 +3475,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineMessage {
     QString phoneNumber;
     QString firstName;
     QString lastName;
-    TLValue tlType = TLValue::InputBotInlineMessageMediaAuto;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineResult {
-    TLInputBotInlineResult() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineResult : public TLType
+{
+    TLInputBotInlineResult() :
+        TLType(TLValue::InputBotInlineResult)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -2965,11 +3515,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputBotInlineResult {
     TLInputPhoto photo;
     TLInputDocument document;
     QString shortName;
-    TLValue tlType = TLValue::InputBotInlineResult;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLInputMedia {
-    TLInputMedia() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLInputMedia : public TLType
+{
+    TLInputMedia() :
+        TLType(TLValue::InputMediaEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3012,11 +3565,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputMedia {
     QByteArray payload;
     QString startParam;
     quint32 period = 0;
-    TLValue tlType = TLValue::InputMediaEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageAction {
-    TLMessageAction() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageAction : public TLType
+{
+    TLMessageAction() :
+        TLType(TLValue::MessageActionEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3048,11 +3604,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageAction {
     TLPhoneCallDiscardReason reason;
     quint32 duration = 0;
     QString message;
-    TLValue tlType = TLValue::MessageActionEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAllStickers {
-    TLMessagesAllStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAllStickers : public TLType
+{
+    TLMessagesAllStickers() :
+        TLType(TLValue::MessagesAllStickersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3060,11 +3619,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesAllStickers {
 
     quint32 hash = 0;
     QVector<TLStickerSet> sets;
-    TLValue tlType = TLValue::MessagesAllStickersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChatFull {
-    TLMessagesChatFull() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChatFull : public TLType
+{
+    TLMessagesChatFull() :
+        TLType(TLValue::MessagesChatFull)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3073,11 +3635,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChatFull {
     TLChatFull fullChat;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::MessagesChatFull;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChats {
-    TLMessagesChats() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChats : public TLType
+{
+    TLMessagesChats() :
+        TLType(TLValue::MessagesChats)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3085,11 +3650,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesChats {
 
     QVector<TLChat> chats;
     quint32 count = 0;
-    TLValue tlType = TLValue::MessagesChats;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFavedStickers {
-    TLMessagesFavedStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFavedStickers : public TLType
+{
+    TLMessagesFavedStickers() :
+        TLType(TLValue::MessagesFavedStickersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3098,11 +3666,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFavedStickers {
     quint32 hash = 0;
     QVector<TLStickerPack> packs;
     QVector<TLDocument> stickers;
-    TLValue tlType = TLValue::MessagesFavedStickersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFoundGifs {
-    TLMessagesFoundGifs() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFoundGifs : public TLType
+{
+    TLMessagesFoundGifs() :
+        TLType(TLValue::MessagesFoundGifs)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3110,11 +3681,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFoundGifs {
 
     quint32 nextOffset = 0;
     QVector<TLFoundGif> results;
-    TLValue tlType = TLValue::MessagesFoundGifs;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesHighScores {
-    TLMessagesHighScores() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesHighScores : public TLType
+{
+    TLMessagesHighScores() :
+        TLType(TLValue::MessagesHighScores)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3122,11 +3696,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesHighScores {
 
     QVector<TLHighScore> scores;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::MessagesHighScores;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesRecentStickers {
-    TLMessagesRecentStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesRecentStickers : public TLType
+{
+    TLMessagesRecentStickers() :
+        TLType(TLValue::MessagesRecentStickersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3134,11 +3711,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesRecentStickers {
 
     quint32 hash = 0;
     QVector<TLDocument> stickers;
-    TLValue tlType = TLValue::MessagesRecentStickersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSavedGifs {
-    TLMessagesSavedGifs() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSavedGifs : public TLType
+{
+    TLMessagesSavedGifs() :
+        TLType(TLValue::MessagesSavedGifsNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3146,11 +3726,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesSavedGifs {
 
     quint32 hash = 0;
     QVector<TLDocument> gifs;
-    TLValue tlType = TLValue::MessagesSavedGifsNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSet {
-    TLMessagesStickerSet() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSet : public TLType
+{
+    TLMessagesStickerSet() :
+        TLType(TLValue::MessagesStickerSet)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3159,11 +3742,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSet {
     TLStickerSet set;
     QVector<TLStickerPack> packs;
     QVector<TLDocument> documents;
-    TLValue tlType = TLValue::MessagesStickerSet;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickers {
-    TLMessagesStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickers : public TLType
+{
+    TLMessagesStickers() :
+        TLType(TLValue::MessagesStickersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3171,11 +3757,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickers {
 
     QString hash;
     QVector<TLDocument> stickers;
-    TLValue tlType = TLValue::MessagesStickersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPage {
-    TLPage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPage : public TLType
+{
+    TLPage() :
+        TLType(TLValue::PagePart)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3184,11 +3773,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPage {
     QVector<TLPageBlock*> blocks;
     QVector<TLPhoto> photos;
     QVector<TLDocument> documents;
-    TLValue tlType = TLValue::PagePart;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPageBlock {
-    TLPageBlock() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPageBlock : public TLType
+{
+    TLPageBlock() :
+        TLType(TLValue::PageBlockUnsupported)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3232,11 +3824,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPageBlock {
     QVector<TLPageBlock*> pageBlockItemsVector;
     TLChat channel;
     quint64 audioId = 0;
-    TLValue tlType = TLValue::PageBlockUnsupported;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentForm {
-    TLPaymentsPaymentForm() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentForm : public TLType
+{
+    TLPaymentsPaymentForm() :
+        TLType(TLValue::PaymentsPaymentForm)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3262,11 +3857,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentForm {
     TLPaymentRequestedInfo savedInfo;
     TLPaymentSavedCredentials savedCredentials;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::PaymentsPaymentForm;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentReceipt {
-    TLPaymentsPaymentReceipt() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentReceipt : public TLType
+{
+    TLPaymentsPaymentReceipt() :
+        TLType(TLValue::PaymentsPaymentReceipt)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3287,11 +3885,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentReceipt {
     quint64 totalAmount = 0;
     QString credentialsTitle;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::PaymentsPaymentReceipt;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCall {
-    TLPhoneCall() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCall : public TLType
+{
+    TLPhoneCall() :
+        TLType(TLValue::PhoneCallEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3323,11 +3924,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhoneCall {
     quint32 startDate = 0;
     TLPhoneCallDiscardReason reason;
     quint32 duration = 0;
-    TLValue tlType = TLValue::PhoneCallEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhonePhoneCall {
-    TLPhonePhoneCall() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhonePhoneCall : public TLType
+{
+    TLPhonePhoneCall() :
+        TLType(TLValue::PhonePhoneCall)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3335,11 +3939,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhonePhoneCall {
 
     TLPhoneCall phoneCall;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::PhonePhoneCall;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhoto {
-    TLPhotosPhoto() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhoto : public TLType
+{
+    TLPhotosPhoto() :
+        TLType(TLValue::PhotosPhoto)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3347,11 +3954,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhoto {
 
     TLPhoto photo;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::PhotosPhoto;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhotos {
-    TLPhotosPhotos() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhotos : public TLType
+{
+    TLPhotosPhotos() :
+        TLType(TLValue::PhotosPhotos)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3360,11 +3970,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPhotosPhotos {
     QVector<TLPhoto> photos;
     QVector<TLUser> users;
     quint32 count = 0;
-    TLValue tlType = TLValue::PhotosPhotos;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSetCovered {
-    TLStickerSetCovered() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSetCovered : public TLType
+{
+    TLStickerSetCovered() :
+        TLType(TLValue::StickerSetCovered)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3373,11 +3986,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLStickerSetCovered {
     TLStickerSet set;
     TLDocument cover;
     QVector<TLDocument> covers;
-    TLValue tlType = TLValue::StickerSetCovered;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUserFull {
-    TLUserFull() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUserFull : public TLType
+{
+    TLUserFull() :
+        TLType(TLValue::UserFull)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3402,11 +4018,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUserFull {
     TLPeerNotifySettings notifySettings;
     TLBotInfo botInfo;
     quint32 commonChatsCount = 0;
-    TLValue tlType = TLValue::UserFull;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLWebPage {
-    TLWebPage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLWebPage : public TLType
+{
+    TLWebPage() :
+        TLType(TLValue::WebPageEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3446,11 +4065,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLWebPage {
     QString author;
     TLDocument document;
     TLPage cachedPage;
-    TLValue tlType = TLValue::WebPageEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult {
-    TLBotInlineResult() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult : public TLType
+{
+    TLBotInlineResult() :
+        TLType(TLValue::BotInlineResult)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3486,11 +4108,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult {
     TLBotInlineMessage sendMessage;
     TLPhoto photo;
     TLDocument document;
-    TLValue tlType = TLValue::BotInlineResult;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia {
-    TLMessageMedia() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia : public TLType
+{
+    TLMessageMedia() :
+        TLType(TLValue::MessageMediaEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3532,11 +4157,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia {
     quint64 totalAmount = 0;
     QString startParam;
     quint32 period = 0;
-    TLValue tlType = TLValue::MessageMediaEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesArchivedStickers {
-    TLMessagesArchivedStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesArchivedStickers : public TLType
+{
+    TLMessagesArchivedStickers() :
+        TLType(TLValue::MessagesArchivedStickers)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3544,11 +4172,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesArchivedStickers {
 
     quint32 count = 0;
     QVector<TLStickerSetCovered> sets;
-    TLValue tlType = TLValue::MessagesArchivedStickers;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotResults {
-    TLMessagesBotResults() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotResults : public TLType
+{
+    TLMessagesBotResults() :
+        TLType(TLValue::MessagesBotResults)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3567,11 +4198,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesBotResults {
     QVector<TLBotInlineResult> results;
     quint32 cacheTime = 0;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::MessagesBotResults;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFeaturedStickers {
-    TLMessagesFeaturedStickers() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFeaturedStickers : public TLType
+{
+    TLMessagesFeaturedStickers() :
+        TLType(TLValue::MessagesFeaturedStickersNotModified)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3580,22 +4214,28 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesFeaturedStickers {
     quint32 hash = 0;
     QVector<TLStickerSetCovered> sets;
     QVector<quint64> unread;
-    TLValue tlType = TLValue::MessagesFeaturedStickersNotModified;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSetInstallResult {
-    TLMessagesStickerSetInstallResult() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSetInstallResult : public TLType
+{
+    TLMessagesStickerSetInstallResult() :
+        TLType(TLValue::MessagesStickerSetInstallResultSuccess)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
     bool operator==(const TLMessagesStickerSetInstallResult &v) const;
 
     QVector<TLStickerSetCovered> sets;
-    TLValue tlType = TLValue::MessagesStickerSetInstallResultSuccess;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl {
-    TLRecentMeUrl() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl : public TLType
+{
+    TLRecentMeUrl() :
+        TLType(TLValue::RecentMeUrlUnknown)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3606,11 +4246,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl {
     quint32 chatId = 0;
     TLChatInvite chatInvite;
     TLStickerSetCovered set;
-    TLValue tlType = TLValue::RecentMeUrlUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLHelpRecentMeUrls {
-    TLHelpRecentMeUrls() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLHelpRecentMeUrls : public TLType
+{
+    TLHelpRecentMeUrls() :
+        TLType(TLValue::HelpRecentMeUrls)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3619,11 +4262,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpRecentMeUrls {
     QVector<TLRecentMeUrl> urls;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::HelpRecentMeUrls;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessage {
-    TLMessage() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessage : public TLType
+{
+    TLMessage() :
+        TLType(TLValue::MessageEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3667,11 +4313,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessage {
     quint32 editDate = 0;
     QString postAuthor;
     TLMessageAction action;
-    TLValue tlType = TLValue::MessageEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDialogs {
-    TLMessagesDialogs() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDialogs : public TLType
+{
+    TLMessagesDialogs() :
+        TLType(TLValue::MessagesDialogs)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3682,11 +4331,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesDialogs {
     QVector<TLChat> chats;
     QVector<TLUser> users;
     quint32 count = 0;
-    TLValue tlType = TLValue::MessagesDialogs;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessages {
-    TLMessagesMessages() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessages : public TLType
+{
+    TLMessagesMessages() :
+        TLType(TLValue::MessagesMessages)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3698,11 +4350,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesMessages {
     quint32 count = 0;
     quint32 flags = 0;
     quint32 pts = 0;
-    TLValue tlType = TLValue::MessagesMessages;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesPeerDialogs {
-    TLMessagesPeerDialogs() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesPeerDialogs : public TLType
+{
+    TLMessagesPeerDialogs() :
+        TLType(TLValue::MessagesPeerDialogs)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3713,11 +4368,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesPeerDialogs {
     QVector<TLChat> chats;
     QVector<TLUser> users;
     TLUpdatesState state;
-    TLValue tlType = TLValue::MessagesPeerDialogs;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
-    TLUpdate() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate : public TLType
+{
+    TLUpdate() :
+        TLType(TLValue::UpdateNewMessage)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3810,11 +4468,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     TLPhoneCall phoneCall;
     TLLangPackDifference difference;
     quint32 availableMinId = 0;
-    TLValue tlType = TLValue::UpdateNewMessage;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUpdates {
-    TLUpdates() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUpdates : public TLType
+{
+    TLUpdates() :
+        TLType(TLValue::UpdatesTooLong)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3855,11 +4516,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdates {
     quint32 seqStart = 0;
     quint32 seq = 0;
     TLMessageMedia media;
-    TLValue tlType = TLValue::UpdatesTooLong;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesChannelDifference {
-    TLUpdatesChannelDifference() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesChannelDifference : public TLType
+{
+    TLUpdatesChannelDifference() :
+        TLType(TLValue::UpdatesChannelDifferenceEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3883,11 +4547,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesChannelDifference {
     QVector<TLUser> users;
     QVector<TLMessage> newMessages;
     QVector<TLUpdate> otherUpdates;
-    TLValue tlType = TLValue::UpdatesChannelDifferenceEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesDifference {
-    TLUpdatesDifference() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesDifference : public TLType
+{
+    TLUpdatesDifference() :
+        TLType(TLValue::UpdatesDifferenceEmpty)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3903,11 +4570,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdatesDifference {
     TLUpdatesState state;
     TLUpdatesState intermediateState;
     quint32 pts = 0;
-    TLValue tlType = TLValue::UpdatesDifferenceEmpty;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventAction {
-    TLChannelAdminLogEventAction() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventAction : public TLType
+{
+    TLChannelAdminLogEventAction() :
+        TLType(TLValue::ChannelAdminLogEventActionChangeTitle)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3926,11 +4596,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEventAction {
     TLChannelParticipant newParticipant;
     TLInputStickerSet prevStickerset;
     TLInputStickerSet newStickerset;
-    TLValue tlType = TLValue::ChannelAdminLogEventActionChangeTitle;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentResult {
-    TLPaymentsPaymentResult() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentResult : public TLType
+{
+    TLPaymentsPaymentResult() :
+        TLType(TLValue::PaymentsPaymentResult)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3938,11 +4611,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLPaymentsPaymentResult {
 
     TLUpdates updates;
     QString url;
-    TLValue tlType = TLValue::PaymentsPaymentResult;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEvent {
-    TLChannelAdminLogEvent() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEvent : public TLType
+{
+    TLChannelAdminLogEvent() :
+        TLType(TLValue::ChannelAdminLogEvent)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3952,11 +4628,14 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelAdminLogEvent {
     quint32 date = 0;
     quint32 userId = 0;
     TLChannelAdminLogEventAction action;
-    TLValue tlType = TLValue::ChannelAdminLogEvent;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsAdminLogResults {
-    TLChannelsAdminLogResults() = default;
+struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsAdminLogResults : public TLType
+{
+    TLChannelsAdminLogResults() :
+        TLType(TLValue::ChannelsAdminLogResults)
+    {
+    }
 
     bool isValid() const { return hasType(tlType); }
     static bool hasType(const quint32 value);
@@ -3965,7 +4644,6 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsAdminLogResults {
     QVector<TLChannelAdminLogEvent> events;
     QVector<TLChat> chats;
     QVector<TLUser> users;
-    TLValue tlType = TLValue::ChannelsAdminLogResults;
 };
 // End of generated TLTypes
 
