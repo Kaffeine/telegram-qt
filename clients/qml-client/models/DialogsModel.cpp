@@ -254,7 +254,7 @@ void DialogsModel::onNewMessage(const Telegram::Peer peer, quint32 messageId)
         return;
     }
     const QModelIndex changedIndex = index(dialogIndex);
-    emit dataChanged(changedIndex, changedIndex, rolesToInt({
+    emit dataChanged(changedIndex, changedIndex, rolesToIntRoles({
                                                                 Role::LastMessage,
                                                                 Role::FormattedLastMessage,
                                                                 Role::UnreadMessageCount,
@@ -292,7 +292,7 @@ DialogsModel::Role DialogsModel::intToRole(int value)
     return static_cast<Role>(value);
 }
 
-QVector<int> DialogsModel::rolesToInt(const QVector<DialogsModel::Role> &roles)
+QVector<int> DialogsModel::rolesToIntRoles(const QVector<DialogsModel::Role> &roles)
 {
     QVector<int> qtRoles;
     qtRoles.reserve(roles.count());

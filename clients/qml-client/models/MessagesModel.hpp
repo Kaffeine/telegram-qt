@@ -284,6 +284,8 @@ protected:
     void onMessageSent(const Telegram::Peer peer, quint64 sentRandomId, quint32 acceptedMessageId);
 
     static Role intToRole(int value);
+    static Role intRoleToRole(int role);
+    static int roleToIntRole(Role role);
     static Column intToColumn(int value);
     static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
     QString roleToName(Role role) const;

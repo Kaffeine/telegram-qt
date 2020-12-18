@@ -686,7 +686,10 @@ void MessagesModel::onMessageSent(const Peer peer, quint64 sentRandomId, quint32
 
         QModelIndex left = index(i, 0);
         QModelIndex right = index(i, columnCount());
-        emit dataChanged(left, right, {Qt::DisplayRole, static_cast<int>(Role::Identifier)});
+        emit dataChanged(left, right, {
+                             Qt::DisplayRole,
+                             roleToIntRole(Role::Identifier),
+                         });
         break;
     }
 }
@@ -697,6 +700,16 @@ MessagesModel::Role MessagesModel::intToRole(int value)
         return Role::Invalid;
     }
     return static_cast<Role>(value);
+}
+
+MessagesModel::Role MessagesModel::intRoleToRole(int role)
+{
+    return intToRole(role - UserRoleOffset);
+}
+
+int MessagesModel::roleToIntRole(MessagesModel::Role role)
+{
+    return static_cast<int>(role) + UserRoleOffset;
 }
 
 MessagesModel::Column MessagesModel::intToColumn(int value)
