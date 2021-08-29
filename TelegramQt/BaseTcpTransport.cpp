@@ -246,8 +246,16 @@ void BaseTcpTransport::setSocket(QAbstractSocket *socket)
     }
     m_socket = socket;
     connect(m_socket, &QAbstractSocket::stateChanged, this, &BaseTcpTransport::setState);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    connect(m_socket, &QAbstractSocket::errorOccurred,
+            this, &BaseTcpTransport::onSocketErrorOccurred);
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+    connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+            this, &BaseTcpTransport::onSocketErrorOccurred);
+#else
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
             SLOT(onSocketErrorOccurred(QAbstractSocket::SocketError)));
+#endif
     connect(m_socket, &QIODevice::readyRead, this, &BaseTcpTransport::onReadyRead);
 }
 
