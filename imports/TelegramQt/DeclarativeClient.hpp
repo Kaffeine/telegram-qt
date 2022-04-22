@@ -5,6 +5,16 @@
 
 #include "telegramqt_qml_global.h"
 
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#include "AccountApi.hpp"
+#include "AccountStorage.hpp"
+#include "AppInformation.hpp"
+#include "ConnectionApi.hpp"
+#include "DeclarativeSettings.hpp"
+#include "MessagingApi.hpp"
+#include "DataStorage.hpp"
+#endif // QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+
 namespace Telegram {
 
 namespace Client {
