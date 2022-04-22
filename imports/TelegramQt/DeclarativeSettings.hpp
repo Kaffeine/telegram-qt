@@ -7,7 +7,7 @@
 
 #include <QQmlListProperty>
 #include <qqml.h>
-#include <QVector>
+#include <QList>
 
 namespace Telegram {
 
@@ -102,7 +102,7 @@ protected:
     static DeclarativeServerOption *getServerOption(QQmlListProperty<DeclarativeServerOption> *list, int index);
     static void clearServerOptions(QQmlListProperty<DeclarativeServerOption> *list);
 
-    QVector<DeclarativeServerOption*> m_options;
+    QList<DeclarativeServerOption*> m_options;
     DeclarativeRsaKey *m_serverKey = nullptr;
     DeclarativeProxySettings *m_proxySettings = nullptr;
 
