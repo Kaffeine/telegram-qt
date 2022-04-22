@@ -34,6 +34,8 @@ private:
     Q_DISABLE_COPY(DeclarativeServerOption)
 };
 
+using ListSizeType = QList<int>::size_type;
+
 class TELEGRAMQT_QML_EXPORT DeclarativeProxySettings : public QObject
 {
     Q_OBJECT
@@ -98,8 +100,8 @@ signals:
 
 protected:
     static void appendServerOption(QQmlListProperty<DeclarativeServerOption> *list, DeclarativeServerOption *option);
-    static int serverOptionCount(QQmlListProperty<DeclarativeServerOption> *list);
-    static DeclarativeServerOption *getServerOption(QQmlListProperty<DeclarativeServerOption> *list, int index);
+    static ListSizeType serverOptionCount(QQmlListProperty<DeclarativeServerOption> *list);
+    static DeclarativeServerOption *getServerOption(QQmlListProperty<DeclarativeServerOption> *list, ListSizeType index);
     static void clearServerOptions(QQmlListProperty<DeclarativeServerOption> *list);
 
     QList<DeclarativeServerOption*> m_options;

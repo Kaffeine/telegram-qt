@@ -115,12 +115,12 @@ void DeclarativeSettings::appendServerOption(QQmlListProperty<DeclarativeServerO
     reinterpret_cast<DeclarativeSettings*>(list->data)->appendServerOption(option);
 }
 
-int DeclarativeSettings::serverOptionCount(QQmlListProperty<DeclarativeServerOption> *list)
+ListSizeType DeclarativeSettings::serverOptionCount(QQmlListProperty<DeclarativeServerOption> *list)
 {
     return reinterpret_cast<DeclarativeSettings*>(list->data)->serverOptionCount();
 }
 
-DeclarativeServerOption *DeclarativeSettings::getServerOption(QQmlListProperty<DeclarativeServerOption> *list, int index)
+DeclarativeServerOption *DeclarativeSettings::getServerOption(QQmlListProperty<DeclarativeServerOption> *list, ListSizeType index)
 {
     return reinterpret_cast<DeclarativeSettings*>(list->data)->getServerOption(index);
 }
