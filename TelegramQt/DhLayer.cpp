@@ -41,7 +41,7 @@ QString formatTLValue(const TLValue &val)
 }
 #endif
 
-Q_LOGGING_CATEGORY(c_baseDhLayerCategory, "telegram.base.dhlayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcBaseDhLayerCategory, "telegram.base.dhlayer", QtDebugMsg)
 
 namespace Telegram {
 
@@ -57,7 +57,7 @@ void BaseDhLayer::setSendPackageHelper(BaseMTProtoSendHelper *helper)
 
 void BaseDhLayer::setServerRsaKey(const RsaKey &key)
 {
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "Set server key:"
+    qCDebug(lcBaseDhLayerCategory) << CALL_INFO << "Set server key:"
                                    << key.modulus.toHex() << key.exponent.toHex()
                                    << key.secretExponent.toHex() << key.fingerprint;
     m_rsaKey = key;
@@ -65,7 +65,7 @@ void BaseDhLayer::setServerRsaKey(const RsaKey &key)
 
 Crypto::AesKey BaseDhLayer::generateTmpAesKey(const BaseDhSession *session)
 {
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << session->serverNonce << session->newNonce;
+    qCDebug(lcBaseDhLayerCategory) << Q_FUNC_INFO << session->serverNonce << session->newNonce;
     QByteArray newNonceAndServerNonce;
     newNonceAndServerNonce.append(session->newNonce.data, session->newNonce.size());
     newNonceAndServerNonce.append(session->serverNonce.data, session->serverNonce.size());
@@ -82,7 +82,7 @@ Crypto::AesKey BaseDhLayer::generateTmpAesKey(const BaseDhSession *session)
             + Utils::sha1(newNonceAndNewNonce)
             + QByteArray(session->newNonce.data, 4);
 
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
+    qCDebug(lcBaseDhLayerCategory) << Q_FUNC_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
 
     return Crypto::AesKey(key, iv);
 }
@@ -92,7 +92,7 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
     TLNumber128 nonce;
     stream >> nonce;
     if (nonce != m_session->clientNonce) {
-        qCDebug(c_baseDhLayerCategory) << CALL_INFO
+        qCDebug(lcBaseDhLayerCategory) << CALL_INFO
                                        << "Error: Client nonce in the incoming package"
                                           " is different from the local one.";
         return false;
@@ -100,7 +100,7 @@ bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
 
     stream >> nonce;
     if (nonce != m_session->serverNonce) {
-        qCDebug(c_baseDhLayerCategory) << CALL_INFO
+        qCDebug(lcBaseDhLayerCategory) << CALL_INFO
                                        << "Error: Server nonce in the incoming package"
                                           " is different from the local one.";
         return false;
@@ -124,7 +124,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
     outputStream << messageLength;
     outputStream << payload;
 
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO
+    qCDebug(lcBaseDhLayerCategory) << CALL_INFO
                                    << output.left(8).toHex()
                                    << output.mid(8).toHex();
 
@@ -152,6 +152,10 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
 bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
 {
+    qCDebug(lcBaseDhLayerCategory) << CALL_INFO
+                                   << buffer.left(8).toHex()
+                                   << buffer.mid(8).toHex();
+
     RawStream inputStream(buffer);
 
 #ifdef NETWORK_LOGGING
@@ -177,25 +181,22 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
     inputStream >> messageId;
     inputStream >> messageLength;
 
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO
-                                   << buffer.left(8).toHex()
-                                   << buffer.mid(8).toHex();
     if (inputStream.error()) {
-        qCWarning(c_baseDhLayerCategory) << CALL_INFO << "Unable to read header";
+        qCWarning(lcBaseDhLayerCategory) << CALL_INFO << "Unable to read header";
         return false;
     }
 
     if (inputStream.bytesAvailable() != int(messageLength)) {
-        qCWarning(c_baseDhLayerCategory) << CALL_INFO
+        qCWarning(lcBaseDhLayerCategory) << CALL_INFO
                                          << "Unable to read packet data. The specified"
                                             " length does not equal to the actually available";
         return false;
     }
 
     payload = inputStream.readBytes(messageLength);
-    qCDebug(c_baseDhLayerCategory) << "read payload:" << messageLength;
+    qCDebug(lcBaseDhLayerCategory) << "read payload:" << messageLength;
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "new plain package in auth state"
+    qCDebug(lcBaseDhLayerCategory) << CALL_INFO << "new plain package in auth state"
                                    << m_state
                                    << "payload:" << TLValue::firstFromArray(payload);
 #endif
@@ -211,7 +212,7 @@ bool BaseDhLayer::hasKey() const
 void BaseDhLayer::setState(BaseDhLayer::State state)
 {
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseDhLayerCategory) << CALL_INFO << state;
+    qCDebug(lcBaseDhLayerCategory) << CALL_INFO << state;
 #endif
     if (m_state == state) {
         return;
