@@ -220,7 +220,12 @@ void FilesApiPrivate::onGetFileResult(FileOperation *operation, UploadRpcLayer::
             // Schedule full retry
             if (m_currentOperation == operation) {
                 // We can work only with one queue ATM
-                QMetaObject::invokeMethod(this, "processCurrentRequest", Qt::QueuedConnection); // Invoke after return
+                // Invoke after return
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+                QMetaObject::invokeMethod(this, "processCurrentRequest", Qt::QueuedConnection);
+#else
+                QMetaObject::invokeMethod(this, &FilesApiPrivate::processCurrentRequest, Qt::QueuedConnection);
+#endif
                 return;
             } else {
                 qCCritical(lcFilesApi) << __func__ << "Unprocessed failed operation" << operation << rpcOperation;
