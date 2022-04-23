@@ -1,4 +1,4 @@
-TelegramQt [![Build Status](https://travis-ci.org/Kaffeine/telegram-qt.svg?branch=master)](https://travis-ci.org/Kaffeine/telegram-qt)
+TelegramQt [![](https://github.com/Kaffeine/telegram-qt/workflows/Build/badge.svg)](https://github.com/Kaffeine/telegram-qt/actions?query=workflow%3ABuild+event%3Apush+branch%3Amaster)
 =======================
 
 TelegramQt provides C++ API for developing custom Telegram clients and servers.
