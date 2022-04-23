@@ -72,9 +72,6 @@ endif()
 
 set(QT_COMPONENTS Core Network)
 
-set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
-    CACHE PATH "Custom QML import installation directory")
-
 if(TELEGRAMQT_BUILD_TESTS)
     list(APPEND QT_COMPONENTS Test)
 endif()
@@ -101,6 +98,9 @@ set(QT_VERSION_MAJOR "${Qt_VERSION_MAJOR}")
 set_package_properties(Qt PROPERTIES
     DESCRIPTION "helper for Qt ${Qt_VERSION} find module"
 )
+
+set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/qml"
+    CACHE PATH "Custom QML import installation directory")
 
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MINUMUM_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
