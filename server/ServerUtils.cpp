@@ -328,7 +328,6 @@ bool setupTLPhoto(TLPhoto *output, const ImageDescriptor &image)
         output->sizes[i].tlType = TLValue::PhotoSize;
         output->sizes[i].w = size.w;
         output->sizes[i].h = size.h;
-        output->sizes[i].type = size.sizeType;
         output->sizes[i].bytes = size.bytes;
         output->sizes[i].size = size.size;
 
