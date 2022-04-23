@@ -256,7 +256,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
         QMetaObject::invokeMethod(this, "connectToNextServer", Qt::QueuedConnection);
 #else
-        QMetaObject::invokeMethod(this, [this]() { this->connectToNextServer(); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &ConnectionApiPrivate::connectToNextServer, Qt::QueuedConnection);
 #endif
         return;
     }

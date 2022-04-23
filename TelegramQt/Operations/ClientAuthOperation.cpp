@@ -207,7 +207,7 @@ void AuthOperationPrivate::asyncSubmitAuthCode()
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     QMetaObject::invokeMethod(this, "trySubmitAuthCode", Qt::QueuedConnection);
 #else
-    QMetaObject::invokeMethod(this, [this]() { trySubmitAuthCode(); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &AuthOperationPrivate::trySubmitAuthCode, Qt::QueuedConnection);
 #endif
 }
 

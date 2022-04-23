@@ -66,7 +66,7 @@ void PendingOperation::startLater()
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     QMetaObject::invokeMethod(this, "start", Qt::QueuedConnection);
 #else
-    QMetaObject::invokeMethod(this, [this] (){ start(); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &PendingOperation::start, Qt::QueuedConnection);
 #endif
 }
 
@@ -76,7 +76,7 @@ void PendingOperation::finishLater()
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     QMetaObject::invokeMethod(this, "setFinished", Qt::QueuedConnection);
 #else
-    QMetaObject::invokeMethod(this, [this] (){ setFinished(); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &PendingOperation::setFinished, Qt::QueuedConnection);
 #endif
 }
 
