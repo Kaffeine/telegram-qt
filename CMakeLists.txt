@@ -19,6 +19,7 @@ include(FeatureSummary)
 # Local includes
 include(CompilerSettings)
 include(ProjectOption)
+include(SelectQtVersion)
 
 project_option(BUILD_CLIENT "Build a client app" FALSE)
 project_option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
@@ -33,6 +34,11 @@ project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
 add_feature_info("Export Internal API" TELEGRAMQT_EXPORT_INTERNAL_API
     "needed for deeper integration (for tests and server)"
+)
+
+project_option_with_list(BUILD_WITH_QT_VERSION "Version of the Qt library used" "Auto"
+    STRINGS
+        "Auto" "Qt5" "Qt6"
 )
 
 if(NOT ${CMAKE_VERSION} VERSION_LESS 3.9)
@@ -92,12 +98,7 @@ if(TELEGRAMQT_BUILD_SERVER)
     endif()
 endif()
 
-set(QT_MINUMUM_VERSION 5.6.0)
-find_package(Qt NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-set(QT_VERSION_MAJOR "${Qt_VERSION_MAJOR}")
-set_package_properties(Qt PROPERTIES
-    DESCRIPTION "helper for Qt ${Qt_VERSION} find module"
-)
+select_qt_version_major("${TELEGRAMQT_BUILD_WITH_QT_VERSION}" QT_VERSION_MAJOR)
 
 set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/qml"
     CACHE PATH "Custom QML import installation directory")

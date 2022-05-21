@@ -1,0 +1,25 @@
+
+function(select_qt_version_major PREFERENCE OUTPUT_VAR)
+    if(PREFERENCE STREQUAL "Auto")
+        if(TARGET Qt5::Core)
+            set(RESULT 5)
+        elseif (TARGET Qt6::Core)
+            set(RESULT 6)
+        else()
+            set(QT_MINUMUM_VERSION 5.6.0)
+            find_package(Qt NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+            set(RESULT "${Qt_VERSION_MAJOR}")
+            set_package_properties(Qt PROPERTIES
+                DESCRIPTION "helper for Qt ${Qt_VERSION} find module"
+            )
+        endif()
+    elseif(PREFERENCE STREQUAL "Qt5")
+        set(RESULT 5)
+    elseif(PREFERENCE STREQUAL "Qt6")
+        set(RESULT 6)
+    else()
+        message(SEND_ERROR "Unexpected preferred Qt value: ${PREFERENCE}")
+    endif()
+
+    set(${OUTPUT_VAR} ${RESULT} PARENT_SCOPE)
+endfunction()
