@@ -21,7 +21,7 @@ Session::Session(quint64 sessionId) :
 
 quint64 Session::getOldSalt() const
 {
-    if (m_oldSalt.validUntil < Utils::getCurrentTime()) {
+    if (m_oldSalt.validUntil < Telegram::Utils::getCurrentTime()) {
         return 0;
     }
     return m_oldSalt.salt;
@@ -39,7 +39,7 @@ quint64 Session::getServerSalt() const
     // https://core.telegram.org/mtproto/service_messages#request-for-several-future-salts
     // "a server salt is attached to the authorization key rather than being session-specific"
 
-    if (m_salts.at(1).validSince < Utils::getCurrentTime()) {
+    if (m_salts.at(1).validSince < Telegram::Utils::getCurrentTime()) {
         m_oldSalt = m_salts.takeFirst();
         if (m_salts.count() < 2) {
             addSalt();
@@ -59,7 +59,7 @@ bool Session::generateInitialServerSalt()
         qCritical() << Q_FUNC_INFO << "a salt is already set";
         return false;
     }
-    ServerSalt s = generateSalt(Utils::getCurrentTime());
+    ServerSalt s = generateSalt(Telegram::Utils::getCurrentTime());
     m_salts.append(s);
     addSalt();
     return true;
@@ -73,7 +73,7 @@ void Session::setInitialServerSalt(quint64 salt)
     }
     ServerSalt s;
     s.salt = salt;
-    s.validSince = Utils::getCurrentTime();
+    s.validSince = Telegram::Utils::getCurrentTime();
     s.validUntil = s.validSince + c_sessionRotation;
     m_salts.append(s);
     addSalt();
