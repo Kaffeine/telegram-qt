@@ -15,6 +15,9 @@
 
  */
 
+#ifndef TELEGRAM_QT_SERVER_REMOTE_CLIENT_CONNECTION_HELPER_HPP
+#define TELEGRAM_QT_SERVER_REMOTE_CLIENT_CONNECTION_HELPER_HPP
+
 #include "SendPackageHelper.hpp"
 
 namespace Telegram {
@@ -37,3 +40,5 @@ public:
 } // Server namespace
 
 } // Telegram namespace
+
+#endif // TELEGRAM_QT_SERVER_REMOTE_CLIENT_CONNECTION_HELPER_HPP

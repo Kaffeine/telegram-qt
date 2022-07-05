@@ -1,3 +1,6 @@
+#ifndef TELEGRAM_SERVER_RPC_OPERATION_P_HPP
+#define TELEGRAM_SERVER_RPC_OPERATION_P_HPP
+
 #include "ServerRpcOperation.hpp"
 
 #include "ServerRpcLayer.hpp"
@@ -29,3 +32,5 @@ bool RpcOperation::sendRpcReply(const TLType &reply)
 } // Server namespace
 
 } //Telegram namespace
+
+#endif // TELEGRAM_SERVER_RPC_OPERATION_P_HPP
